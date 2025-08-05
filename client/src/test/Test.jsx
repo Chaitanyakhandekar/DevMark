@@ -24,12 +24,9 @@ return (
 
        <div className="text-white font-bold p-5 bg-gray-800 rounded-md w-[80%] h-[50%] flex flex-col justify-center items-center">
             {res && <div className="w-full h-full">
-                <p>
-                    message : {res.message}
-                </p>  
-                <p>
-                    success : {res.success ? "true" : "false"}
-                </p>
+                <h1 className="text-2xl mb-4">Response from Server:</h1>
+                <pre className="bg-gray-900 p-4 rounded-md overflow-auto">{JSON.stringify(res, null, 2)}</pre>
+                
             </div>}
         </div>
         
