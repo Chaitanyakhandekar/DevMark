@@ -10,7 +10,7 @@ return (
         className="bg-blue-500 text-white font-bold px-5 py-3 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out"
         onClick={async()=>{
             try {
-                const response = await axios.get("http://localhost:3000/api/v1/tests/test-1")
+                const response = await axios.get("https://devmark-8het.onrender.com/api/v1/tests/test-1")
                 console.log(response)
                 setRes(response.data)
             } catch (error) {
