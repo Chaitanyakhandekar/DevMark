@@ -49,7 +49,17 @@ const userSchema = new Schema({
     },
     refreshToken:{
         type:String
-    }
+    },
+    verificationToken:{
+        type:String
+    },
+    verificationTokenExpiry:{
+        type:Date
+    },
+    isVerified:{
+        type:Boolean,
+        default:false
+    },
 
 },{timestamps:true})
 
