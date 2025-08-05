@@ -1,5 +1,14 @@
 import server from "./server.js";
+import dotenv from "dotenv"
+import connectDB from "./db/dbConfig.js";
 
-server.listen(3000,()=>{
-    console.log("DevMark server is live.")
-})
+dotenv.config({path:"./.env"})
+
+const port = process.env.PORT || 3000
+
+;connectDB()
+        .then(()=>{
+            server.listen(port,()=>{
+                console.log(`Server is running on port ${port}`);
+            })
+        })

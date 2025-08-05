@@ -21,4 +21,8 @@ server.use(express.static("public"))
 
 
 
+import testRouter from "./routes/test.route.js"
+
+server.use("/api/v1/tests" , testRouter)
+
 export default server;
