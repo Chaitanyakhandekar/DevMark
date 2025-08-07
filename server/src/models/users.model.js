@@ -95,6 +95,7 @@ userSchema.methods.generateAccessToken = function(){
     }
 }
 
+
 userSchema.methods.generateRefreshToken = function(){
     try {
         return jwt.sign(
@@ -104,6 +105,24 @@ userSchema.methods.generateRefreshToken = function(){
             process.env.REFRESH_TOKEN_SECRET,
             {
                 expiresIn:process.env.REFRESH_TOKEN_EXPIRY
+            }
+        )
+    } catch (error) {
+        return error.message
+    }
+}
+
+userSchema.methods.generateVerificationToken = function(){
+    try {
+        return jwt.sign(
+            {
+                id:this._id,
+                role:this.role,
+                isActive:this.isActive
+            },
+            process.env.ACCESS_TOKEN_SECRET,
+            {
+                expiresIn: "15m"
             }
         )
     } catch (error) {

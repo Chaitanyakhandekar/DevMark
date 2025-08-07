@@ -25,5 +25,16 @@ export const sendEmail = async(to,subject,text,html="<p>Welcome To DevMark</p>")
         html
     })
 
-    console.log("Email response" , info)
+    if(!info){
+        return {
+            success:false,
+            message:"Email Sending Failed"
+        }
+    }
+
+    return {
+        success:true,
+        message:"Email Sent Successfully",
+        info
+    }
 }
