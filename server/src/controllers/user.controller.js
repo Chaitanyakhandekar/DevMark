@@ -75,6 +75,13 @@ const verifyUser = asyncHandler(async (req,res)=>{
         if(!user){
             throw new ApiError(404,"User Not Found")
         }
+
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                "User Verified Successfully"
+            )
+        )   
     } catch (error) {
         throw new ApiError(500,error.message)   
     }
