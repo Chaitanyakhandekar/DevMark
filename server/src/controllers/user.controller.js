@@ -48,14 +48,19 @@ const registerUser = asyncHandler(async(req,res)=>{
 
 const verifyUser = asyncHandler(async (req,res)=>{
     const {token} = req.params;
+
+    if(!token || token.trim()===""){
+        throw new ApiError(400,"Token is required for verification")
+    }
+
     let decodeToken;
 
-    try {
+    try {        
         decodeToken = jwt.verify(
-            process.env.VERIFICATION_SECRET,
-            token
-        ) 
-        
+            token,
+            process.env.VERIFICATION_SECRET
+        )
+
         if(!decodeToken){
             throw new ApiError(400,"Invalid or Expired Token")
         }
@@ -83,7 +88,13 @@ const verifyUser = asyncHandler(async (req,res)=>{
             )
         )   
     } catch (error) {
-        throw new ApiError(500,error.message)   
+        return res.status(500).json(
+            new ApiError(
+                500,
+                "Token Verification Error",
+                error.message
+            )
+        )   
     }
 })
 
