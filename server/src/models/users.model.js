@@ -54,7 +54,7 @@ const userSchema = new Schema({
         type:String
     },
     verificationTokenExpiry:{
-        type:Date
+        type:String
     },
     isVerified:{
         type:Boolean,
@@ -95,6 +95,7 @@ userSchema.methods.generateAccessToken = function(){
     }
 }
 
+
 userSchema.methods.generateRefreshToken = function(){
     try {
         return jwt.sign(
@@ -104,6 +105,22 @@ userSchema.methods.generateRefreshToken = function(){
             process.env.REFRESH_TOKEN_SECRET,
             {
                 expiresIn:process.env.REFRESH_TOKEN_EXPIRY
+            }
+        )
+    } catch (error) {
+        return error.message
+    }
+}
+
+userSchema.methods.generateVerificationToken = function(){
+    try {
+        return jwt.sign(
+            {
+                id:this._id,
+            },
+            process.env.VERIFICATION_SECRET,
+            {
+                expiresIn: process.env.VERIFICATION_EXPIRY
             }
         )
     } catch (error) {
