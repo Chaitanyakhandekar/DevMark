@@ -7,7 +7,7 @@ import { sendEmail } from "./mail.service.js";
 
 dotenv.config({path:"./.env"});
 
-const verifyUser = async(user)=>{
+export const sendVerificationToken = async(user)=>{
     try {
         const token = user.generateVerificationToken()
 
@@ -28,18 +28,19 @@ const verifyUser = async(user)=>{
             throw new ApiError(500,"Token Creation Error")
         }
 
+        console.log("Verification Token:", userWithToken);
+
         const emailResponse = await sendEmail(
-            userWithToken.email,
+            "chaitanyakhandekar95@gmail.com",
             "DevMark Account Verification",
             `Click on the link to verify your account: ${process.env.RENDER_SERVER_URL}/api/v1/users/verify/${token}`,
-            `<p>Click on the link to verify your account: <a href="${process.env.RENDER_SERVER_URL}/api/v1/users/verify/${token}">Verify Account</a></p>`
+           `<p>Click on the link to verify your account: <a href="${process.env.RENDER_SERVER_URL}/api/v1/users/verify/${token}">Verify Account</a></p>`
         )
 
         if(!emailResponse.success){
             throw new ApiError(500,"Email Sending Failed")
         }
-
-        
+ 
 
     } catch (error) {
         console.log("Error in generateVerificationToken:", error);

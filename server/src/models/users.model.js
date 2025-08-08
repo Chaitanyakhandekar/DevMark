@@ -54,7 +54,7 @@ const userSchema = new Schema({
         type:String
     },
     verificationTokenExpiry:{
-        type:Date
+        type:String
     },
     isVerified:{
         type:Boolean,
@@ -117,12 +117,10 @@ userSchema.methods.generateVerificationToken = function(){
         return jwt.sign(
             {
                 id:this._id,
-                role:this.role,
-                isActive:this.isActive
             },
-            process.env.ACCESS_TOKEN_SECRET,
+            process.env.VERIFICATION_SECRET,
             {
-                expiresIn: "15m"
+                expiresIn: process.env.VERIFICATION_EXPIRY
             }
         )
     } catch (error) {
