@@ -31,7 +31,7 @@ export const sendVerificationToken = async(user)=>{
         console.log("Verification Token:", userWithToken);
 
         const emailResponse = await sendEmail(
-            "chaitanyakhandekar95@gmail.com",
+            userWithToken.email,
             "DevMark Account Verification",
             `Click on the link to verify your account: ${process.env.RENDER_SERVER_URL}/api/v1/users/email/verify/${token}`,
            `<p>Click on the link to verify your account: <a href="${process.env.RENDER_SERVER_URL}/api/v1/users/email/verify/${token}">Verify Account</a></p>`
