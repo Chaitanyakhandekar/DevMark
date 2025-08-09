@@ -81,20 +81,15 @@ const verifyUser = asyncHandler(async (req,res)=>{
             throw new ApiError(404,"User Not Found")
         }
 
-        return res.status(200).json(
-            new ApiResponse(
-                200,
-                "User Verified Successfully"
-            )
-        )   
+        return res.status(200).send(`
+            <h1>Verification Successful</h1>
+            <p>Your account has been verified successfully!</p>
+        `)
     } catch (error) {
-        return res.status(500).json(
-            new ApiError(
-                500,
-                "Token Verification Error",
-                error.message
-            )
-        )   
+        return res.status(500).send(`
+            <h1>Verification Error</h1>
+            <p>${error.message}</p>
+        `)
     }
 })
 
