@@ -8,7 +8,7 @@ import { sendVerificationToken } from "../services/sendVerificationToken.js";
 
 dotenv.config({ path: "./.env" })
 
-const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res,next) => {
     const {
         username,
         fullName,
@@ -41,8 +41,9 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(500, "User Creation Error")
     }
 
-    await sendVerificationToken(newUser)
-
+    
+    req.newUser = newUser;
+    next();
 
 })
 
@@ -87,8 +88,7 @@ const verifyUser = asyncHandler(async (req, res) => {
         `)
     } catch (error) {
         return res.status(500).send(`
-            <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
