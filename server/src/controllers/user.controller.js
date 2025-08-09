@@ -86,10 +86,7 @@ const verifyUser = asyncHandler(async (req,res)=>{
             <p>Your account has been verified successfully!</p>
         `)
     } catch (error) {
-        return res.status(500).send(`
-            <h1>Verification Error</h1>
-            <p>${error.message}</p>
-        `)
+        return res.status(500).sendFile(path.join(__dirname, "../utils/verify-error.html" ))
     }
 })
 
