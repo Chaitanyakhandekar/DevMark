@@ -7,8 +7,9 @@ import { sendEmail } from "./mail.service.js";
 
 dotenv.config({path:"./.env"});
 
-export const sendVerificationToken = async(user)=>{
+export const sendVerificationToken = asyncHandler(async(req,res)=>{
     try {
+        const user = req.newUser;
         const token = user.generateVerificationToken()
 
         const userWithToken = await User.findByIdAndUpdate(
@@ -40,10 +41,15 @@ export const sendVerificationToken = async(user)=>{
         if(!emailResponse.success){
             throw new ApiError(500,"Email Sending Failed")
         }
- 
+
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200,"Verification Token Send On Registered Email")
+        )
 
     } catch (error) {
         console.log("Error in generateVerificationToken:", error);
         return error.message
     }
-}
+})
