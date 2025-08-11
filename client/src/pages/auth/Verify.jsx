@@ -16,7 +16,7 @@ const Verify = () => {
   useEffect(() => {
 
     (async function verifyEmail() {
-      // Simulate a delay
+      
         const res = await  axios.get(`https://devmark-8het.onrender.com/api/v1/users/email/verify/${id}`);
       setIsVerified(true);
     })();
@@ -25,7 +25,7 @@ const Verify = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-    //   navigate("/login");
+      navigate("/login");
     }, 4000);
 
     const interval = setInterval(() => {
