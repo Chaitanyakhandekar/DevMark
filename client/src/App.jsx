@@ -17,7 +17,7 @@ function App() {
         <Route path="/" element={<Test />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/verify" element={<Verify />} />
+        <Route path="/verify/:id" element={<Verify />} />
       </Routes>
   
   )
