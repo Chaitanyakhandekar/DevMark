@@ -2,14 +2,30 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Success from "../../components/Success";
+import { use } from "react";
+import VerificationLoading from "../../components/VerificationLoading";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const Verify = () => {
   const navigate = useNavigate();
   const [sec,setSec] = React.useState(3);
+  const { id } = useParams();
+  const [isVerified, setIsVerified] = React.useState(false);
+
+  useEffect(() => {
+
+    (async function verifyEmail() {
+      // Simulate a delay
+        const res = await  axios.get(`https://devmark-8het.onrender.com/api/v1/users/email/verify/${id}`);
+      setIsVerified(true);
+    })();
+
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/login");
+    //   navigate("/login");
     }, 4000);
 
     const interval = setInterval(() => {
@@ -20,7 +36,11 @@ const Verify = () => {
       clearTimeout(timer);
       clearInterval(interval);
     }; // cleanup to prevent memory leaks
-  }, [navigate]);
+  }, [isVerified]);
+
+  if (!isVerified) {
+    return <VerificationLoading />;
+  }
 
   return (
     <div className="bg-[#111827] w-min-screen h-[100vh] flex justify-center items-center">
