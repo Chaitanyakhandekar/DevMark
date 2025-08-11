@@ -5,6 +5,7 @@ import './App.css'
 import { Test } from './test/Test'
 import Signup from './pages/auth/Signup'
 import Login from './pages/auth/Login'
+import Verify from './pages/auth/Verify'
 import { Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Test />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/verify" element={<Verify />} />
       </Routes>
   
   )
