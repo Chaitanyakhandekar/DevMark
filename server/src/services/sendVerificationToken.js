@@ -34,8 +34,8 @@ export const sendVerificationToken = asyncHandler(async(req,res)=>{
         const emailResponse = await sendEmail(
             userWithToken.email,
             "DevMark Account Verification",
-            `Click on the link to verify your account: ${process.env.RENDER_SERVER_URL}/api/v1/users/email/verify/${token}`,
-           `<p>Click on the link to verify your account: <a href="${process.env.RENDER_SERVER_URL}/api/v1/users/email/verify/${token}">Verify Account</a></p>`
+            `Click on the link to verify your account: <a href="https://devmark.com/verify">Verify Account</a>`,
+           `<p>Click on the link to verify your account: <a href="https://devmark.com/verify">Verify Account</a></p>`
         )
 
         if(!emailResponse.success){
