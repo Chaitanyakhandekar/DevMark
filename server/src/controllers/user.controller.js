@@ -176,7 +176,26 @@ const verifyUser = asyncHandler(async (req, res) => {
     }
 })
 
+const isVerifiedUser = asyncHandler(async (req,res)=>{
+  const {email} = req.params;
+
+  const user = await User.findOne({email});
+
+  if (!user) {
+      throw new ApiError(404, "User Not Found");
+  }
+
+  if (!user.isVerified) {
+      throw new ApiError(403, "User is not verified");
+  }
+
+  return res.status(200).json({
+    isVerified: user.isVerified,
+  })
+})
+
 export {
     registerUser,
-    verifyUser
+    verifyUser,
+    isVerifiedUser  
 }
