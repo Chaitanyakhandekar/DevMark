@@ -12,6 +12,6 @@ const router = Router();
 
 router.route("/register").post(registerUser, sendVerificationToken)
 router.route("/email/verify/:token").get(verifyUser)
-router.route("/email/verify/:email").get(isVerifiedUser)
+router.route("/email/is-verify/:email").get(isVerifiedUser)
 
 export default router;

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const VerifyConfirm = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState("");
 
     const handleVerifyEmail = async() => {
         // Logic to verify email
@@ -13,7 +14,11 @@ const VerifyConfirm = () => {
         const res = await axios.get(`https://devmark-8het.onrender.com/api/v1/users/email/verify/chaitanyakhandekar95@gmail.com`)
         console.log(res.data);
         setLoading(false);
-    }
+        if(res.data.isVerified){
+            navigate("/login");
+        }else{
+            setError("Email verification failed. Please try again.");
+        }
 
    return(
     <div className="h-[100vh] w-[100vw] bg-[#030712] flex justify-center items-center">
@@ -22,6 +27,7 @@ const VerifyConfirm = () => {
             <p className="text-gray-400 text-sm text-center"> We've sent a verification link to <span className="text-blue-400">chaitanyakhandekar95@gmail.com</span>.
           Please check your inbox (and spam folder) to complete verification.</p>
 
+            {error && <p className="text-red-500 text-sm">{error}</p>}
           <button 
           onClick={handleVerifyEmail}
           className="bg-[#2563eb] text-white text-md font-bold font-mono p-3 rounded-md">I have Verified My Email</button>
