@@ -11,7 +11,7 @@ const VerifyConfirm = () => {
     const handleVerifyEmail = async() => {
         // Logic to verify email
         setLoading(true);
-        const res = await axios.get(`https://devmark-8het.onrender.com/api/v1/users/email/verify/chaitanyakhandekar95@gmail.com`)
+        const res = await axios.get(`https://devmark-8het.onrender.com/api/v1/users/email/is-verify/chaitanyakhandekar95@gmail.com`)
         console.log(res.data);
         setLoading(false);
         if(res.data.isVerified){
