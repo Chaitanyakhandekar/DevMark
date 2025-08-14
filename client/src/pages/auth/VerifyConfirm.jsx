@@ -19,6 +19,7 @@ const VerifyConfirm = () => {
         }else{
             setError("Email verification failed. Please try again.");
         }
+    };
 
    return(
     <div className="h-[100vh] w-[100vw] bg-[#030712] flex justify-center items-center">
