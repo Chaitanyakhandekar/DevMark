@@ -5,6 +5,7 @@ import { User } from "../models/users.model.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { sendVerificationToken } from "../services/sendVerificationToken.js";
+import { generateTokens } from "../services/generateTokens.js";
 
 dotenv.config({ path: "./.env" })
 
@@ -45,6 +46,70 @@ const registerUser = asyncHandler(async (req, res,next) => {
     req.newUser = newUser;
     next();
 
+})
+
+const loginUser = asyncHandler(async (req,res)=>{
+  const {email,password} = req.body
+
+  if(!(email && password)){
+    throw new ApiError(400,"All Fields are Required")
+  }
+
+  if(email.trim() === "" || password.trim()=== ""){
+    throw new ApiError(400,"No Field can be Empty")
+  }
+
+  const user = await User.findOne({
+    email:email.toLowerCase()
+  })
+
+  if(!user){
+    return res
+        .status(400)
+        .json(
+          new ApiResponse(400,"Acoount not found!")
+        )
+  }
+
+  const isCorrect = await user.isCorrectPassword(password)
+
+  if(!isCorrect){
+    return res
+      .status(401)
+      .json(
+        new ApiResponse(401,"Incorrect Creadentials!")
+      )
+  }
+
+  if(!user.isVerified){
+    return res
+      .status(403)
+      .json(
+        new ApiResponse(403,"Email is not verified!")
+      )
+  }
+
+  const { accessToken, refreshToken } = generateTokens(user)
+
+  user.refreshToken = refreshToken;
+
+  await user.save({validateBeforeSave:false})
+
+  return res 
+      .status(200)
+      .cookie("accessToken", accessToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+      })
+      .cookie("refreshToken",refreshToken,{
+        httpOnly:true,
+        secure:process.env.NODE_ENV === "production",
+        sameSite:"strict"
+      })
+      .json(
+    new ApiResponse(200, "Login Successful")
+  )
 })
 
 const verifyUser = asyncHandler(async (req, res) => {
@@ -197,5 +262,6 @@ const isVerifiedUser = asyncHandler(async (req,res)=>{
 export {
     registerUser,
     verifyUser,
-    isVerifiedUser  
+    isVerifiedUser,
+    loginUser
 }
