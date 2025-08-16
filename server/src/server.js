@@ -10,8 +10,8 @@ dotenv.config({
 const server = express()
 
 server.use(cors({
-    origin:process.env.ALLOW_ORIGIN || "*",
-    credentials:true
+    origin:process.env.ALLOW_ORIGIN || "https://dev-mark.vercel.app",
+    withCredentials:true
 }))
 
 server.use(express.json({limit:"16kb"}))
