@@ -1,10 +1,26 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 
 export default function LoginPage() {
 
   const navigate = useNavigate();
+  const [user,setUser] = React.useState({ email: "", password: "" });
+
+  const handleChange = (e)=>{
+    setUser((prev)=>(
+      {...prev , [e.target.name] : e.target.value}
+    ))
+    
+  }
+
+  const handleLogin = async(e) => { 
+    e.preventDefault();
+    console.log("Logging in with:", user);
+    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/login`, user)
+    console.log(res.data);
+  }
 
   return (
     <div className="min-h-screen bg-[#0F111A] flex items-center justify-center px-4 font-mono">
@@ -17,6 +33,9 @@ export default function LoginPage() {
             <label className="text-gray-300 block mb-2">Email Address</label>
             <input
               type="email"
+              name="email"
+              value={user.email}
+              onChange={handleChange}
               placeholder="you@example.com"
               className="w-full px-4 py-2 bg-transparent border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-[#00D8FF]"
             />
@@ -25,6 +44,9 @@ export default function LoginPage() {
             <label className="text-gray-300 block mb-2">Password</label>
             <input
               type="password"
+              name="password"
+              value={user.password}
+              onChange={handleChange}
               placeholder="••••••••"
               className="w-full px-4 py-2 bg-transparent border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-[#00D8FF]"
             />
@@ -32,9 +54,7 @@ export default function LoginPage() {
           <button
             type="submit"
             className="w-full py-2 rounded-lg bg-gradient-to-r from-[#7C3AED] to-[#00D8FF] text-white font-semibold hover:opacity-90 transition"
-            onClick={()=>{
-              navigate("/home");
-            }}
+            onClick={handleLogin}
           >
             Login
           </button>
