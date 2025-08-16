@@ -18,7 +18,7 @@ export default function LoginPage() {
   const handleLogin = async(e) => { 
     e.preventDefault();
     console.log("Logging in with:", user);
-    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/login`, user)
+    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/login`, user , {withCredentials:true})
     console.log(res.data);
   }
 
