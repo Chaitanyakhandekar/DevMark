@@ -7,7 +7,36 @@
 </head>
 <body>
    <div class="w-[100vw] h-[100vh] flex justify-center items-center">
-     <img src="./designs/verify confirm page.png" alt="">
+     <!-- <img src="./designs/verify confirm page.png" alt=""> -->
+      <h1>Speech recognition</h1>
+      <p>Open the console to see the recognized speech.</p>
+      <button id="start-button">Start Recognition</button>
+      <button id="stop-button">Stop Recognition</button>
+      <h1>Message</h1>
+      <p id="message"></p>
+
    </div>
 </body>
+<script>
+  const recognition = new webkitSpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    console.log("Recognized speech:", transcript);
+    document.getElementById("message").innerText = transcript;
+  };
+
+  document.getElementById("start-button").addEventListener("click", () => {
+    recognition.start();
+  });
+
+  document.getElementById("stop-button").addEventListener("click", () => {
+    recognition.stop();
+  });
+
+
+</script>
 </html>
