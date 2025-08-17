@@ -39,7 +39,7 @@ function Signup() {
     const onSubmitHandler = async() => {
         clearForm();
         setLoading(true);
-        const res = await axios.post("https://devmark-8het.onrender.com/api/v1/users/register",user)
+        const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/register`,user)
         setEmailSent(true)
         Swal.fire({
                     title: 'Email Verification',

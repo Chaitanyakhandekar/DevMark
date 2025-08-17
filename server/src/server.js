@@ -10,7 +10,10 @@ dotenv.config({
 const server = express()
 
 server.use(cors({
-    origin:process.env.ALLOW_ORIGIN || "https://dev-mark.vercel.app",
+    origin:[
+        process.env.ALLOW_ORIGIN || "https://dev-mark.vercel.app",
+        "http://localhost:5173"
+    ],
     credentials:true
 }))
 
