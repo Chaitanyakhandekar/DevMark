@@ -1,12 +1,15 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import Swal from 'sweetalert2';
+import TestLoader from "../../test/TestLoader";
 
 
 export default function LoginPage() {
 
   const navigate = useNavigate();
   const [user,setUser] = React.useState({ email: "", password: "" });
+  const [loading, setLoading] = React.useState(false);
 
   const handleChange = (e)=>{
     setUser((prev)=>(
@@ -17,9 +20,28 @@ export default function LoginPage() {
 
   const handleLogin = async(e) => { 
     e.preventDefault();
+    setLoading(true);
     console.log("Logging in with:", user);
+
     const res = await axios.post(`${import.meta.env.VITE_ENV ==="production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/login`, user , {withCredentials:true})
+
+    // setLoading(false);
     console.log(res.data);
+
+    if(res.data.message){
+      Swal.fire({
+        icon: 'success',
+        title: 'Login Successful',
+        text: 'Welcome back!',
+      });
+      navigate("/home");
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: res.data.message || 'Something went wrong!',
+      });
+    }
   }
 
   return (
@@ -53,10 +75,11 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-2 rounded-lg bg-gradient-to-r from-[#7C3AED] to-[#00D8FF] text-white font-semibold hover:opacity-90 transition"
+            className="w-full py-2 rounded-lg bg-gradient-to-r from-[#7C3AED] to-[#00D8FF] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
             onClick={handleLogin}
           >
-            Login
+            {loading ? 
+            <div className="text-blue-600 w-8 h-8 border-4 animate-spin rounded-3xl"></div> : "Login"}
           </button>
         </form>
         <p className="text-center text-gray-400 mt-6">
