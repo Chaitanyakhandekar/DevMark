@@ -1,12 +1,15 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import Swal from 'sweetalert2';
+import TestLoader from "../../test/TestLoader";
 
 
 export default function LoginPage() {
 
   const navigate = useNavigate();
   const [user,setUser] = React.useState({ email: "", password: "" });
+  const [loading, setLoading] = React.useState(false);
 
   const handleChange = (e)=>{
     setUser((prev)=>(
@@ -17,14 +20,39 @@ export default function LoginPage() {
 
   const handleLogin = async(e) => { 
     e.preventDefault();
+    setLoading(true);
     console.log("Logging in with:", user);
+
     const res = await axios.post(`${import.meta.env.VITE_ENV ==="production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/login`, user , {withCredentials:true})
+
+    // setLoading(false);
     console.log(res.data);
+
+    if(res.data.message){
+      Swal.fire({
+        icon: 'success',
+        title: 'Login Successful',
+        text: 'Welcome back!',
+      });
+      navigate("/home");
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: res.data.message || 'Something went wrong!',
+      });
+    }
   }
 
   return (
-    <div className="min-h-screen bg-[#0F111A] flex items-center justify-center px-4 font-mono">
-      <div className="w-full max-w-md bg-[#1A1D29] rounded-2xl shadow-lg p-8 border border-gray-800">
+    <div className="min-h-screen bg-[#0F111A] flex items-center justify-center px-4 font-mono relative z-10">
+
+      <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+            </div>
+
+      <div className="w-full max-w-md  rounded-2xl shadow-lg p-8 border-2 border-gray-800 backdrop-blur-xl shadow-2xl">
         <h1 className="text-3xl font-bold text-center mb-6 text-white">
           DevMark <span className="text-[#00D8FF]">🚀</span>
         </h1>
@@ -53,10 +81,11 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-2 rounded-lg bg-gradient-to-r from-[#7C3AED] to-[#00D8FF] text-white font-semibold hover:opacity-90 transition"
+            className="w-full py-2 rounded-lg bg-gradient-to-r from-[#7C3AED] to-[#00D8FF] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
             onClick={handleLogin}
           >
-            Login
+            {loading ? 
+            <div className="text-blue-600 w-8 h-8 border-4 animate-spin rounded-3xl"></div> : "Login"}
           </button>
         </form>
         <p className="text-center text-gray-400 mt-6">
