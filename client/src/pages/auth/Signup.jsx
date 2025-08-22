@@ -115,7 +115,7 @@ function Signup() {
                 <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
             </div>
 
-            <div className=" w-[95%] sm:w-[55%] md:w-[45%] lg:w-[30%]  h-[80%] sm:h-[85%] md:h-[85%] lg:h-[85%] xl:h-[85%] 2xl:h-[75%] backdrop-blur-xl border border-gray-700/50 rounded-2xl flex flex-col p-3 gap-2 justify-center shadow-2xl">
+            <div className=" w-[95%] sm:w-[55%] md:w-[45%] lg:w-[30%]  h-[80%] sm:h-[85%] md:h-[85%] lg:h-[85%] xl:h-[85%] 2xl:h-[75%] backdrop-blur-xl border border-gray-700/50 rounded-2xl flex flex-col p-3 gap-2 justify-center shadow-2xl bg-trans">
                 <header className="text-white text-3xl font-bold text-center py-2 font-mono ">Join DevMark 🚀</header>
                 <div className="main  flex flex-col font-mono items-center gap-3">
                     <div className="flex flex-col text-white justify-center items w-[95%] ">
