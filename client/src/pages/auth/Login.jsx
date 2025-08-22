@@ -45,8 +45,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F111A] flex items-center justify-center px-4 font-mono">
-      <div className="w-full max-w-md bg-[#1A1D29] rounded-2xl shadow-lg p-8 border border-gray-800">
+    <div className="min-h-screen bg-[#0F111A] flex items-center justify-center px-4 font-mono relative z-10">
+
+      <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+            </div>
+
+      <div className="w-full max-w-md  rounded-2xl shadow-lg p-8 border-2 border-gray-800 backdrop-blur-xl shadow-2xl">
         <h1 className="text-3xl font-bold text-center mb-6 text-white">
           DevMark <span className="text-[#00D8FF]">🚀</span>
         </h1>
