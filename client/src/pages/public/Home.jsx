@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Sun, 
   Moon, 
@@ -111,253 +112,62 @@ const Home = () => {
     }
   ];
 
+  const handleTheme = ()=>{
+    const html = document.documentElement
+
+    if(html.classList.contains("dark")){
+      setIsDark(false)
+      html.classList.remove("dark")
+      html.classList.add("light")
+    }else{
+      setIsDark(true)
+      html.classList.remove("light")
+      html.classList.add("dark")
+    }
+  }
+
   return (
-    <div className={`min-h-screen transition-all duration-500 ${theme.bg}`}>
-      {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrollY > 50 ? `${theme.glass} border-b ${theme.border}` : 'bg-transparent'
-      }`}>
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className={`p-2 rounded-xl bg-gradient-to-r ${theme.accent}`}>
-                <Code className="h-6 w-6 text-white" />
-              </div>
-              <span className={`text-2xl font-bold ${theme.text}`}>DevMark</span>
-            </div>
-            
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className={`${theme.textSecondary} hover:${theme.text} transition-colors`}>Features</a>
-              <a href="#community" className={`${theme.textSecondary} hover:${theme.text} transition-colors`}>Community</a>
-              <a href="#pricing" className={`${theme.textSecondary} hover:${theme.text} transition-colors`}>Pricing</a>
-              <a href="#about" className={`${theme.textSecondary} hover:${theme.text} transition-colors`}>About</a>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={toggleTheme}
-                className={`p-2 rounded-lg ${theme.bgCard} ${theme.border} border hover:scale-105 transition-all duration-200`}
-              >
-                {isDark ? <Sun className="h-5 w-5 text-yellow-500" /> : <Moon className="h-5 w-5 text-gray-600" />}
-              </button>
-              <button className={`px-4 py-2 ${theme.textSecondary} hover:${theme.text} transition-colors`}>
-                Sign In
-              </button>
-              <button className={`px-6 py-2 bg-gradient-to-r ${theme.accent} hover:${theme.accentHover} text-white rounded-lg font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl`}>
-                Get Started
-              </button>
-            </div>
-          </div>
+   <div className="h-[100vh] w-[100vw] bg-white dark:bg-[#111827] ">
+    <nav className='w-[full] border-1 h-[10%] flex justify-around items-center  sticky top-2'>
+        <div className="h-full flex justify-center items-center gap-2">
+          <div className=" h-10 w-10 flex justify-center items-center bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-mono font-bold rounded-md">
+          {'<>'}
         </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+        <div className="text-black dark:text-white text-2xl font-bold font-mono">
+          DevMark
+        </div>
         </div>
 
-        <div className="max-w-7xl mx-auto text-center relative">
-          <div className="max-w-4xl mx-auto">
-            <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full ${theme.bgCard} ${theme.border} border mb-8`}>
-              <Star className="h-4 w-4 text-yellow-500" />
-              <span className={`text-sm ${theme.textSecondary}`}>Trusted by 50,000+ developers worldwide</span>
-            </div>
-            
-            <h1 className={`text-5xl md:text-7xl font-bold ${theme.text} mb-6 leading-tight`}>
-              Where Developers
-              <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent"> Share </span>
-              & Grow
-            </h1>
-            
-            <p className={`text-xl md:text-2xl ${theme.textSecondary} mb-12 leading-relaxed`}>
-              The modern publishing platform built for developers. Write, share, and discover 
-              technical content with a community that understands your passion for code.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button className={`px-8 py-4 bg-gradient-to-r ${theme.accent} hover:${theme.accentHover} text-white rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-2xl hover:shadow-3xl flex items-center space-x-2`}>
-                <span>Start Writing Today</span>
-                <ArrowRight className="h-5 w-5" />
-              </button>
-              
-              <button className={`px-8 py-4 ${theme.bgCard} ${theme.text} ${theme.border} border rounded-xl font-semibold text-lg hover:${theme.bgSecondary} transition-all duration-300 hover:scale-105 flex items-center space-x-2`}>
-                <Play className="h-5 w-5" />
-                <span>Watch Demo</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className={`${theme.bgCard} ${theme.border} border rounded-2xl p-6 hover:scale-105 transition-all duration-300`}>
-                <div className={`text-3xl md:text-4xl font-bold ${theme.text} mb-2`}>{stat.number}</div>
-                <div className={`${theme.textSecondary} font-medium`}>{stat.label}</div>
-              </div>
-            ))}
-          </div>
+        <div className="hidden sm:hidden md:block text-black dark:text-white md:flex gap-4">
+          <Link to="#">Features</Link>
+          <Link to="#">Community</Link>
+          <Link to="#">Pricing</Link>
+          <Link to="#">About</Link>
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section id="features" className={`py-20 px-6 ${theme.bgSecondary}`}>
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className={`text-4xl md:text-5xl font-bold ${theme.text} mb-6`}>
-              Everything You Need to
-              <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent"> Succeed</span>
-            </h2>
-            <p className={`text-xl ${theme.textSecondary} max-w-3xl mx-auto`}>
-              Powerful features designed to help developers create, share, and grow their influence in the tech community.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className={`${theme.bgCard} ${theme.border} border rounded-2xl p-8 hover:scale-105 transition-all duration-300 group`}>
-                <div className={`p-3 rounded-xl bg-gradient-to-r ${theme.accent} w-fit mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                  <feature.icon className="h-6 w-6 text-white" />
-                </div>
-                <h3 className={`text-xl font-semibold ${theme.text} mb-4`}>{feature.title}</h3>
-                <p className={`${theme.textSecondary} leading-relaxed`}>{feature.description}</p>
-              </div>
-            ))}
-          </div>
+       <div className="flex text-white justify-around items-center gap-3">
+         <div
+        onClick={handleTheme}
+        className="border-2 border-gray-500 w-8 h-8 sm:flex sm:justify-center sm:items-center rounded-md bg-white dark:bg-[#182231] cursor-pointer hidden sm:block">
+          {
+            !isDark && <Moon className="text-gray-500"/>
+          }
+          {
+            isDark && <Sun className="text-yellow-500"/>
+          }
         </div>
-      </section>
 
-      {/* Testimonials */}
-      <section className={`py-20 px-6 ${theme.bg}`}>
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className={`text-4xl md:text-5xl font-bold ${theme.text} mb-6`}>
-              Loved by Developers
-              <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent"> Worldwide</span>
-            </h2>
-            <p className={`text-xl ${theme.textSecondary} max-w-3xl mx-auto`}>
-              See what industry leaders are saying about DevMark
-            </p>
-          </div>
+        <button className=" rounded-md  text-black dark:text-white text-md md:text-lg ">Sign in</button>
+        <button className=" border-white rounded-md px-4 py-2 bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-md font-bold font-mono">Get Started</button>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className={`${theme.bgCard} ${theme.border} border rounded-2xl p-8 hover:scale-105 transition-all duration-300`}>
-                <div className="flex items-center mb-6">
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${theme.accent} flex items-center justify-center text-white font-semibold mr-4`}>
-                    {testimonial.avatar}
-                  </div>
-                  <div>
-                    <div className={`font-semibold ${theme.text}`}>{testimonial.name}</div>
-                    <div className={`text-sm ${theme.textMuted}`}>{testimonial.role}</div>
-                  </div>
-                </div>
-                <p className={`${theme.textSecondary} italic leading-relaxed`}>"{testimonial.content}"</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className={`py-20 px-6 ${theme.bgSecondary} relative overflow-hidden`}>
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-blue-500 to-purple-600"></div>
-        </div>
+       </div>
         
-        <div className="max-w-4xl mx-auto text-center relative">
-          <h2 className={`text-4xl md:text-5xl font-bold ${theme.text} mb-6`}>
-            Ready to Share Your
-            <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent"> Developer Journey?</span>
-          </h2>
-          
-          <p className={`text-xl ${theme.textSecondary} mb-12 leading-relaxed`}>
-            Join thousands of developers who are already building their reputation and growing their network on DevMark.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className={`px-8 py-4 bg-gradient-to-r ${theme.accent} hover:${theme.accentHover} text-white rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-2xl flex items-center space-x-2`}>
-              <UserPlus className="h-5 w-5" />
-              <span>Create Your Account</span>
-            </button>
-            
-            <button className={`px-8 py-4 ${theme.text} ${theme.textSecondary} hover:${theme.text} transition-colors flex items-center space-x-2`}>
-              <BookOpen className="h-5 w-5" />
-              <span>Explore Articles</span>
-            </button>
-          </div>
+    </nav>
 
-          <div className={`mt-12 flex justify-center items-center space-x-6 ${theme.textMuted}`}>
-            <span>Follow us:</span>
-            <div className="flex space-x-4">
-              <Twitter className="h-5 w-5 hover:text-blue-400 cursor-pointer transition-colors" />
-              <Github className="h-5 w-5 hover:text-gray-400 cursor-pointer transition-colors" />
-              <Linkedin className="h-5 w-5 hover:text-blue-600 cursor-pointer transition-colors" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className={`py-12 px-6 ${theme.bg} ${theme.border} border-t`}>
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className={`p-2 rounded-xl bg-gradient-to-r ${theme.accent}`}>
-                  <Code className="h-5 w-5 text-white" />
-                </div>
-                <span className={`text-xl font-bold ${theme.text}`}>DevMark</span>
-              </div>
-              <p className={`${theme.textSecondary} leading-relaxed`}>
-                The modern publishing platform for developers to share knowledge and grow together.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className={`font-semibold ${theme.text} mb-4`}>Product</h4>
-              <ul className={`space-y-2 ${theme.textSecondary}`}>
-                <li><a href="#" className="hover:text-current transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-current transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-current transition-colors">API</a></li>
-                <li><a href="#" className="hover:text-current transition-colors">Documentation</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className={`font-semibold ${theme.text} mb-4`}>Community</h4>
-              <ul className={`space-y-2 ${theme.textSecondary}`}>
-                <li><a href="#" className="hover:text-current transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-current transition-colors">Discord</a></li>
-                <li><a href="#" className="hover:text-current transition-colors">Twitter</a></li>
-                <li><a href="#" className="hover:text-current transition-colors">GitHub</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className={`font-semibold ${theme.text} mb-4`}>Company</h4>
-              <ul className={`space-y-2 ${theme.textSecondary}`}>
-                <li><a href="#" className="hover:text-current transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-current transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-current transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-current transition-colors">Terms</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className={`pt-8 ${theme.border} border-t flex flex-col md:flex-row justify-between items-center`}>
-            <p className={`${theme.textMuted} text-sm`}>
-              © 2025 DevMark. All rights reserved.
-            </p>
-            <div className={`flex items-center space-x-4 ${theme.textMuted} text-sm mt-4 md:mt-0`}>
-              <span>Made with ❤️ for developers</span>
-            </div>
-          </div>
-        </div>
-      </footer>
+    <div className="w-full flex justify-center">
+          <div className=" text-sm flex border border-gray-500 justify-center items-center  py-1 px-3 text-white rounded-xl bg-[#18212f]"><Star className="text-yellow-500 text-sm mx-1" size={15}/> Trusted by 50,000+ developers worldwide</div>
     </div>
+   </div>
   );
 };
 
