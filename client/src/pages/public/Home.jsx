@@ -130,15 +130,15 @@ const Home = () => {
    <div className="h-[100vh] w-[100vw] bg-white dark:bg-[#111827] ">
     <nav className='w-[full] border-1 h-[10%] flex justify-around items-center  sticky top-2'>
         <div className="h-full flex justify-center items-center gap-2">
-          <div className=" h-10 w-10 flex justify-center items-center bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-mono font-bold rounded-md">
+          <div className=" h-10 sm:h-12 w-10 sm:w-12 flex justify-center items-center bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-mono font-bold rounded-md">
           {'<>'}
         </div>
-        <div className="text-black dark:text-white text-2xl font-bold font-mono">
+        <div className="text-black dark:text-white text-3xl sm:text-3xl font-extrabold font-mono">
           DevMark
         </div>
         </div>
 
-        <div className="hidden sm:hidden md:block text-black dark:text-white md:flex gap-4">
+        <div className="hidden sm:hidden md:block text-black dark:text-white md:flex gap-4 text-lg sm:text-xl">
           <Link to="#">Features</Link>
           <Link to="#">Community</Link>
           <Link to="#">Pricing</Link>
@@ -157,15 +157,33 @@ const Home = () => {
           }
         </div>
 
-        <button className=" rounded-md  text-black dark:text-white text-md md:text-lg ">Sign in</button>
-        <button className=" border-white rounded-md px-4 py-2 bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-md font-bold font-mono">Get Started</button>
+        <button className=" rounded-md  text-black dark:text-white text-md md:text-lg lg:text-xl ">Sign in</button>
+        <button className=" border-white rounded-md px-4 py-2 bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-md font-bold font-mono text-md md:text-lg lg:text-xl">Get Started</button>
 
        </div>
         
     </nav>
 
-    <div className="w-full flex justify-center">
-          <div className=" text-sm flex border border-gray-500 justify-center items-center  py-1 px-3 text-white rounded-xl bg-[#18212f]"><Star className="text-yellow-500 text-sm mx-1" size={15}/> Trusted by 50,000+ developers worldwide</div>
+    <div className="w-full flex flex-col justify-center items-center gap-10">
+          <div className=" text-sm w-[80%] sm:w-[50%] md:w-[40%] lg:w-[30%] xl:w-[20%] flex border border-gray-500 justify-center items-center  py-1 px-1 text-white mt-10 rounded-xl bg-[#18212f]"><Star className="text-yellow-500 text-sm mx-1" size={15}/> Trusted by 50,000+ developers worldwide</div>
+
+          <div className="text-white text-5xl sm:text-7xl lg:text-7xl text-center font-bold font-mono p-2 lg:max-w-[900px]">
+            Where Developers <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">Share</span> & Grow
+          </div>
+
+          <div className="text-white text-xl lg:text-2xl text-center xl:max-w-[900px] text-[rgb(173 213 219)]">
+            The modern publishing platform built for developers. Write, share, and discover technical content with a community that understands your passion for code.
+          </div>
+
+          <div className="w-full flex flex-col md:flex-row gap-5 justify-center items-center">
+            <button className=" rounded-xl px-6 py-5 text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] font-bold ">
+              Start Writing Today <ArrowRight className="inline-block" />
+            </button>
+
+            <button className=" rounded-xl px-6 py-5 text-white border border-gray-500 ml-5 font-bold ">
+                <Play className="inline-block" /> Watch Demo
+              </button>
+          </div>
     </div>
    </div>
   );
