@@ -173,13 +173,13 @@ const Home = () => {
 
     </div>
 
-    <div className="dark:bg-[#111827] w-full pt-20 pb-20">
+    <div className="dark:bg-[#111827] w-full pt-20 pb-10">
           <div className="flex flex-col items-center gap-5">
             <p className='dark:text-white text-black text-center text-4xl lg:text-5xl font-bold'>Loved by Developers <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Worldwide</span></p>
             <p className='text-black dark:text-white text-center text-md lg:text-xl'>See what industry leaders are saying about DevMark</p>
           </div>
 
-          <div className='w-full h-auto border-2 flex flex-col items-center justify-center py-10'>
+          <div className='w-full h-auto flex flex-col flex-wrap gap-7 md:flex-row  items-center justify-center py-10'>
 
             <TestimonialCard testimonial={{
               avatar: "SC",
