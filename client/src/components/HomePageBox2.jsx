@@ -3,7 +3,7 @@ import { Users } from 'lucide-react';
 
 function HomePageBox2({ number, label ,icon, ...props}) {
   return (
-    <div className={`w-[85%] md:w-[32%] h-auto md:h-[20vh] flex flex-col justify-center items-start pl-5 pr-3 border-[1.2px] dark:border-[0.2px] dark:border-[#343d4e] dark:bg-[#1f2937] dark:text-white rounded-2xl py-4 hover:scale-105 transition-all duration-300 gap-3 `}>
+    <div className={`w-[85%] md:w-[32%] min-h-[200px] min-w-[380px] max-w-[450px] max-h-[300px] h-auto md:h-[20vh] flex flex-col justify-center items-start pl-5 pr-3 border-[1.2px] dark:border-[0.2px] dark:border-[#343d4e] dark:bg-[#1f2937] dark:text-white rounded-2xl py-4 hover:scale-105 transition-all duration-300 gap-3 `}>
         
        <div className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] p-2 rounded-xl">
         {icon}
