@@ -17,13 +17,10 @@ import {
   ArrowRight,
   Play,
   CheckCircle,
-  Github,
-  Twitter,
-  Linkedin,
-  Globe,
   BookOpen,
   UserPlus
 } from 'lucide-react';
+
 import HomePageBox from '../../components/HomePageBox';
 import HomePageBox2 from '../../components/HomePageBox2';
 import TestimonialCard from '../../components/TestimonialCard';
@@ -205,19 +202,29 @@ const Home = () => {
           </div>
     </div>
 
-    <div className='dark:bg-gradient-to-r from-[#212e41] to-[#1f2938] pt-10 md:pt-20 pb-10'>
+    <div className='dark:bg-gradient-to-r from-[#212e41] to-[#1f2938] pt-10 md:pt-20 pb-10 flex flex-col items-center gap-10'>
             <div className='flex flex-col items-center gap-5'>
                 <p className='text-white font-bold text-4xl text-center'>Ready to Share Your <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Developer Journey?</span></p>
                 <p className='text-gray-300 text-center text-xl max-w-[85%]'>Join thousands of developers who are already building their reputation and growing their network on DevMark.</p>
             </div>
 
-            <div className="">
+            <div className="flex flex-col md:flex-row gap-4">
 
-              <button className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-white min-w-[200px] max-w-[300px] px-5 py-4 text-xl font-bold rounded-lg flex items-center'>
+              <button className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-white min-w-[200px] max-w-[300px] px-5 py-4 text-lg font-semibold rounded-lg flex items-center'>
                 <UserPlus className='inline-block text-white mr-2' size={20} />
                 Create Your Account
               </button>
 
+              <button className='text-white'>
+                <BookOpen className='inline-block text-white mr-2' size={20} />
+                Explore Articles
+              </button>
+
+            </div>
+
+            <div className='text-white'>
+              <p>Follow us:</p>
+              
             </div>
     </div>
 
