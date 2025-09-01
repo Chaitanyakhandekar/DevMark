@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import HomePageBox from '../../components/HomePageBox';
 import HomePageBox2 from '../../components/HomePageBox2';
+import TestimonialCard from '../../components/TestimonialCard';
 
 const Home = () => {
   const [isDark, setIsDark] = useState(false);
@@ -41,58 +42,7 @@ const Home = () => {
     setIsDark(!isDark);
   };
 
-  const theme = {
-    bg: isDark ? 'bg-gray-900' : 'bg-white',
-    bgSecondary: isDark ? 'bg-gray-800' : 'bg-gray-50',
-    bgCard: isDark ? 'bg-gray-800/50' : 'bg-white',
-    text: isDark ? 'text-white' : 'text-gray-900',
-    textSecondary: isDark ? 'text-gray-300' : 'text-gray-600',
-    textMuted: isDark ? 'text-gray-400' : 'text-gray-500',
-    border: isDark ? 'border-gray-700' : 'border-gray-200',
-    accent: 'from-blue-500 to-purple-600',
-    accentHover: 'from-blue-600 to-purple-700',
-    glass: isDark ? 'bg-gray-900/80 backdrop-blur-xl border-gray-800/50' : 'bg-white/80 backdrop-blur-xl border-gray-200/50'
-  };
-
-  const features = [
-    {
-      icon: Shield,
-      title: "Advanced Authentication",
-      description: "Secure login with social OAuth, JWT tokens, and role-based access control"
-    },
-    {
-      icon: Edit3,
-      title: "Rich Content Creation",
-      description: "Powerful WYSIWYG editor with Markdown support, drafts, and instant publishing"
-    },
-    {
-      icon: Search,
-      title: "Smart Discovery",
-      description: "AI-powered recommendations, advanced search, and intelligent content filtering"
-    },
-    {
-      icon: MessageCircle,
-      title: "Engaging Community",
-      description: "Nested comments, real-time notifications, and social sharing capabilities"
-    },
-    {
-      icon: Users,
-      title: "Professional Profiles",
-      description: "Custom bios, portfolios, follower system, and comprehensive analytics"
-    },
-    {
-      icon: TrendingUp,
-      title: "Content Analytics",
-      description: "Track engagement, monitor growth, and optimize your content strategy"
-    }
-  ];
-
-  const stats = [
-    { number: "50K+", label: "Active Writers" },
-    { number: "2M+", label: "Articles Published" },
-    { number: "10M+", label: "Monthly Readers" },
-    { number: "99.9%", label: "Uptime" }
-  ];
+  
 
   const testimonials = [
     {
@@ -130,9 +80,9 @@ const Home = () => {
   }
 
   return (
-   <div className="h-[100vh] w-[100vw] bg-white  ">
+   <div className="h-[100vh] w-min-screen bg-white relative pt-10">
    {/* <div className="h-[100vh] w-[100vw] bg-white dark:bg-[#111827] "> */}
-    <nav className='w-full  h-20 py-5 flex justify-around items-center sticky top-0 bg-white dark:bg-[#111827] border-b-[0.2px] border-b-gray-800 bg-transparent backdrop-blur-md'>
+    <nav className='w-full  h-20 py-5 flex justify-around items-center fixed top-0 z-[55] bg-white dark:bg-[#111827] border-b-[0.2px] border-b-gray-800 bg-transparent backdrop-blur-md'>
         <div className="h-full flex justify-center items-center gap-2">
           <div className=" h-10 sm:h-12 w-10 sm:w-12 flex justify-center items-center bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-mono font-bold rounded-md">
           {'<>'}
@@ -169,7 +119,7 @@ const Home = () => {
     </nav>
 
     <div className="w-full flex flex-col justify-center items-center gap-10 dark:bg-[#111827] pt-10 pb-20 ">
-          <div className=" text-sm w-[80%] sm:w-[50%] md:w-[40%] lg:w-[30%] xl:w-[20%] flex border-[1.2px] dark:border-[0.3px] dark:border-gray-600 border-gray-300 justify-center items-center  py-1 px-1 text-white mt-4 md:mt-10 rounded-xl dark:bg-[#18212f] text-black dark:text-white"><Star className="text-yellow-500 text-sm mx-1" size={15}/> <p className="text-black dark:text-white">Trusted by 50,000+ developers worldwide</p></div>
+          <div className=" text-sm w-[80%] sm:w-[50%] md:w-[40%] lg:w-[30%] xl:w-[20%] xl:max-w-[300px] flex border-[1.2px] dark:border-[0.3px] dark:border-gray-600 border-gray-300 justify-center items-center  py-1 px-1 text-white mt-4 md:mt-10 rounded-xl dark:bg-[#18212f] text-black dark:text-white"><Star className="text-yellow-500 text-sm mx-1" size={15}/> <p className="text-black dark:text-white">Trusted by 50,000+ developers worldwide</p></div>
 
           <div className=" text-black dark:text-white text-4xl sm:text-7xl lg:text-7xl text-center font-bold  p-2 lg:max-w-[900px] ">
             Where Developers <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">Share</span> & Grow
@@ -208,19 +158,51 @@ const Home = () => {
           </div>
 
           <div className="w-full h-auto flex flex-col md:flex-row flex-wrap justify-center items-center gap-10 mt-10  dark:text-white text-black ">
-            <HomePageBox2 number="Advanced Authentication" label="Secure login with social OAuth, JWT tokens, and role-based access control"  icon={<Shield size={24}/>}/>
+            <HomePageBox2 number="Advanced Authentication" label="Secure login with social OAuth, JWT tokens, and role-based access control"  icon={<Shield className='text-white' size={24}/>}/>
 
-            <HomePageBox2 number="Rich Content Creation" label="Powerful WYSIWYG editor with Markdown support, drafts, and instant publishing"  icon={<Edit3 size={24}/>}/>
+            <HomePageBox2 number="Rich Content Creation" label="Powerful WYSIWYG editor with Markdown support, drafts, and instant publishing"  icon={<Edit3 className='text-white' size={24}/>}/>
 
-            <HomePageBox2 number="Smart Discovery" label="AI-powered recommendations, advanced search, and intelligent content filtering"   icon={<Search size={24}/>}/>
+            <HomePageBox2 number="Smart Discovery" label="AI-powered recommendations, advanced search, and intelligent content filtering"   icon={<Search className='text-white' size={24}/>}/>
 
-            <HomePageBox2 number="Engaging Community" label="Nested comments, real-time notifications, and social sharing capabilities"  icon={<MessageCircle size={24}/>}/>
+            <HomePageBox2 number="Engaging Community" label="Nested comments, real-time notifications, and social sharing capabilities"  icon={<MessageCircle className='text-white' size={24}/>}/>
 
-            <HomePageBox2 number="Professional Profiles" label="Custom bios, portfolios, follower system, and comprehensive analytics"  icon={<Users size={24}/>}/>
+            <HomePageBox2 number="Professional Profiles" label="Custom bios, portfolios, follower system, and comprehensive analytics"  icon={<Users className='text-white' size={24}/>}/>
 
-            <HomePageBox2 number="Content Analytics" label="Track engagement, monitor growth, and optimize your content strategy"  icon={<TrendingUp size={24}/>}/>
+            <HomePageBox2 number="Content Analytics" label="Track engagement, monitor growth, and optimize your content strategy"  icon={<TrendingUp className='text-white' size={24}/>}/>
           </div>
 
+    </div>
+
+    <div className="dark:bg-[#111827] w-full pt-20 pb-20">
+          <div className="flex flex-col items-center gap-5">
+            <p className='dark:text-white text-black text-center text-4xl lg:text-5xl font-bold'>Loved by Developers <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Worldwide</span></p>
+            <p className='text-black dark:text-white text-center text-md lg:text-xl'>See what industry leaders are saying about DevMark</p>
+          </div>
+
+          <div className='w-full h-auto border-2 flex flex-col items-center justify-center py-10'>
+
+            <TestimonialCard testimonial={{
+              avatar: "SC",
+              name: "Sarah Chen",
+              role: "Senior Developer at Google",
+              content: "DevMark has become my go-to platform for sharing technical insights. The community engagement is incredible."
+            }} />
+
+            <TestimonialCard testimonial={{
+              avatar: "JD",
+              name: "John Doe",
+              role: "Lead Engineer at Microsoft",
+              content: "DevMark has streamlined our content creation process. The tools are intuitive and powerful."
+            }} />
+
+            <TestimonialCard testimonial={{
+              avatar: "MR",
+              name: "Marcus Rodriguez",
+              role: "Tech Lead @ Stripe",
+              content: "The rich editor and seamless publishing experience make writing a joy. Highly recommend!"
+            }} />
+
+          </div>
     </div>
 
 
