@@ -8,7 +8,7 @@ import Login from './pages/auth/Login'
 import Verify from './pages/auth/Verify'
 import { Router, Routes, Route } from 'react-router-dom'
 import Home1 from './pages/public/Home'
-import Home from './pages/public/Home'
+import Home from './pages/public/Home1'
 import VerifyConfirm from './pages/auth/VerifyConfirm'
 import TestLoader from './test/TestLoader'
 
