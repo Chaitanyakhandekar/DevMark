@@ -20,6 +20,7 @@ import {
   BookOpen,
   UserPlus
 } from 'lucide-react';
+import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 import HomePageBox from '../../components/HomePageBox';
 import HomePageBox2 from '../../components/HomePageBox2';
@@ -222,9 +223,12 @@ const Home = () => {
 
             </div>
 
-            <div className='text-white'>
+            <div className='text-white flex gap-5 text-gray-600'>
               <p>Follow us:</p>
-              
+              <FaGithub className='text-gray-400 cursor-pointer' size={20}/>
+              <FaLinkedin className='text-gray-400 cursor-pointer' size={20}/>
+              <FaTwitter className='text-gray-400 cursor-pointer' size={20}/>
+
             </div>
     </div>
 
