@@ -204,8 +204,8 @@ const Home = () => {
     </div>
 
     <div className='dark:bg-gradient-to-r from-[#212e41] to-[#1f2938] pt-10 md:pt-20 pb-10 flex flex-col items-center gap-10'>
-            <div className='flex flex-col items-center gap-5'>
-                <p className='text-white font-bold text-4xl text-center'>Ready to Share Your <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Developer Journey?</span></p>
+            <div className='flex flex-col items-center gap-5 xl:max-w-[800px]'>
+                <p className='text-white font-bold text-4xl lg:text-5xl text-center'>Ready to Share Your <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Developer Journey?</span></p>
                 <p className='text-gray-300 text-center text-xl max-w-[85%]'>Join thousands of developers who are already building their reputation and growing their network on DevMark.</p>
             </div>
 
@@ -232,6 +232,55 @@ const Home = () => {
             </div>
     </div>
 
+    <div className="w-full h-auto dark:bg-[#111826] pb-10 pt-10 border-[0.3px] border-t-gray-600 border-b-0 border-l-0 border-r-0 flex-col gap-10 flex justify-center items-center">
+
+             <div className="l-1 h-full w-full text-gray-300 flex flex-col lg:flex-row justify-between lg:justify-center items-start pl-5 text-sm lg:text-lg lg:items-start gap-5 lg:gap-[10%] text-lg">
+              <div className="l2 flex flex-col justify-center items-start gap-5 pb-5 lg:pb-0">
+              <div className="flex items-center gap-2 ">
+                  <div className="bg-gradient-to-r from-[#3f7eea] to-[#9339e5] w-10 h-10 flex justify-center items-center rounded-md text-xl font-semibold">
+                  {`<>`}
+                </div>
+                <h1 className="text-xl font-bold">DevMark</h1>
+              </div>
+                <p className="text-gray-300 max-w-[300px]">The modern publishing platform for developers to share knowledge and grow together.</p>
+              </div>
+              <div className="l2 flex flex-col justify-center items-start gap-5">
+                <h1 className='text-white font-bold'>Product</h1>
+                <ul>
+                  <li>Pricing</li>
+                <li>API</li>
+                <li>Documentation</li>
+                </ul>
+              </div>
+              <div className="l2 flex flex-col justify-center items-start gap-5">
+                <h1 className='text-white font-bold'>Community</h1>
+                <ul>
+                  <li>Blog</li>
+                  <li>Discord</li>
+                  <li>Twitter</li>
+                  <li>Github</li>
+                </ul>
+              </div>
+              <div className="l2 flex flex-col justify-center items-start gap-5">
+                <h1 className='text-white font-bold'>Company</h1>
+                <ul>
+                  <li>About Us</li>
+                  <li>Careers</li>
+                  <li>Contact</li>
+                  <li>Privacy Policy</li>
+                  <li>Terms</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="text-gray-400 border-[0.2px] border-t-gray-600 border-b-0 border-l-0 border-r-0 w-[70%] flex flex-col md:flex-row text-sm md:text-lg justify-between py-5 items-center">
+              <p>© 2025 DevMark. All rights reserved.</p>
+              <p>Made with ❤️ for developers</p>
+            </div>
+
+    </div>
+
+           
 
    </div>
   );
