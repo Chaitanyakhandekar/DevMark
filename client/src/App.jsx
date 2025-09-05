@@ -8,6 +8,7 @@ import Login from './pages/auth/Login'
 import Verify from './pages/auth/Verify'
 import { Router, Routes, Route } from 'react-router-dom'
 import Home1 from './pages/public/Home'
+import Home from './pages/public/Home'
 import VerifyConfirm from './pages/auth/VerifyConfirm'
 import TestLoader from './test/TestLoader'
 
@@ -16,7 +17,8 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Test />} />
+      <Route path="/" element={<Home1 />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
       <Route path="/verify/:id" element={<Verify />} />
