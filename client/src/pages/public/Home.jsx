@@ -33,6 +33,11 @@ const Home = () => {
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
+    const html = document.documentElement
+    if(!html.classList.contains("dark")){
+      html.classList.add("dark")
+      setIsDark(true)
+    }
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
