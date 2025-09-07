@@ -18,7 +18,9 @@ import {
   Play,
   CheckCircle,
   BookOpen,
-  UserPlus
+  UserPlus,
+  Menu,
+  X
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
@@ -29,6 +31,7 @@ import TestimonialCard from '../../components/TestimonialCard';
 const Home = () => {
   const [isDark, setIsDark] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [mobileSidebar,setMobileSidebar] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -84,7 +87,23 @@ const Home = () => {
 
   return (
    <div className="h-[100vh] w-min-screen bg-white relative pt-10">
-   {/* <div className="h-[100vh] w-[100vw] bg-white dark:bg-[#111827] "> */}
+
+    {/* Mobile Sidebar */}
+    {
+      mobileSidebar && 
+
+      <div className="block md:hidden fixed top-20 bg-white dark:bg-[#111826] text-white w-full  backdrop-blur-md flex flex-col gap-5 items-start transition-all duration-[300ms] z-[60] border-b-[0.2px] border-b-gray-800 pb-3 text-gray-800 dark:text-gray-300 ">
+        <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>Features</p>
+        <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>Community</p>
+        <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>Pricing</p>
+        <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>About</p>
+        <div className="w-full flex flex-col items-start  gap-5 px-3">
+          <button className="">Sign in</button>
+          <button className="font-bold w-[95%] bg-gradient-to-r mb-2 py-3 from-[#4777f4] to-[#9035ea] text-white rounded-md px-4 py-2">Get Started</button>
+        </div>
+      </div>
+    }
+
     <nav className='w-full  h-20 py-5 flex justify-around items-center fixed top-0 z-[55] bg-white dark:bg-[#111827] border-b-[0.2px] border-b-gray-800 bg-transparent backdrop-blur-md'>
         <div className="h-full flex justify-center items-center gap-2">
           <div className=" h-10 sm:h-12 w-10 sm:w-12 flex justify-center items-center bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-mono font-bold rounded-md">
@@ -105,7 +124,7 @@ const Home = () => {
        <div className="flex text-white justify-around items-center gap-5 md:gap-10">
          <div
         onClick={handleTheme}
-        className="border-[1.2px] border-gray-300 dark:border-gray-600 w-8 h-8 sm:flex sm:justify-center sm:items-center rounded-md bg-white dark:bg-[#182231] cursor-pointer hidden sm:block">
+        className="border-[1.2px] border-gray-300 dark:border-gray-600 w-8 h-8 flex justify-center items-center rounded-md bg-white dark:bg-[#182231] cursor-pointer">
           {
             !isDark && <Moon className="text-gray-500 " size={20}/>
           }
@@ -114,9 +133,14 @@ const Home = () => {
           }
         </div>
 
-        <button className=" rounded-md  text-black dark:text-white text-md md:text-lg lg:text-xl ">Sign in</button>
-        <button className=" border-white rounded-md px-4 py-2 bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-sm font-bold  text-md md:text-lg lg:text-lg">Get Started</button>
+        <button className="hidden md:block rounded-md  text-black dark:text-white text-md md:text-lg lg:text-xl ">Sign in</button>
+        <button className="hidden md:block border-white rounded-md px-4 py-2 bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-sm font-bold  text-md md:text-lg lg:text-lg">Get Started</button>
 
+        <div
+        onClick={()=>{setMobileSidebar(!mobileSidebar)}}
+        className="block md:hidden">
+        <Menu className='text-gray-600 dark:text-white' size={24}/>
+        </div>
        </div>
         
     </nav>
