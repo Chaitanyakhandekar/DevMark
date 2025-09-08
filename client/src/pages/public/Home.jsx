@@ -23,6 +23,7 @@ import {
   X
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 import HomePageBox from '../../components/HomePageBox';
 import HomePageBox2 from '../../components/HomePageBox2';
@@ -32,6 +33,7 @@ const Home = () => {
   const [isDark, setIsDark] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [mobileSidebar,setMobileSidebar] = useState(false)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -47,29 +49,6 @@ const Home = () => {
   const toggleTheme = () => {
     setIsDark(!isDark);
   };
-
-  
-
-  const testimonials = [
-    {
-      name: "Sarah Chen",
-      role: "Senior Developer @ Google",
-      content: "DevMark has become my go-to platform for sharing technical insights. The community engagement is incredible.",
-      avatar: "SC"
-    },
-    {
-      name: "Marcus Rodriguez",
-      role: "Tech Lead @ Stripe",
-      content: "The rich editor and seamless publishing experience make writing a joy. Highly recommend!",
-      avatar: "MR"
-    },
-    {
-      name: "Aisha Patel",
-      role: "AI Researcher @ OpenAI",
-      content: "Best platform for technical content. The discovery features help me find exactly what I'm looking for.",
-      avatar: "AP"
-    }
-  ];
 
   const handleTheme = ()=>{
     const html = document.documentElement
@@ -92,19 +71,19 @@ const Home = () => {
     {
       mobileSidebar && 
 
-      <div className="block md:hidden fixed top-20 bg-white dark:bg-[#111826] text-white w-full  backdrop-blur-md flex flex-col gap-5 items-start transition-all duration-[300ms] z-[60] border-b-[0.2px] border-b-gray-800 pb-3 text-gray-800 dark:text-gray-300 ">
+      <div className="block md:hidden fixed top-20 bg-white dark:bg-[#111826] text-gray-800 dark:text-white w-full  backdrop-blur-md flex flex-col gap-5 items-start transition-all duration-[300ms] z-[60] border-b-[0.2px] border-b-gray-800 pb-3 text-gray-800 dark:text-gray-300 ">
         <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>Features</p>
         <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>Community</p>
         <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>Pricing</p>
         <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>About</p>
         <div className="w-full flex flex-col items-start  gap-5 px-3">
-          <button className="">Sign in</button>
-          <button className="font-bold w-[95%] bg-gradient-to-r mb-2 py-3 from-[#4777f4] to-[#9035ea] text-white rounded-md px-4 py-2">Get Started</button>
+          <Link to="/login" className="">Sign in</Link>
+          <Link to="#" className="text-center font-bold w-[95%] bg-gradient-to-r mb-2 py-3 from-[#4777f4] to-[#9035ea] text-white rounded-md px-4 py-2">Get Started</Link>
         </div>
       </div>
     }
 
-    <nav className='w-full  h-20 py-5 flex justify-around items-center fixed top-0 z-[55] bg-white dark:bg-[#111827] border-b-[0.2px] border-b-gray-800 bg-transparent backdrop-blur-md'>
+    <nav className='w-full  h-20 py-5 flex justify-around items-center fixed top-0 z-[55] bg-white dark:bg-[#111827] border-b-[0.2px] border-b-gray-300 dark:border-b-gray-800 bg-transparent backdrop-blur-md'>
         <div className="h-full flex justify-center items-center gap-2">
           <div className=" h-10 sm:h-12 w-10 sm:w-12 flex justify-center items-center bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-mono font-bold rounded-md">
           {'<>'}
@@ -133,8 +112,8 @@ const Home = () => {
           }
         </div>
 
-        <button className="hidden md:block rounded-md  text-black dark:text-white text-md md:text-lg lg:text-xl ">Sign in</button>
-        <button className="hidden md:block border-white rounded-md px-4 py-2 bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-sm font-bold  text-md md:text-lg lg:text-lg">Get Started</button>
+        <Link to="/login" className="hidden md:block rounded-md  text-black dark:text-white text-md md:text-lg lg:text-xl ">Sign in</Link>
+        <Link to="#" className="hidden md:block border-white rounded-md px-4 py-2 bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-sm font-bold  text-md md:text-lg lg:text-lg">Get Started</Link>
 
         <div
         onClick={()=>{setMobileSidebar(!mobileSidebar)}}
@@ -157,7 +136,7 @@ const Home = () => {
           </div>
 
           <div className="w-full flex flex-col md:flex-row gap-5 justify-center items-center">
-            <button className="rounded-xl px-6 py-5 text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] font-bold ">
+            <button onClick={()=> { navigate("/user/blogs/create")}} className="rounded-xl px-6 py-5 text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] font-bold ">
               Start Writing Today <ArrowRight className="inline-block" />
             </button>
 
@@ -234,25 +213,25 @@ const Home = () => {
 
     <div className='dark:bg-gradient-to-r from-[#212e41] to-[#1f2938] pt-10 md:pt-20 pb-10 flex flex-col items-center gap-10'>
             <div className='flex flex-col items-center gap-5 xl:max-w-[800px]'>
-                <p className='text-white font-bold text-4xl lg:text-5xl text-center'>Ready to Share Your <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Developer Journey?</span></p>
-                <p className='text-gray-300 text-center text-xl max-w-[85%]'>Join thousands of developers who are already building their reputation and growing their network on DevMark.</p>
+                <p className='text-gray-800 dark:text-white font-bold text-4xl lg:text-5xl text-center'>Ready to Share Your <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Developer Journey?</span></p>
+                <p className='text-gray-700 dark:text-gray-300 text-center text-xl max-w-[85%]'>Join thousands of developers who are already building their reputation and growing their network on DevMark.</p>
             </div>
 
             <div className="flex flex-col md:flex-row gap-4">
 
-              <button className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-white min-w-[200px] max-w-[300px] px-5 py-4 text-lg font-semibold rounded-lg flex items-center'>
+              <button onClick={() => {navigate("/signup")}} className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-white min-w-[200px] max-w-[300px] px-5 py-4 text-lg font-semibold rounded-lg flex items-center'>
                 <UserPlus className='inline-block text-white mr-2' size={20} />
                 Create Your Account
               </button>
 
-              <button className='text-white'>
-                <BookOpen className='inline-block text-white mr-2' size={20} />
+              <button className='text-gray-800  dark:text-white'>
+                <BookOpen className='inline-block text-gray-800 dark:text-white mr-2' size={20} />
                 Explore Articles
               </button>
 
             </div>
 
-            <div className='text-white flex gap-5 text-gray-600'>
+            <div className='text-gray-500 dark:text-white flex gap-5 text-gray-600'>
               <p>Follow us:</p>
               <FaGithub className='text-gray-400 cursor-pointer' size={20}/>
               <FaLinkedin className='text-gray-400 cursor-pointer' size={20}/>
@@ -263,18 +242,18 @@ const Home = () => {
 
     <div className="w-full h-auto dark:bg-[#111826] pb-10 pt-10 border-[0.3px] border-t-gray-600 border-b-0 border-l-0 border-r-0 flex-col gap-10 flex justify-center items-center">
 
-             <div className="l-1 h-full w-full text-gray-300 flex flex-col lg:flex-row justify-between lg:justify-center items-start pl-5 text-sm lg:text-lg lg:items-start gap-5 lg:gap-[10%] text-lg">
+             <div className="l-1 h-full w-full text-gray-800 dark:text-gray-300 flex flex-col lg:flex-row justify-between lg:justify-center items-start pl-5 text-sm lg:text-lg lg:items-start gap-5 lg:gap-[10%] text-lg">
               <div className="l2 flex flex-col justify-center items-start gap-5 pb-5 lg:pb-0">
               <div className="flex items-center gap-2 ">
-                  <div className="bg-gradient-to-r from-[#3f7eea] to-[#9339e5] w-10 h-10 flex justify-center items-center rounded-md text-xl font-semibold">
+                  <div className="bg-gradient-to-r from-[#3f7eea] to-[#9339e5] w-10 h-10 flex justify-center items-center rounded-md text-xl font-semibold text-white">
                   {`<>`}
                 </div>
                 <h1 className="text-xl font-bold">DevMark</h1>
               </div>
-                <p className="text-gray-300 max-w-[300px]">The modern publishing platform for developers to share knowledge and grow together.</p>
+                <p className="text-gray-500 dark:text-gray-300 max-w-[300px]">The modern publishing platform for developers to share knowledge and grow together.</p>
               </div>
               <div className="l2 flex flex-col justify-center items-start gap-5">
-                <h1 className='text-white font-bold'>Product</h1>
+                <h1 className='text-gray-900 dark:text-white font-bold'>Product</h1>
                 <ul>
                   <li>Pricing</li>
                 <li>API</li>
@@ -282,7 +261,7 @@ const Home = () => {
                 </ul>
               </div>
               <div className="l2 flex flex-col justify-center items-start gap-5">
-                <h1 className='text-white font-bold'>Community</h1>
+                <h1 className='text-gray-900 dark:text-white font-bold'>Community</h1>
                 <ul>
                   <li>Blog</li>
                   <li>Discord</li>
@@ -291,7 +270,7 @@ const Home = () => {
                 </ul>
               </div>
               <div className="l2 flex flex-col justify-center items-start gap-5">
-                <h1 className='text-white font-bold'>Company</h1>
+                <h1 className='text-gray-900 dark:text-white font-bold'>Company</h1>
                 <ul>
                   <li>About Us</li>
                   <li>Careers</li>
