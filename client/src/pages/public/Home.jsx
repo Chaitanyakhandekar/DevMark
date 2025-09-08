@@ -131,7 +131,7 @@ const Home = () => {
             Where Developers <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">Share</span> & Grow
           </div>
 
-          <div className="dark:text-white text-black text-xl lg:text-2xl text-center xl:max-w-[900px] text-[rgb(173 213 219)]">
+          <div className="dark:text-white text-black text-xl lg:text-2xl text-center xl:max-w-[900px] text-[rgb(173 213 219)] px-3">
             The modern publishing platform built for developers. Write, share, and discover technical content with a community that understands your passion for code.
           </div>
 
@@ -157,10 +157,10 @@ const Home = () => {
 
     <div className=" dark:bg-[#1f2937] py-20">
 
-          <div className="text-white flex flex-col items-center gap-5">
+          <div className="text-white flex flex-col items-center gap-5 px-3">
               <p className='dark:text-white text-black text-4xl md:text-6xl font-bold text-center max-w-[400px] md:max-w-[600px]'>Everything You Need to <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">Succeed</span></p>
 
-              <p className='dark:text-white text-black text-xl text-center max-w-[400px] md:max-w-[770px]'>Powerful features designed to help developers create, share, and grow their influence in the tech community.</p>
+              <p className='dark:text-white text-black text-lg text-center max-w-[400px] md:max-w-[770px]'>Powerful features designed to help developers create, share, and grow their influence in the tech community.</p>
           </div>
 
           <div className="w-full h-auto flex flex-col md:flex-row flex-wrap justify-center items-center gap-10 mt-10  dark:text-white text-black ">
@@ -180,7 +180,7 @@ const Home = () => {
     </div>
 
     <div className="dark:bg-[#111827] w-full pt-20 pb-10">
-          <div className="flex flex-col items-center gap-5">
+          <div className="flex flex-col items-center gap-5 px-2">
             <p className='dark:text-white text-black text-center text-4xl lg:text-5xl font-bold'>Loved by Developers <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Worldwide</span></p>
             <p className='text-black dark:text-white text-center text-md lg:text-xl'>See what industry leaders are saying about DevMark</p>
           </div>
@@ -212,7 +212,7 @@ const Home = () => {
     </div>
 
     <div className='dark:bg-gradient-to-r from-[#212e41] to-[#1f2938] pt-10 md:pt-20 pb-10 flex flex-col items-center gap-10'>
-            <div className='flex flex-col items-center gap-5 xl:max-w-[800px]'>
+            <div className='flex flex-col items-center gap-5 xl:max-w-[800px] px-3'>
                 <p className='text-gray-800 dark:text-white font-bold text-4xl lg:text-5xl text-center'>Ready to Share Your <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Developer Journey?</span></p>
                 <p className='text-gray-700 dark:text-gray-300 text-center text-xl max-w-[85%]'>Join thousands of developers who are already building their reputation and growing their network on DevMark.</p>
             </div>
