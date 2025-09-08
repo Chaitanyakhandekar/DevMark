@@ -136,7 +136,7 @@ const Home = () => {
           </div>
 
           <div className="w-full flex flex-col md:flex-row gap-5 justify-center items-center">
-            <button className="rounded-xl px-6 py-5 text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] font-bold ">
+            <button onClick={()=> { navigate("/user/blogs/create")}} className="rounded-xl px-6 py-5 text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] font-bold ">
               Start Writing Today <ArrowRight className="inline-block" />
             </button>
 

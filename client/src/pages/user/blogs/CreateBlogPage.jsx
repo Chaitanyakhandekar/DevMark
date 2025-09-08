@@ -88,22 +88,22 @@ function CreateBlogPage() {
                 </div>
             </nav>
 
-            <div className=" w-screen flex flex-col items-center gap-3 py-2 md:flex-row">
+            <div className="md:h-[870px]  w-screen flex flex-col items-center gap-3 md:gap-5 py-2 md:flex-row md:justify-center">
 
-                <div className=" w-[95%]">
+                <div className=" w-[95%] md:w-[60%]">
                     <MDEditor
                         value={content}
                         onChange={setContent}
                         preview="live"
                         height={750}
-                        className='dark:bg-[#1f2936] dark:rounded-md'
+                        className='dark:bg-[#1f2936] dark:rounded-lg md:p-5'
                         previewOptions={{
                             rehypePlugins:[[rehypeHighlights]]
                         }}
                     />
                 </div>
 
-                <div className=" w-[95%] flex flex flex-col gap-5 pb-7">
+                <div className=" w-[95%] md:w-[20%] flex flex flex-col gap-5 md:gap-[4.2rem] pb-7">
                     <div className="border-[0.2px] border-gray-700 flex flex-col gap-3 items-start rounded-md w-full dark:bg-[#1f2936] p-5">
                         <h1 className="text-md text-white font-bold">Publish Settings</h1>
                         <div className="w-full flex flex-col gap-2 text-gray-300">
