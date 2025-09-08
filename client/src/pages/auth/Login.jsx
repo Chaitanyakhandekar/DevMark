@@ -81,7 +81,7 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-2 rounded-lg bg-gradient-to-r from-[#7C3AED] to-[#00D8FF] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
+            className="w-full py-2 rounded-lg bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
             onClick={handleLogin}
           >
             {loading ? 

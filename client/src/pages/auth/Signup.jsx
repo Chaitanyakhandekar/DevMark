@@ -2,7 +2,7 @@ import React, { use } from "react";
 import Input from "../../components/Input";
 import axios from "axios"
 import Swal from 'sweetalert2';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   Eye, 
   EyeOff, 
@@ -116,11 +116,11 @@ function Signup() {
             </div>
 
             <div className=" w-[95%] sm:w-[55%] md:w-[45%] lg:w-[30%]  h-[80%] sm:h-[85%] md:h-[85%] lg:h-[85%] xl:h-[85%] 2xl:h-[75%] backdrop-blur-xl border border-gray-700/50 rounded-2xl flex flex-col p-3 gap-2 justify-center shadow-2xl bg-trans">
-                <header className="text-white text-3xl font-bold text-center py-2 font-mono ">Join DevMark 🚀</header>
+                <header className="text-white text-3xl font-bold text-center py-2 font-mono "> <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">DevMark</span> </header>
                 <div className="main  flex flex-col font-mono items-center gap-3">
-                    <div className="flex flex-col text-white justify-center items w-[95%] ">
+                    <div className="flex flex-col text-white justify-center items w-[95%] gap-2">
                         <label htmlFor="username" className="text-left">Username</label>
-                       <div className="w-full bg-transparent border-2 border-[#3c4553] flex items-center px-3 rounded-xl">
+                       <div className="w-full bg-transparent border-[0.2px] border-[#3c4553] flex items-center px-3 rounded-xl">
                         <User className="text-gray-500"/>
                          <input
                             className=" mx-auto  bg-transparent w-full text-white p-3 rounded-lg outline-none"
@@ -132,9 +132,9 @@ function Signup() {
                         />
                        </div>
                     </div>
-                    <div className="flex flex-col text-white justify-center items w-[95%] ">
+                    <div className="flex flex-col text-white justify-center items w-[95%] gap-2">
                         <label htmlFor="fullName" className="text-left">Full Name</label>
-                       <div className="w-full bg-transparent border-2 border-[#3c4553] flex items-center px-3 rounded-xl">
+                       <div className="w-full bg-transparent border-[0.2px] border-[#3c4553] flex items-center px-3 rounded-xl">
                         <User className="text-gray-500"/>
                          <input
                             className=" mx-auto  bg-transparent w-full text-white p-3 rounded-lg outline-none"
@@ -147,9 +147,9 @@ function Signup() {
                        </div>
                     </div>
 
-                    <div className="flex flex-col text-white justify-center items w-[95%] ">
+                    <div className="flex flex-col text-white justify-center items w-[95%] gap-2">
                         <label htmlFor="email" className="text-left">Email</label>
-                       <div className="w-full bg-transparent border-2 border-[#3c4553] flex items-center px-3 rounded-xl">
+                       <div className="w-full bg-transparent border-[0.2px] border-[#3c4553] flex items-center px-3 rounded-xl">
                         <Mail className="text-gray-500"/>
                          <input
                             className=" mx-auto  bg-transparent w-full text-white p-3 rounded-lg outline-none"
@@ -164,9 +164,9 @@ function Signup() {
 
                  
 
-                    <div className="flex flex-col text-white justify-center items w-[95%] ">
+                    <div className="flex flex-col text-white justify-center items w-[95%] gap-2">
                         <label htmlFor="password" className="text-left">Password</label>
-                       <div className="w-full bg-transparent border-2 border-[#3c4553] flex items-center px-3 rounded-xl">
+                       <div className="w-full bg-transparent border-[0.2px] border-[#3c4553] flex items-center px-3 rounded-xl">
                         <Lock className="text-gray-500"/>
                          <input
                             className=" mx-auto  bg-transparent w-full text-white p-3 rounded-lg outline-none"
@@ -179,9 +179,9 @@ function Signup() {
                     </div>
                     </div>
 
-                    <div className="flex flex-col text-white justify-center items w-[95%] ">
+                    <div className="flex flex-col text-white justify-center items w-[95%] gap-2">
                         <label htmlFor="confirm-password" className="text-left">Confirm Password</label>
-                       <div className="w-full bg-transparent border-2 border-[#3c4553] flex items-center px-3 rounded-xl">
+                       <div className="w-full bg-transparent border-[0.2px] border-[#3c4553] flex items-center px-3 rounded-xl">
                         <Lock className="text-gray-500"/>
                          <input
                             className=" mx-auto  bg-transparent w-full text-white p-3 rounded-lg outline-none"
@@ -194,12 +194,12 @@ function Signup() {
                     </div>
                     </div>
 
-                    <button className="w-[90%] sm:w-[70%] bg-gradient-to-r from-[#7a3bed] via-[#02d6ff] to-[#02d6ff] text-white text-lg font-bold p-2 rounded-lg m-2 hover:bg-gradient-to-l"
+                    <button className="w-[90%] sm:w-[70%] bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white text-lg font-bold p-2 rounded-lg m-2 hover:bg-gradient-to-l"
                         onClick={onSubmitHandler} disabled={loading}>
                         {loading ? "Creating Account..." : "Create Account"}
                     </button>
 
-                    <p className="text-white font-mono">Already have an account ? <span className="text-[#04d8ff] cursor-pointer">Login</span></p>
+                    <p className="text-white font-mono">Already have an account ? <Link to="/login" className="text-[#04d8ff] cursor-pointer">Login</Link></p>
 
                 </div>
             </div>

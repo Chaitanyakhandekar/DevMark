@@ -23,6 +23,7 @@ import {
   X
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 import HomePageBox from '../../components/HomePageBox';
 import HomePageBox2 from '../../components/HomePageBox2';
@@ -32,6 +33,7 @@ const Home = () => {
   const [isDark, setIsDark] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [mobileSidebar,setMobileSidebar] = useState(false)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -217,7 +219,7 @@ const Home = () => {
 
             <div className="flex flex-col md:flex-row gap-4">
 
-              <button className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-white min-w-[200px] max-w-[300px] px-5 py-4 text-lg font-semibold rounded-lg flex items-center'>
+              <button onClick={() => {navigate("/signup")}} className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-white min-w-[200px] max-w-[300px] px-5 py-4 text-lg font-semibold rounded-lg flex items-center'>
                 <UserPlus className='inline-block text-white mr-2' size={20} />
                 Create Your Account
               </button>
