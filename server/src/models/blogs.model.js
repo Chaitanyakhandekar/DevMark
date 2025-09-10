@@ -50,7 +50,6 @@ const blogSchema = new Schema({
   }
 }, {timestamps: true});
 
-blogSchema.pre("save",)
 
 export const Blog = mongoose.model("Blog", blogSchema);
 

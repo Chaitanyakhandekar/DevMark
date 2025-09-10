@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
-import { Blog } from "../models/blogs.model";
+import { Blog } from "../models/blogs.model.js";
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {ApiError, ApiResponse} from "../utils/apiUtils.js"
+import { uploadFileOnCloudinary } from "../services/cloudinary.service.js";
 
 const createBlog = asyncHandler(async(req,res)=>{
     
@@ -25,24 +26,45 @@ const createBlog = asyncHandler(async(req,res)=>{
         throw new ApiError(400,"Tags must be Array")
     }
 
-    const newBlog = await Blog.create({
-        title: title.trim(),
-        content: content.trim(),
-        category: category.trim(),
-        status,
-        tags,
-        owner: req.user.id
-    })
+    const images = req.files;
 
-    if(!newBlog){
-        throw new ApiError(500,"Blog Creation Failed")
+
+    if(images && images.length > 5){
+        throw new ApiError(400,"Maximum 5 Images are allowed")
     }
 
-    return res
-            .status(201)
-            .json(
-                new ApiResponse(201,newBlog,"Blog Created Successfully")
-            )
+    let imgs = [];
+
+    images.forEach(async(image)=>{
+        const res = await uploadFileOnCloudinary(image.path);
+        imgs.append({
+            url : res.secure_url,
+            public_id: res.public_id
+        })
+    })
+
+    if(imgs && imgs.length){
+        console.log(imgs)
+    }
+
+    // const newBlog = await Blog.create({
+    //     title: title.trim(),
+    //     content: content.trim(),
+    //     category: category.trim(),
+    //     status,
+    //     tags,
+    //     owner: req.user.id
+    // })
+
+    // if(!newBlog){
+    //     throw new ApiError(500,"Blog Creation Failed")
+    // }
+
+    // return res
+    //         .status(201)
+    //         .json(
+    //             new ApiResponse(201,newBlog,"Blog Created Successfully")
+    //         )
 
 })
 
