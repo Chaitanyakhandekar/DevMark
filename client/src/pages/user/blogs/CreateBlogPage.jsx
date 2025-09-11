@@ -35,11 +35,12 @@ function CreateBlogPage() {
 
     const [blogData,setBlogData] = useState({
         content: "",
-        title : "",
+        title : "Hello",
         status : "draft",
         category : "Full Stack",
         tags : "",
         words : 0,
+        images: [],
         characters : 0,
         readingTime : 0
     })
@@ -51,23 +52,37 @@ function CreateBlogPage() {
         })
     }
 
-    const publishBlog = async()=>{
+    const publishBlog = async () => {
         try {
-            const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/create`, {
-                content:blogData.content,
-                title:blogData.title,
-                status:blogData.status,
-                category:blogData.category,
-                tags: blogData.tags && blogData.tags.split("#") || []
-            },
-        {
-            withCredentials:true
-        })
+            console.log("PublishBlog :: blogData :: ", blogData);
+            const tagsArray = blogData.tags
+                ? blogData.tags.split("#").map(tag => tag.trim()).filter(Boolean)
+                : [];
 
-        console.log("PublishBlog :: Response :: ",res.data);
+            let imgs = new Array();
+            imgs = blogData.images.map((img)=>img)
+
+            const formData = new FormData();
+
+            formData.append("title", blogData.title || "Hello");
+            formData.append("content", blogData.content);
+            formData.append("category", blogData.category);
+            formData.append("status", blogData.status);
+            tagsArray.forEach(tag => formData.append("tags[]", tag));
+            imgs.forEach(img => formData.append("images", img));
+
+            console.log(imgs)
+            const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/create`, formData, {
+                withCredentials: true,
+                headers:{
+                    "Content-Type" : "multipart/form-data"
+                }
+            });
+
+            console.log("PublishBlog :: Response :: ", res.data);
         } catch (error) {
             setError(error.message)
-            console.log("PublishBlog :: Error :: ",error.message)
+            console.log("PublishBlog :: Error :: ", error)
         }
     }
 
@@ -212,6 +227,15 @@ function CreateBlogPage() {
                             {/* <div className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] p-2 w-10 h-10 flex justify-center items-center rounded-md">
                                 <Plus className="text-white" size={19}/>
                             </div> */}
+
+                            <input type="file" onChange={(e)=>{
+                                setBlogData((prev)=>{
+                                    return{
+                                        ...prev,
+                                        images : [...prev.images , e.target.files[0]]
+                                    }
+                                })
+                            }} />
                             </div>
 
                             {/* <p className='dark:text-gray-300 text-sm md:text-md'>0/5 tags used</p> */}
