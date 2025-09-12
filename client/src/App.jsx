@@ -13,6 +13,7 @@ import VerifyConfirm from './pages/auth/VerifyConfirm'
 import TestLoader from './test/TestLoader'
 import BlogEditor from './pages/user/CreateB'
 import CreateBlogPage from './pages/user/blogs/CreateBlogPage'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,13 +23,15 @@ function App() {
       <Route path="/" element={<Home1 />} />
       <Route path="/home" element={<Home1 />} />
       <Route path="/create-blog1" element={<BlogEditor />} />
-      <Route path="/user/blogs/create" element={<CreateBlogPage />} />
+
+      <Route path="/user/blogs/create" element={<ProtectedRoute><CreateBlogPage/></ProtectedRoute>} />
+
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
       <Route path="/verify/:id" element={<Verify />} />
       <Route path="/home1" element={<Home1 />} />
       <Route path="/verify-confirm" element={<VerifyConfirm />} />
-        <Route path="/test-loader" element={<TestLoader />} />
+      <Route path="/test-loader" element={<TestLoader />} />
       </Routes>
   
   )

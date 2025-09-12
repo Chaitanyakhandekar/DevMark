@@ -55,12 +55,13 @@ function CreateBlogPage() {
     const publishBlog = async () => {
         try {
             console.log("PublishBlog :: blogData :: ", blogData);
+            
             const tagsArray = blogData.tags
                 ? blogData.tags.split("#").map(tag => tag.trim()).filter(Boolean)
                 : [];
 
             let imgs = new Array();
-            imgs = blogData.images.map((img)=>img)
+            imgs = blogData.images
 
             const formData = new FormData();
 
@@ -71,7 +72,6 @@ function CreateBlogPage() {
             tagsArray.forEach(tag => formData.append("tags[]", tag));
             imgs.forEach(img => formData.append("images", img));
 
-            console.log(imgs)
             const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/create`, formData, {
                 withCredentials: true,
                 headers:{
@@ -79,10 +79,10 @@ function CreateBlogPage() {
                 }
             });
 
-            console.log("PublishBlog :: Response :: ", res.data);
+            console.log("PublishedBlog :: Response :: ", res.data);
         } catch (error) {
             setError(error.message)
-            console.log("PublishBlog :: Error :: ", error)
+            console.log("PublishedBlog :: Error :: ", error)
         }
     }
 
