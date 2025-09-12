@@ -10,13 +10,23 @@ const userAuth = asyncHandler(async (req,res,next)=>{
     const {accessToken} = req.cookies;
 
     if(!accessToken || accessToken.trim()===""){
+       if(req.headers["x-auth-check-type"] && req.headers["x-auth-check-type"] === "login-check-hit"){
+        return res
+                .status(200)
+                .json(
+                    {
+                        success: false,
+                        isLoggedIn : false
+                    }
+                )
+       }
         throw new ApiError(401,"Unauthorize User");
     }
 
     let decodedToken;
 
     try {
-        decodedToken = jwt.verify(accessToken,process.env.ACCESS_TOKEN_SECRET)
+        decodedToken = jwt.verify(accessToken,process.env.ACCESS_TOKEN_SECRET)``
 
     } catch (error) {
         throw new ApiError(500,"Error While Decoding AccessToken")
