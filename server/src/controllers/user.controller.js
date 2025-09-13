@@ -101,11 +101,13 @@ const loginUser = asyncHandler(async (req,res)=>{
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "strict",
+          maxAge: 24 * 60 * 60 * 1000 // 1 day
       })
       .cookie("refreshToken",refreshToken,{
         httpOnly:true,
         secure:process.env.NODE_ENV === "production",
-        sameSite:"strict"
+        sameSite:"strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
       })
       .json(
     new ApiResponse(200, "Login Successful")
