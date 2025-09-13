@@ -26,7 +26,7 @@ const userAuth = asyncHandler(async (req,res,next)=>{
     let decodedToken;
 
     try {
-        decodedToken = jwt.verify(accessToken,process.env.ACCESS_TOKEN_SECRET)``
+        decodedToken = jwt.verify(accessToken,process.env.ACCESS_TOKEN_SECRET)
 
     } catch (error) {
         throw new ApiError(500,"Error While Decoding AccessToken")

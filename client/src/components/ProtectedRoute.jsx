@@ -19,9 +19,9 @@ function ProtectedRoute({children}) {
         }
       }
     )
+    console.log(res.data)
 
-
-    if(res.data.isLoggedIn === true){
+    if(res.data.data.isLoggedIn === true){
       setIsLoggedIn(true)
     }
     else{
