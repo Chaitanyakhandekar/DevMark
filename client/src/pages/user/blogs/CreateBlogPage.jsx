@@ -1,4 +1,5 @@
 import React, { useEffect,useState } from 'react'
+import axios from "axios"
 import { 
   Save, 
   Eye, 
@@ -29,8 +30,83 @@ import rehypeHighlights from "rehype-highlight"
 
 function CreateBlogPage() {
 
-    const [content,setContent] = useState("")
+    const [tags,setTags] = useState([])
+    const [error,setError] = useState(null)
 
+    const [blogData,setBlogData] = useState({
+        content: "",
+        title : "Hello",
+        status : "draft",
+        category : "Full Stack",
+        tags : "",
+        words : 0,
+        images: [],
+        characters : 0,
+        readingTime : 0
+    })
+
+    const handleBlogDataChange = (e) => {
+        setBlogData({
+            ...blogData,
+            [e.target.name] : e.target.value
+        })
+    }
+
+    const publishBlog = async () => {
+        try {
+            console.log("PublishBlog :: blogData :: ", blogData);
+            
+            const tagsArray = blogData.tags
+                ? blogData.tags.split("#").map(tag => tag.trim()).filter(Boolean)
+                : [];
+
+            let imgs = new Array();
+            imgs = blogData.images
+
+            const formData = new FormData();
+
+            formData.append("title", blogData.title || "Hello");
+            formData.append("content", blogData.content);
+            formData.append("category", blogData.category);
+            formData.append("status", blogData.status);
+            tagsArray.forEach(tag => formData.append("tags[]", tag));
+            imgs.forEach(img => formData.append("images", img));
+
+            const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/create`, formData, {
+                withCredentials: true,
+                headers:{
+                    "Content-Type" : "multipart/form-data"
+                }
+            });
+
+            console.log("PublishedBlog :: Response :: ", res.data);
+        } catch (error) {
+            setError(error.message)
+            console.log("PublishedBlog :: Error :: ", error)
+        }
+    }
+
+    useEffect(()=>{
+
+        let content = blogData.content;
+        let words = content.split(" ")
+        let characters = 0;
+
+        words = words.filter((word)=>word.trim()!=="")
+        words.forEach((word)=>{
+            characters+=word.length
+        })
+
+        setBlogData({
+            ...blogData,
+            words : words.length,
+            characters : characters
+        })
+        console.log("words = ",words.length)
+        console.log("characters = ",characters)
+
+    },[blogData.content])
+    
     useEffect(() => {
         const html = document.documentElement
         html.classList.add("dark")
@@ -68,7 +144,7 @@ function CreateBlogPage() {
                 <div className="h-full text-black dark:text-white flex gap-10 text-sm">
                     <div className="hidden md:block h-full md:flex md:gap-2 md:items-center text-gray-400">
                         <Clock size={15}/>
-                        <p>0 words . 0 min read</p>
+                        <p>{blogData.words} words . {blogData.readingTime} min read</p>
                     </div>
 
                     <div className="hidden md:block h-full md:flex md:items-center md:gap-5 text-gray-300">
@@ -83,7 +159,9 @@ function CreateBlogPage() {
 
                     <div className="h-full flex items-center gap-3 ">
                         <button className='text-md px-3 py-2 hover:bg-gray-600 rounded-md'>Save Draft</button>
-                        <button className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white  font-semibold rounded-md px-3 text-lg py-1">Publish</button>
+                        <button
+                        onClick={publishBlog}
+                        className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white  font-semibold rounded-md px-3 text-lg py-1">Publish</button>
                     </div>
                 </div>
             </nav>
@@ -92,8 +170,8 @@ function CreateBlogPage() {
 
                 <div className=" w-[95%] md:w-[60%]">
                     <MDEditor
-                        value={content}
-                        onChange={setContent}
+                        value={blogData.content}
+                        onChange={(value) => setBlogData({ ...blogData, content: value })}
                         preview="live"
                         height={750}
                         className='dark:bg-[#1f2936] dark:rounded-lg md:p-5'
@@ -110,9 +188,9 @@ function CreateBlogPage() {
                             <label>Status</label>
 
                             <select className='dark:bg-[#374150] border-none outline-none p-2 rounded-md'>
-                                <option>Draft</option>
-                                <option>Published</option>
-                                <option>Private</option>
+                                <option selected={blogData.status === "draft"}>Draft</option>
+                                <option selected={blogData.status === "published"}>Published</option>
+                                <option selected={blogData.status === "private"}>Private</option>
                             </select>
                         </div>
 
@@ -123,7 +201,7 @@ function CreateBlogPage() {
 
                                 {
                                     categories.map((category,index)=>(
-                                        <option key={index}>{category}</option>
+                                        <option key={index} selected={blogData.category === category}>{category}</option>
                                     ))
                                 }
 
@@ -135,28 +213,47 @@ function CreateBlogPage() {
                     <div className="w-full flex flex-col gap-5 dark:bg-[#1f2936] p-5 rounded-md">
                             <h1 className="text-white text-md font-bold">Tags</h1>
                             <div className="flex w-full gap-3 items-center ">
-                                 <input type="text" className='w-full dark:bg-[#374150] dark:text-white border-none outline-none p-2 rounded-md' placeholder='Add a tag' />
-                            <div className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] p-2 w-10 h-10 flex justify-center items-center rounded-md">
+                                 <textarea
+                                  className='w-full h-20 dark:bg-[#374150] dark:text-white border-none outline-none p-2 rounded-md'
+                                   placeholder='Add a tag'
+                                   name="tags"
+                                   value={blogData.tags}
+                                   onChange={(e)=>{
+                                    handleBlogDataChange(e)
+                                   }}
+                                   rows={3} >
+
+                                   </textarea>
+                            {/* <div className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] p-2 w-10 h-10 flex justify-center items-center rounded-md">
                                 <Plus className="text-white" size={19}/>
-                            </div>
+                            </div> */}
+
+                            <input type="file" onChange={(e)=>{
+                                setBlogData((prev)=>{
+                                    return{
+                                        ...prev,
+                                        images : [...prev.images , e.target.files[0]]
+                                    }
+                                })
+                            }} />
                             </div>
 
-                            <p className='dark:text-gray-300 text-sm md:text-md'>0/5 tags used</p>
+                            {/* <p className='dark:text-gray-300 text-sm md:text-md'>0/5 tags used</p> */}
                     </div>
 
                     <div className="w-full flex flex-col gap-5 dark:bg-[#1f2936] p-5 rounded-md">
                             <h1 className="text-white text-md font-bold">Statistics</h1>
                             <div className="flex justify-between w-full">
                                 <p className='dark:text-gray-300 text-sm md:text-md'>Words:</p>
-                                <p className='dark:text-gray-300 text-sm md:text-md'>0</p>
+                                <p className='dark:text-gray-300 text-sm md:text-md'>{blogData.words}</p>
                             </div>
                             <div className="flex justify-between w-full">
                                 <p className='dark:text-gray-300 text-sm md:text-md'>Characters:</p>
-                                <p className='dark:text-gray-300 text-sm md:text-md'>0</p>
+                                <p className='dark:text-gray-300 text-sm md:text-md'>{blogData.characters}</p>
                             </div>
                             <div className="flex justify-between w-full">
                                 <p className='dark:text-gray-300 text-sm md:text-md'>Reading Time:</p>
-                                <p className='dark:text-gray-300 text-sm md:text-md'>0 min</p>
+                                <p className='dark:text-gray-300 text-sm md:text-md'>{blogData.readingTime} min</p>
                             </div>
                     </div>
 

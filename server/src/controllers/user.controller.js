@@ -259,9 +259,22 @@ const isVerifiedUser = asyncHandler(async (req,res)=>{
   })
 })
 
+
+const isLoggedInUser = asyncHandler(async(req,res)=>{
+  return res
+        .status(200)
+        .json(
+          new ApiResponse(200,{
+            success: req.user ? true : false,
+            isLoggedIn : req.user ? true : false
+          })
+        )
+})
+
 export {
     registerUser,
     verifyUser,
     isVerifiedUser,
-    loginUser
+    loginUser,
+    isLoggedInUser
 }
