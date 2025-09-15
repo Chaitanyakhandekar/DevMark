@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2';
 import TestLoader from "../../test/TestLoader";
-
+import SpinLoader from "../../components/SpinLoader";
 
 export default function LoginPage() {
 
@@ -85,7 +85,7 @@ export default function LoginPage() {
             onClick={handleLogin}
           >
             {loading ? 
-            <div className="text-blue-600 w-8 h-8 border-4 animate-spin rounded-3xl"></div> : "Login"}
+            <SpinLoader width={8} height={8} borderWidth={4} /> : "Login"}
           </button>
         </form>
         <p className="text-center text-gray-400 mt-6">
