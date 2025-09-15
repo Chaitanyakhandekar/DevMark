@@ -14,6 +14,7 @@ import TestLoader from './test/TestLoader'
 import BlogEditor from './pages/user/CreateB'
 import CreateBlogPage from './pages/user/blogs/CreateBlogPage'
 import ProtectedRoute from './components/ProtectedRoute'
+import AuthLoaderDemo from './components/AuthLoader'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -23,6 +24,7 @@ function App() {
       <Route path="/" element={<Home1 />} />
       <Route path="/home" element={<Home1 />} />
       <Route path="/create-blog1" element={<BlogEditor />} />
+      <Route path="/loader" element={<AuthLoaderDemo />} />
 
       <Route path="/user/blogs/create" element={<ProtectedRoute><CreateBlogPage/></ProtectedRoute>} />
 
