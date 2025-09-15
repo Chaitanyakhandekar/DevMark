@@ -100,13 +100,13 @@ const loginUser = asyncHandler(async (req,res)=>{
       .cookie("accessToken", accessToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
-          sameSite: "none",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 24 * 60 * 60 * 1000 // 1 day
       })
       .cookie("refreshToken",refreshToken,{
         httpOnly:true,
         secure:process.env.NODE_ENV === "production",
-        sameSite:"none",
+        sameSite:process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
       })
       .json(
