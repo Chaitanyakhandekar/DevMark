@@ -23,7 +23,6 @@ function App() {
     <Routes>
       <Route path="/" element={<Home1 />} />
       <Route path="/home" element={<Home1 />} />
-      <Route path="/create-blog1" element={<BlogEditor />} />
       <Route path="/loader" element={<AuthLoaderDemo />} />
 
       <Route path="/user/blogs/create" element={<ProtectedRoute><CreateBlogPage/></ProtectedRoute>} />
