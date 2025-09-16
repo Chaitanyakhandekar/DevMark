@@ -1,5 +1,6 @@
 import React from 'react';
 import { Shield, Code, CheckCircle } from 'lucide-react';
+import { useEffect } from 'react';
 
 const AuthLoader = ({ 
   message = "Authenticating...", 
@@ -18,6 +19,10 @@ const AuthLoader = ({
         return <Shield className="w-8 h-8 text-white" />;
     }
   };
+
+  useEffect(()=>{
+    document.documentElement.classList.add("dark")
+  },[])
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">

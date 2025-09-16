@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import LoginPage from '../pages/auth/Login'
 import { useState } from 'react'
-import AuthLoader from './AuthLoader'
+import AuthLoader from "./AuthLoader"
 
 function ProtectedRoute({children}) {
-  const [isLoggedIn , setIsLoggedIn] = useState(null)
+  const [isLoggedIn , setIsLoggedIn] = useState(false)
   const [loading , setLoading] = useState(false)
  useEffect(()=>{
 
@@ -22,8 +22,8 @@ function ProtectedRoute({children}) {
         }
       }
     )
-    setLoading(false)
     console.log(res.data)
+    setLoading(false)
 
     if(res.data.data.isLoggedIn === true){
       setIsLoggedIn(true)
@@ -43,9 +43,11 @@ function ProtectedRoute({children}) {
    if(isLoggedIn){
       return children
     }
-    if(loading){
-      return <AuthLoader />
+
+    if(!isLoggedIn && loading){
+      return <AuthLoader/>
     }
+
     return <LoginPage/>
 }
 
