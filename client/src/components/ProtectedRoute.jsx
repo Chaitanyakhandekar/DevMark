@@ -4,16 +4,15 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import LoginPage from '../pages/auth/Login'
 import { useState } from 'react'
-import AuthLoader from './AuthLoader'
+import AuthLoader from "./AuthLoader"
 
 function ProtectedRoute({children}) {
   const [isLoggedIn , setIsLoggedIn] = useState(null)
-  const [loading , setLoading] = useState(false)
+  const [loading , setLoading] = useState(true)
  useEffect(()=>{
 
 
     const checkAuth = async ()=>{
-      setLoading(true)
         const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/is-logged-in`,
       {
         withCredentials:true,
@@ -22,7 +21,6 @@ function ProtectedRoute({children}) {
         }
       }
     )
-    setLoading(false)
     console.log(res.data)
 
     if(res.data.data.isLoggedIn === true){
@@ -43,10 +41,9 @@ function ProtectedRoute({children}) {
    if(isLoggedIn){
       return children
     }
-    if(loading){
-      return <AuthLoader />
-    }
-    return <LoginPage/>
+
+
+    return loading && <AuthLoader/> || <LoginPage/>
 }
 
 export default ProtectedRoute
