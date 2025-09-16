@@ -36,8 +36,6 @@ function ProtectedRoute({children}) {
 
     checkAuth();
 
-  
-
  },[])
 
    if(isLoggedIn){

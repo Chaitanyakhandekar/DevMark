@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import TestLoader from "../../test/TestLoader";
 
 
-export default function LoginPage() {
+export default function LoginPage({nextPage="/home"}) {
 
   const navigate = useNavigate();
   const [user,setUser] = React.useState({ email: "", password: "" });
@@ -34,7 +34,7 @@ export default function LoginPage() {
         title: 'Login Successful',
         text: 'Welcome back!',
       });
-      navigate("/home");
+      navigate(nextPage);
     }else{
       Swal.fire({
         icon: 'error',

@@ -26,17 +26,21 @@ import {
 } from 'lucide-react';
 import MDEditor from "@uiw/react-md-editor"
 import rehypeHighlights from "rehype-highlight"
+import SpinLoader from "../../../components/SpinLoader"
+import Swal from 'sweetalert2'
+
 
 
 function CreateBlogPage() {
 
     const [tags,setTags] = useState([])
     const [error,setError] = useState(null)
+    const [loading,setLoading] = useState(false)
 
     const [blogData,setBlogData] = useState({
         content: "",
         title : "Hello",
-        status : "draft",
+        status : "published",
         category : "Full Stack",
         tags : "",
         words : 0,
@@ -52,7 +56,22 @@ function CreateBlogPage() {
         })
     }
 
+    const clearData = () => {
+        setBlogData({
+            content: "",
+            title : "Hello",
+            status : "published",
+            category : "Full Stack",
+            tags : "",
+            words : 0,
+            images: [],
+            characters : 0,
+            readingTime : 0
+        })
+    }
+
     const publishBlog = async () => {
+        setLoading(true)
         try {
             console.log("PublishBlog :: blogData :: ", blogData);
             
@@ -79,10 +98,38 @@ function CreateBlogPage() {
                 }
             });
 
+            console.log(res.data.success)
+
+            if(res.data.success){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Blog Published',
+                    text: 'Your blog has been published successfully!',
+                    background: '#1f2936',
+                    color: '#c9d1d9',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+
+                clearData();
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Blog Not Published',
+                    text: 'There was an error publishing your blog.',
+                    background: '#1f2936',
+                    color: '#c9d1d9'
+                    
+                });
+            }
             console.log("PublishedBlog :: Response :: ", res.data);
         } catch (error) {
             setError(error.message)
             console.log("PublishedBlog :: Error :: ", error)
+        }
+        finally{
+            setLoading(false)
         }
     }
 
@@ -102,14 +149,18 @@ function CreateBlogPage() {
             words : words.length,
             characters : characters
         })
-        console.log("words = ",words.length)
-        console.log("characters = ",characters)
+      
 
     },[blogData.content])
     
     useEffect(() => {
         const html = document.documentElement
         html.classList.add("dark")
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
     }, [])
 
     const categories = [
@@ -158,10 +209,15 @@ function CreateBlogPage() {
                     </div>
 
                     <div className="h-full flex items-center gap-3 ">
-                        <button className='text-md px-3 py-2 hover:bg-gray-600 rounded-md'>Save Draft</button>
+                        <button 
+                        disabled={blogData.content.trim().length === 0}
+                        title={blogData.content.trim().length === 0 ? "Cannot Save Empty Blog" : "Save Blog as Draft"}
+                        className='text-md px-3 py-2 hover:bg-gray-600 rounded-md disabled:cursor-not-allowed disabled:text-gray-400'>Save Draft</button>
                         <button
                         onClick={publishBlog}
-                        className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white  font-semibold rounded-md px-3 text-lg py-1">Publish</button>
+                        disabled={blogData.content.trim().length === 0}
+                        title={blogData.content.trim().length === 0 ? "Cannot Publish Empty Blog" : "Publish Blog"}
+                        className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] disabled:text-gray-400 disabled:cursor-not-allowed text-white  font-semibold rounded-md px-3 text-lg py-1 ">{loading ? <SpinLoader/> : "Publish"}</button>
                     </div>
                 </div>
             </nav>
@@ -212,7 +268,7 @@ function CreateBlogPage() {
 
                     <div className="w-full flex flex-col gap-5 dark:bg-[#1f2936] p-5 rounded-md">
                             <h1 className="text-white text-md font-bold">Tags</h1>
-                            <div className="flex w-full gap-3 items-center ">
+                            <div className="flex w-full gap-5 items-center flex-col text-gray-300">
                                  <textarea
                                   className='w-full h-20 dark:bg-[#374150] dark:text-white border-none outline-none p-2 rounded-md'
                                    placeholder='Add a tag'
