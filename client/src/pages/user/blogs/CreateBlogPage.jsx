@@ -243,21 +243,26 @@ function CreateBlogPage() {
                         <div className="w-full flex flex-col gap-2 text-gray-300">
                             <label>Status</label>
 
-                            <select className='dark:bg-[#374150] border-none outline-none p-2 rounded-md'>
-                                <option selected={blogData.status === "draft"}>Draft</option>
-                                <option selected={blogData.status === "published"}>Published</option>
-                                <option selected={blogData.status === "private"}>Private</option>
+                            <select value={blogData.status} onChange={(e) => setBlogData({ ...blogData, status: e.target.value })} className='dark:bg-[#374150] border-none outline-none p-2 rounded-md'>
+                                <option value="draft">Draft</option>
+                                <option value="published">Published</option>
+                                <option value="private">Private</option>
                             </select>
                         </div>
 
                         <div className="w-full flex flex-col gap-2 text-gray-300">
                             <label>Category</label>
 
-                            <select className='dark:bg-[#374150] border-none outline-none p-2 rounded-md'>
+                            <select
+                            value={blogData.category} 
+                            onChange={(e)=>{
+                                setBlogData({...blogData , category:e.target.value})
+                            }}
+                             className='dark:bg-[#374150] border-none outline-none p-2 rounded-md'>
 
                                 {
                                     categories.map((category,index)=>(
-                                        <option key={index} selected={blogData.category === category}>{category}</option>
+                                        <option key={index} value={category}>{category}</option>
                                     ))
                                 }
 
