@@ -11,10 +11,11 @@ import Home1 from './pages/public/Home'
 import Home from './pages/public/Home1'
 import VerifyConfirm from './pages/auth/VerifyConfirm'
 import TestLoader from './test/TestLoader'
-import BlogEditor from './pages/user/CreateB'
 import CreateBlogPage from './pages/user/blogs/CreateBlogPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import AuthLoaderDemo from './components/AuthLoader'
+import MainFeed from './pages/user/feed/MainFeed'
+import MainFeed1 from './pages/user/feed/MainFeed1'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -26,6 +27,8 @@ function App() {
       <Route path="/loader" element={<AuthLoaderDemo />} />
 
       <Route path="/user/blogs/create" element={<ProtectedRoute><CreateBlogPage/></ProtectedRoute>} />
+      <Route path="/user/feed1" element={<ProtectedRoute><MainFeed1/></ProtectedRoute>} />
+      <Route path="/user/feed" element={<ProtectedRoute><MainFeed/></ProtectedRoute>} />
 
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
