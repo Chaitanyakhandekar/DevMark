@@ -32,15 +32,36 @@ import {
   Tag,
   Plus,
   Star,
-  MoveDown
+  MoveDown,
+  Pen
 } from 'lucide-react';
+import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 function MainFeed() {
 
   const [searchFocused, setSearchFocused] = React.useState(false);
   const [isDark, setIsDark] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("All");
 
+  const categories = [
+    { name: "All", icon: <Home size={16} />, totalPosts: 1200 },
+    { name: "Javascript", icon: <Code size={16} />, totalPosts: 800 },
+    { name: "React", icon: <Zap size={16} />, totalPosts: 600 },
+    { name: "Node.js", icon: <Briefcase size={16} />, totalPosts: 400 },
+    { name: "Career", icon: <Coffee size={16} />, totalPosts: 300 },
+    { name: "Open Source", icon: <FaGithub size={16} />, totalPosts: 200 },
+  ]
+
+  const trendingTags = [
+    { name: "#WebDev", totalPosts: 1200 },
+    { name: "MachineLearning", totalPosts: 800 },
+    { name: "#DevOps", totalPosts: 600 },
+    { name: "#CloudComputing", totalPosts: 400 },
+    { name: "#Debugging", totalPosts: 300 },
+    { name: "#Performance", totalPosts: 200 },
+    { name: "#Mobile", totalPosts: 100 },
+  ]
 
   const toggleDarkMode = () => {
     setIsDark(!isDark);
@@ -128,10 +149,10 @@ function MainFeed() {
           <button className="text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] px-4 py-2 rounded-md">Write Blog</button>
 
           <div
-          onClick={()=>{
-            setIsProfileMenuOpen(!isProfileMenuOpen)
-          }}
-          className={`flex items-center gap-2 hover:bg-gray-700 ${isProfileMenuOpen ? "bg-gray-700" : ""} px-2 py-1 rounded-md cursor-pointer`}>
+            onClick={() => {
+              setIsProfileMenuOpen(!isProfileMenuOpen)
+            }}
+            className={`flex items-center gap-2 hover:bg-gray-700 ${isProfileMenuOpen ? "bg-gray-700" : ""} px-2 py-1 rounded-md cursor-pointer`}>
             <div className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold rounded-[50%] w-9 h-9 flex justify-center items-center">JD</div>
             <ChevronDown className='text-gray-400 cursor-pointer' size={20} />
           </div>
@@ -157,6 +178,112 @@ function MainFeed() {
         </div>
 
       </nav>
+
+
+
+      {/* Main Content */}
+      <main className='border-2 w-full flex'>
+
+        {/* Section 1 Left Sidebar*/}
+        <section className='border-2 border-blue-700 text-black dark:text-white '>
+
+          {/* Categories */}
+          <div className="w-60 flex flex-col gap-3 py-3 px-5 text-md items-start  border-2 border-red-800 dark:bg-[#1f2936] rounded-md">
+
+            <div className=" flex items-center gap-3 font-bold">
+              <Filter size={20} className='font-bold' />
+              Categories
+            </div>
+
+            {
+              categories.map((category, index) => (
+                <div
+                  className={`w-full flex items-center justify-between px-2 py-2 rounded-md text-black dark:text-white   ${activeCategory === category.name ? "bg-[#4b78ef] text-white" : ""}`}
+                  onClick={() => {setActiveCategory(category.name) ; console.log(activeCategory)}}
+                  key={index}>
+                  <div className="flex items-center gap-2 px-2 py-1">
+                    {category.icon}
+                  <h1>{category.name}</h1>
+                  </div>
+                  <p className='text-sm text-gray-300'>{category.totalPosts}</p>
+                </div>
+              ))
+            }
+
+          </div>
+
+          {/* Trending Tags */}
+          <div className="w-60 border-2 border-green-800 text-md dark:bg-[#1f2936] flex flex-col items-start justify-start gap-3 py-3 px-3 rounded-md">
+            <div className="flex items-center gap-3 font-bold py-3 px-2">
+              <TrendingUp size={20} />
+              <h1>Trending Tags</h1>
+            </div>
+
+            {
+              trendingTags.map((tag,index)=>(
+                <div
+                className="w-full text-start px-3"
+                key={index}
+                >
+                  <p className="">{tag.name}</p>
+                </div>
+              ))
+            }
+          </div>
+
+
+          {/*Quick actions */}
+
+          <div className="w-60 border-2 border-blue-800 dark:bg-[#1f2936] flex flex-col gap-3 pt-5 pb-7 px-3 rounded-md">
+            <h1 className='font-bold'>Quick Actions</h1>
+
+            <div className="flex items-center gap-3 px-3 py-2">
+              <Pen size={19}/>
+              <h1 className="">Write Blog</h1>
+            </div>
+            <div className="flex items-center gap-3 px-3 py-2">
+              <BookOpen size={19}/>
+              <h1 className="">My Blogs</h1>
+            </div>
+            <div className="flex items-center gap-3 px-3 py-2">
+              <Bookmark size={19}/>
+              <h1 className="">Saved Blogs</h1>
+            </div>
+          </div>
+
+        </section>
+
+        {/* Section 2 Feed */}
+        <section className='border-2 border-red-700 flex-1 flex flex-col gap-3 px-5 py-3'>
+
+            {/* Feed Filter */}
+            <div className="border-2 border-yellow-800 bg-[#1f2936] text-white w-[38%] h-16 flex items-center justify-between gap-5 px-5 rounded-md">
+
+              <div className="flex items-center gap-3">
+                  <h1>Sort by:</h1>
+              
+              <select className='bg-[#1f2936] border-[0.2px] border-gray-600 p-2 rounded-md' name="" id="">
+                <option value="Latest">Latest</option>
+                <option value="Oldest">Oldest</option>
+                <option value="Most Viewed">Most Viewed</option>
+                <option value="Most Liked">Most Liked</option>
+                <option value="Most Commented">Most Commented</option>
+              </select>
+              </div>
+
+              <div className="flex items-center">
+                <Clock size={16} className='inline-block mr-1 text-gray-500'/>
+                <p className='text-sm text-gray-500'>Last Updated : 2 minutes ago</p>
+              </div>
+            </div>
+
+        </section>
+
+
+        {/* Section 3 Right Sidebar */}
+        <section></section>
+
+      </main>
 
     </div>
   )
