@@ -37,6 +37,8 @@ import {
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
+import BlogCard from '../../../components/BlogCard';
+
 function MainFeed() {
 
   const [searchFocused, setSearchFocused] = React.useState(false);
@@ -254,10 +256,10 @@ function MainFeed() {
         </section>
 
         {/* Section 2 Feed */}
-        <section className='border-2 border-red-700 flex-1 flex flex-col gap-3 px-5 py-3'>
+        <section className='md:w-[20%] max-w-[700px] border-2 border-red-700 flex-1 flex flex-col gap-3 px-5 py-3'>
 
             {/* Feed Filter */}
-            <div className="border-2 border-yellow-800 bg-[#1f2936] text-white w-[38%] h-16 flex items-center justify-between gap-5 px-5 rounded-md">
+            <div className="border-2 border-yellow-800 bg-[#1f2936] text-white w-full max-w-[1000px] h-16 flex items-center justify-between gap-5 px-5 rounded-md">
 
               <div className="flex items-center gap-3">
                   <h1>Sort by:</h1>
@@ -275,6 +277,10 @@ function MainFeed() {
                 <Clock size={16} className='inline-block mr-1 text-gray-500'/>
                 <p className='text-sm text-gray-500'>Last Updated : 2 minutes ago</p>
               </div>
+            </div>
+
+            <div className="w-full border-2 border-white text-white">
+              <BlogCard/>
             </div>
 
         </section>
