@@ -84,7 +84,7 @@ function MainFeed() {
   }
 
   return (
-    <div className="main-feed w-screen h-screen dark:bg-[#111826]">
+    <div className="main-feed w-screen dark:bg-[#111826]">
 
       {/* Navbar */}
       <nav className="w-full h-[4rem] bg-[#1f2936] flex items-center justify-center gap-5 px-4 sticky top-0 z-50">
@@ -280,6 +280,8 @@ function MainFeed() {
             </div>
 
             <div className="w-full border-2 border-white text-white">
+              <BlogCard/>
+              <BlogCard/>
               <BlogCard/>
             </div>
 
