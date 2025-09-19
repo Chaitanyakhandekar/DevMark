@@ -184,13 +184,13 @@ function MainFeed() {
 
 
       {/* Main Content */}
-      <main className='border-2 w-full flex'>
+      <main className='border-1 w-full flex'>
 
         {/* Section 1 Left Sidebar*/}
-        <section className='border-2 border-blue-700 text-black dark:text-white '>
+        <section className='border-1 border-blue-700 text-black dark:text-white flex flex-col gap-5 py-3 '>
 
           {/* Categories */}
-          <div className="w-60 flex flex-col gap-3 py-3 px-5 text-md items-start  border-2 border-red-800 dark:bg-[#1f2936] rounded-md">
+          <div className="w-60 flex flex-col gap-3 py-3 px-5 text-md items-start  border-[0.2px] border-gray-700 dark:bg-[#1f2936] rounded-md">
 
             <div className=" flex items-center gap-3 font-bold">
               <Filter size={20} className='font-bold' />
@@ -215,7 +215,7 @@ function MainFeed() {
           </div>
 
           {/* Trending Tags */}
-          <div className="w-60 border-2 border-green-800 text-md dark:bg-[#1f2936] flex flex-col items-start justify-start gap-3 py-3 px-3 rounded-md">
+          <div className="w-60 border-[0.2px] border-gray-700 text-md dark:bg-[#1f2936] flex flex-col items-start justify-start gap-3 py-3 px-3 rounded-md">
             <div className="flex items-center gap-3 font-bold py-3 px-2">
               <TrendingUp size={20} />
               <h1>Trending Tags</h1>
@@ -236,7 +236,7 @@ function MainFeed() {
 
           {/*Quick actions */}
 
-          <div className="w-60 border-2 border-blue-800 dark:bg-[#1f2936] flex flex-col gap-3 pt-5 pb-7 px-3 rounded-md">
+          <div className="w-60 border-[0.2px] border-gray-700 dark:bg-[#1f2936] flex flex-col gap-3 pt-5 pb-7 px-3 rounded-md">
             <h1 className='font-bold'>Quick Actions</h1>
 
             <div className="flex items-center gap-3 px-3 py-2">
@@ -256,10 +256,10 @@ function MainFeed() {
         </section>
 
         {/* Section 2 Feed */}
-        <section className='md:w-[20%] max-w-[700px] border-2 border-red-700 flex-1 flex flex-col gap-3 px-5 py-3'>
+        <section className='md:w-[20%] max-w-[700px] border-1 border-red-700 flex-1 flex flex-col gap-3 px-5 py-3'>
 
             {/* Feed Filter */}
-            <div className="border-2 border-yellow-800 bg-[#1f2936] text-white w-full max-w-[1000px] h-16 flex items-center justify-between gap-5 px-5 rounded-md">
+            <div className="border-[0.2px] border-gray-700 bg-[#1f2936] text-white w-full max-w-[1000px] h-16 flex items-center justify-between gap-5 px-5 rounded-md">
 
               <div className="flex items-center gap-3">
                   <h1>Sort by:</h1>
@@ -279,7 +279,7 @@ function MainFeed() {
               </div>
             </div>
 
-            <div className="w-full border-2 border-white text-white">
+            <div className="w-full border-1 border-white text-white flex flex-col gap-5">
               <BlogCard/>
               <BlogCard/>
               <BlogCard/>
