@@ -38,6 +38,10 @@ import {
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 import BlogCard from '../../../components/BlogCard';
+import DefaultProfile from '../../../components/DefaultProfile';
+import ProfileMeta from '../../../components/ProfileMeta';
+import FollowerProfileMeta from '../../../components/feed page/FollowerProfileMeta';
+import EventMetaCard from '../../../components/feed page/EventMetaCard';
 
 function MainFeed() {
 
@@ -201,11 +205,11 @@ function MainFeed() {
               categories.map((category, index) => (
                 <div
                   className={`w-full flex items-center justify-between px-2 py-2 rounded-md text-black dark:text-white   ${activeCategory === category.name ? "bg-[#4b78ef] text-white" : ""}`}
-                  onClick={() => {setActiveCategory(category.name) ; console.log(activeCategory)}}
+                  onClick={() => { setActiveCategory(category.name); console.log(activeCategory) }}
                   key={index}>
                   <div className="flex items-center gap-2 px-2 py-1">
                     {category.icon}
-                  <h1>{category.name}</h1>
+                    <h1>{category.name}</h1>
                   </div>
                   <p className='text-sm text-gray-300'>{category.totalPosts}</p>
                 </div>
@@ -222,10 +226,10 @@ function MainFeed() {
             </div>
 
             {
-              trendingTags.map((tag,index)=>(
+              trendingTags.map((tag, index) => (
                 <div
-                className="w-full text-start px-3"
-                key={index}
+                  className="w-full text-start px-3"
+                  key={index}
                 >
                   <p className="">{tag.name}</p>
                 </div>
@@ -240,15 +244,15 @@ function MainFeed() {
             <h1 className='font-bold'>Quick Actions</h1>
 
             <div className="flex items-center gap-3 px-3 py-2">
-              <Pen size={19}/>
+              <Pen size={19} />
               <h1 className="">Write Blog</h1>
             </div>
             <div className="flex items-center gap-3 px-3 py-2">
-              <BookOpen size={19}/>
+              <BookOpen size={19} />
               <h1 className="">My Blogs</h1>
             </div>
             <div className="flex items-center gap-3 px-3 py-2">
-              <Bookmark size={19}/>
+              <Bookmark size={19} />
               <h1 className="">Saved Blogs</h1>
             </div>
           </div>
@@ -258,12 +262,12 @@ function MainFeed() {
         {/* Section 2 Feed */}
         <section className='md:w-[20%] max-w-[700px] border-1 border-red-700 flex-1 flex flex-col gap-3 px-5 py-3'>
 
-            {/* Feed Filter */}
-            <div className="border-[0.2px] border-gray-700 bg-[#1f2936] text-white w-full max-w-[1000px] h-16 flex items-center justify-between gap-5 px-5 rounded-md">
+          {/* Feed Filter */}
+          <div className="border-[0.2px] border-gray-700 bg-[#1f2936] text-white w-full max-w-[1000px] h-16 flex items-center justify-between gap-5 px-5 rounded-md">
 
-              <div className="flex items-center gap-3">
-                  <h1>Sort by:</h1>
-              
+            <div className="flex items-center gap-3">
+              <h1>Sort by:</h1>
+
               <select className='bg-[#1f2936] border-[0.2px] border-gray-600 p-2 rounded-md' name="" id="">
                 <option value="Latest">Latest</option>
                 <option value="Oldest">Oldest</option>
@@ -271,27 +275,120 @@ function MainFeed() {
                 <option value="Most Liked">Most Liked</option>
                 <option value="Most Commented">Most Commented</option>
               </select>
-              </div>
-
-              <div className="flex items-center">
-                <Clock size={16} className='inline-block mr-1 text-gray-500'/>
-                <p className='text-sm text-gray-500'>Last Updated : 2 minutes ago</p>
-              </div>
             </div>
 
-            <div className="w-full border-1 border-white text-white flex flex-col items-center gap-5">
-              <BlogCard/>
-              <BlogCard/>
-              <BlogCard/>
-
-              <button className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">Load More Posts</button>
+            <div className="flex items-center">
+              <Clock size={16} className='inline-block mr-1 text-gray-500' />
+              <p className='text-sm text-gray-500'>Last Updated : 2 minutes ago</p>
             </div>
+          </div>
+
+          <div className="w-full border-1 border-white text-white flex flex-col items-center gap-5">
+            <BlogCard />
+            <BlogCard />
+            <BlogCard />
+
+            <button className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">Load More Posts</button>
+          </div>
 
         </section>
 
 
         {/* Section 3 Right Sidebar */}
-        <section></section>
+        <section className="w-[18%] border-1 border-blue-700 text-black dark:text-white">
+
+          {/* Trending This Week */}
+          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md bg-[#1f2936]">
+            <div className="flex items-center gap-3 font-bold">
+              <TrendingUp className='font-bold' size={19} />
+              Trending This Week
+            </div>
+
+            {/* Profile Section */}
+            <ProfileMeta
+              title={"10 VS Code Extensions Every Developer Needs"}
+              views={"45.8k"}
+              username={"Tech Insider"}
+              profileText='1'
+            />
+            <ProfileMeta
+              title={"Why TypeScript is Taking Over JavaScript"}
+              views={"38.7k"}
+              username={"Code Masters"}
+              profileText='2'
+
+            />
+            <ProfileMeta
+              title={"Building Your First Docker Container"}
+              views={"29.3k"}
+              username={"DevOps Daily"}
+              profileText='3'
+
+            />
+
+          </div>
+
+
+          {/* Suggested Developers */}
+          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md bg-[#1f2936]">
+            <div className="flex items-center gap-3 font-bold">
+              <Users className='font-bold' size={19} />
+              Suggested Developers
+            </div>
+
+            <FollowerProfileMeta
+              username={"DevOps Daily"}
+              role={"Full Stack dev"}
+              followers={"29.3k"}
+              profileText='JS'
+            />
+            <FollowerProfileMeta
+              username={"Emma Wilson"}
+              followers={"29.3k"}
+              role={"React Expert"}
+              profileText='EW'
+            />
+            <FollowerProfileMeta
+              username={"David Park"}
+              followers={"18.7k"}
+              role={"DevOps Engineer"}
+              profileText='DP'
+            />
+
+          </div>
+
+          {/* Upcoming Events */}
+
+          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pr-5 pb-10 rounded-md bg-[#1f2936]">
+            <div className="flex items-center gap-3 font-bold">
+              <Calendar className='font-bold' size={19} />
+              Upcomming Events
+            </div>
+
+            <EventMetaCard
+              title="React Conf 2025"
+              time="March 15-16, Virtual"
+              bg="bg-[#222a45]"
+              border="border-[#233fa0]"
+              linkColor="text-[#62a5f6]"
+            />
+            <EventMetaCard
+              title="Open Source Summit"
+              time="March 15-16, Virtual"
+              bg="bg-[#1a3137]"
+              border="border-[#184936]"
+              linkColor="text-[#44dd7b]"
+            />
+            <EventMetaCard
+              title="AI & Dev Summit"
+              time="May 10-12, Online"
+              bg="bg-[#32273c]"
+              border="border-[#602692]"
+              linkColor="text-[#c286ec]"
+            />
+          </div>
+
+        </section>
 
       </main>
 
