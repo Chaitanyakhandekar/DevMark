@@ -279,10 +279,12 @@ function MainFeed() {
               </div>
             </div>
 
-            <div className="w-full border-1 border-white text-white flex flex-col gap-5">
+            <div className="w-full border-1 border-white text-white flex flex-col items-center gap-5">
               <BlogCard/>
               <BlogCard/>
               <BlogCard/>
+
+              <button className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">Load More Posts</button>
             </div>
 
         </section>

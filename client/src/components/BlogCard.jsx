@@ -38,10 +38,15 @@ import {
 function BlogCard({ tags = ["#React", "#Javascript", "#Architecture", "#Performance"] }) {
     return (
         <div className="w-full bg-[#1f2936] rounded-lg border-[0.2px] border-gray-700">
-            <div className="w-full ">
+            <div className="w-full relative">
+                <div className="w-full ">
                 <img
                     className='max-h-[180px] max-w-[1000px] w-full fit-cover rounded-tr-md rounded-tl-md'
                     src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop" alt="" />
+            </div>
+                <div className="px-3 py-2 bg-[#19181e]/75 background-blur-md absolute top-5 right-5 rounded-xl">
+                    8 min read
+                </div>
             </div>
 
             <div className="w-full border-1 border-red-800 flex flex-col items-start gap-5 p-5 rounded-bl-md rounded-br-md">
