@@ -35,14 +35,14 @@ import {
 } from 'lucide-react';
 
 
-function BlogCard({ tags = ["#React", "#Javascript", "#Architecture", "#Performance"] }) {
+function BlogCard({ tags = ["#React", "#Javascript", "#Architecture", "#Performance"] , title="" , imgUrl="" , description="" , author="" }) {
     return (
         <div className="w-full bg-[#1f2936] rounded-lg border-[0.2px] border-gray-700">
             <div className="w-full relative">
                 <div className="w-full ">
                 <img
                     className='max-h-[180px] max-w-[1000px] w-full fit-cover rounded-tr-md rounded-tl-md'
-                    src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop" alt="" />
+                    src={imgUrl} alt="" />
             </div>
                 <div className="px-3 py-2 bg-[#19181e]/75 background-blur-md absolute top-5 right-5 rounded-xl">
                     8 min read
@@ -67,9 +67,9 @@ function BlogCard({ tags = ["#React", "#Javascript", "#Architecture", "#Performa
                 </div>
         
 
-                    <h1 className='text-xl font-bold'>Building Scalable React Applications: A Complete Guide</h1>
+                    <h1 className='text-xl font-bold'>{title}</h1>
                     <p className="max-w-[95%]">
-                        Learn how to architect React applications that can grow with your team and user base. We'll cover component patterns, state management, and performance optimization techniques.
+                        {description}
                     </p>
 
                     <div className="w-full flex items-center justify-start gap-5 px-3 ">

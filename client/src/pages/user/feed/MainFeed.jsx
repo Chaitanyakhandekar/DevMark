@@ -188,7 +188,7 @@ function MainFeed() {
 
 
       {/* Main Content */}
-      <main className='border-1 w-full flex'>
+      <main className='border-1 w-full flex justify-center items-start gap-3'>
 
         {/* Section 1 Left Sidebar*/}
         <section className='border-1 border-blue-700 text-black dark:text-white flex flex-col gap-5 py-3 '>
@@ -284,9 +284,24 @@ function MainFeed() {
           </div>
 
           <div className="w-full border-1 border-white text-white flex flex-col items-center gap-5">
-            <BlogCard />
-            <BlogCard />
-            <BlogCard />
+            <BlogCard
+            title="Building Scalable React Applications: A Complete Guide"
+            imgUrl='https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop'
+            description="Learn how to architect React applications that can grow with your team and user base. We'll cover component patterns, state management, and performance optimization techniques."
+            />
+            <BlogCard
+            title="The Art of Clean Code: Principles Every Developer Should Know"
+            imgUrl='https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop'
+            description="Explore the fundamental principles of writing clean, maintainable code that your future self and team members will thank you for."
+
+            />
+            <BlogCard
+            title="Mastering Async/Await: From Callbacks to Modern JavaScript"
+            imgUrl='https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop'
+            description="A deep dive into asynchronous JavaScript, from callback hell to promises and async/await. Includes real-world examples and common pitfalls."
+
+            />
+           
 
             <button className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">Load More Posts</button>
           </div>
@@ -295,7 +310,7 @@ function MainFeed() {
 
 
         {/* Section 3 Right Sidebar */}
-        <section className="w-[18%] border-1 border-blue-700 text-black dark:text-white">
+        <section className="w-[18%] border-1 border-blue-700 text-black dark:text-white flex flex-col gap-5 py-3">
 
           {/* Trending This Week */}
           <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md bg-[#1f2936]">
