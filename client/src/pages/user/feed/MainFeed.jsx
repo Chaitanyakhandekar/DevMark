@@ -37,11 +37,13 @@ import {
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
+import {logout} from '../../../services/logout.service'
 import BlogCard from '../../../components/BlogCard';
 import DefaultProfile from '../../../components/DefaultProfile';
 import ProfileMeta from '../../../components/ProfileMeta';
 import FollowerProfileMeta from '../../../components/feed page/FollowerProfileMeta';
 import EventMetaCard from '../../../components/feed page/EventMetaCard';
+import { useNavigate } from 'react-router-dom';
 
 function MainFeed() {
 
@@ -49,6 +51,7 @@ function MainFeed() {
   const [isDark, setIsDark] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
+  const navigate = useNavigate();
 
   const categories = [
     { name: "All", icon: <Home size={16} />, totalPosts: 1200 },
@@ -152,7 +155,11 @@ function MainFeed() {
             <div className='w-3 h-3 rounded-[50%] bg-red-500 absolute top-[-0.4rem] right-[-0.5rem]'></div>
           </div>
 
-          <button className="text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] px-4 py-2 rounded-md">Write Blog</button>
+          <button
+          onClick = {()=>{
+            navigate("/user/blogs/create")
+          }}
+          className="text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] px-4 py-2 rounded-md">Write Blog</button>
 
           <div
             onClick={() => {
@@ -177,10 +184,11 @@ function MainFeed() {
 
             <div className='flex items-center gap-2 border-t border-gray-600 pt-2 cursor-pointer'>
               <LogOut className='text-red-500' size={20} />
-              <h1 className='text-red-500'>Logout</h1>
+              <button
+              onClick={()=>{logout(); navigate("/login")}}
+              className='text-red-500'>Logout</button>
             </div>
           </div>
-
         </div>
 
       </nav>

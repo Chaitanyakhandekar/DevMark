@@ -114,6 +114,44 @@ const loginUser = asyncHandler(async (req,res)=>{
   )
 })
 
+const logoutUser = asyncHandler(async(req,res)=>{
+
+  const id = req.user._id;
+
+  if(!id || !mongoose.Types.ObjectId.isValid(id)){
+    throw new ApiError(401,"Unauthorize Request")
+  }
+
+  const user = await User.findById(id)
+
+  if(!user){
+    throw new ApiError(404,"Cannot Find User With Given Id")
+  }
+
+  user.refreshToken = undefined;
+
+  await user.save({validateBeforeSave:false})
+
+  return res
+        .status(200)
+        .clearCookie("accessToken",{
+          httpOnly:true,
+          secure:process.env.NODE_ENV === "production",
+          sameSite:process.env.NODE_ENV === "production" ? "none" : "lax",
+          maxAge: 24 * 60 * 60 * 1000 // 1 day
+        })
+        .clearCookie("refreshToken",{
+          httpOnly:true,
+          secure:process.env.NODE_ENV === "production",
+          sameSite:process.env.NODE_ENV === "production" ? "none" : "lax",
+          maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        })
+        .json(
+          new ApiResponse(200,"Logout Successful")
+        )
+
+})
+
 const verifyUser = asyncHandler(async (req, res) => {
     const { token } = req.params;
 
@@ -278,5 +316,6 @@ export {
     verifyUser,
     isVerifiedUser,
     loginUser,
-    isLoggedInUser
+    isLoggedInUser,
+    logoutUser
 }
