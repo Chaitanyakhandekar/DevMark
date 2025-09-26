@@ -37,7 +37,7 @@ import {
 
 function BlogCard({ tags = ["#React", "#Javascript", "#Architecture", "#Performance"] , title="" , imgUrl="" , description="" , author="" }) {
     return (
-        <div className="w-full bg-[#1f2936] rounded-lg border-[0.2px] border-gray-700">
+        <div className="w-[100%] md:w-full dark:bg-[#1f2936] rounded-lg border-[0.2px] border-gray-700">
             <div className="w-full relative">
                 <div className="w-full ">
                 <img
@@ -49,10 +49,10 @@ function BlogCard({ tags = ["#React", "#Javascript", "#Architecture", "#Performa
                 </div>
             </div>
 
-            <div className="w-full border-1 border-red-800 flex flex-col items-start gap-5 p-5 rounded-bl-md rounded-br-md">
+            <div className="w-full border-1 border-red-800 flex flex-col items-start gap-5 p-5 rounded-bl-md rounded-br-md text-black dark:text-white">
 
-                <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 bg-gradient-to-r from-[#4e76ef] to-[#8e3de6] rounded-[50%] flex justify-center items-center font-bold">SC</div>
+                <div className="flex items-center gap-3 ">
+                    <div className="w-11 h-11 bg-gradient-to-r from-[#4e76ef] to-[#8e3de6] rounded-[50%] flex justify-center items-center font-bold text-white">SC</div>
                     <div className='flex flex-col'>
                         <div className="flex items-center gap-2 font-bold">
                             Sarah Chen
@@ -72,7 +72,7 @@ function BlogCard({ tags = ["#React", "#Javascript", "#Architecture", "#Performa
                         {description}
                     </p>
 
-                    <div className="w-full flex items-center justify-start gap-5 px-3 ">
+                    <div className="w-full flex items-center flex-wrap justify-start gap-5 px-3 ">
                         {
                             tags.map((tag, index) => (
                                 <button key={index} className="">{tag}</button>

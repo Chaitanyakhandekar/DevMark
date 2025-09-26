@@ -94,7 +94,7 @@ function MainFeed() {
     <div className="main-feed w-screen dark:bg-[#111826]">
 
       {/* Navbar */}
-      <nav className="w-full h-[4rem] bg-[#1f2936] flex items-center justify-center gap-5 px-4 sticky top-0 z-50">
+      <nav className="hidden md:block w-full h-[4rem] bg-[#1f2936] md:flex md:items-center md:justify-center md:gap-5 md:px-0 md:sticky md:top-0 z-50">
 
         <div className="h-full flex justify-center items-center gap-2">
           <div className=" h-10 sm:h-10 w-10 sm:w-10 flex justify-center items-center bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-mono font-bold rounded-md">
@@ -199,7 +199,7 @@ function MainFeed() {
       <main className='border-1 w-full flex justify-center items-start gap-3'>
 
         {/* Section 1 Left Sidebar*/}
-        <section className='border-1 border-blue-700 text-black dark:text-white flex flex-col gap-5 py-3 '>
+        <section className='hidden sm:hidden md:block border-1 border-blue-700 text-black dark:text-white md:flex md:flex-col md:gap-5 md:py-3 '>
 
           {/* Categories */}
           <div className="w-60 flex flex-col gap-3 py-3 px-5 text-md items-start  border-[0.2px] border-gray-700 dark:bg-[#1f2936] rounded-md">
@@ -268,10 +268,10 @@ function MainFeed() {
         </section>
 
         {/* Section 2 Feed */}
-        <section className='md:w-[20%] max-w-[700px] border-1 border-red-700 flex-1 flex flex-col gap-3 px-5 py-3'>
+        <section className='md:w-[20%] max-w-[700px] border-1 border-red-700 flex-1 flex flex-col gap-3 px-5 py-3 '>
 
           {/* Feed Filter */}
-          <div className="border-[0.2px] border-gray-700 bg-[#1f2936] text-white w-full max-w-[1000px] h-16 flex items-center justify-between gap-5 px-5 rounded-md">
+          <div className="hidden md:block sticky top-5 md:top-20 z-10 mb-5 border-[0.2px] border-gray-700 bg-gray-700/70 backdrop-blur-md text-white w-full max-w-[1000px] h-16 flex items-center justify-between gap-5 px-5 rounded-md">
 
             <div className="flex items-center gap-3">
               <h1>Sort by:</h1>
@@ -287,7 +287,7 @@ function MainFeed() {
 
             <div className="flex items-center">
               <Clock size={16} className='inline-block mr-1 text-gray-500' />
-              <p className='text-sm text-gray-500'>Last Updated : 2 minutes ago</p>
+              <p className='text-sm text-gray-900 dark:text-gray-500 '>Last Updated : 2 minutes ago</p>
             </div>
           </div>
 
@@ -318,10 +318,10 @@ function MainFeed() {
 
 
         {/* Section 3 Right Sidebar */}
-        <section className="w-[18%] border-1 border-blue-700 text-black dark:text-white flex flex-col gap-5 py-3">
+        <section className="hidden sm:hidden lg:block w-[18%] max-w-[350px] border-1 border-blue-700 text-black dark:text-white lg:flex lg:flex-col lg:gap-5 lg:py-3">
 
           {/* Trending This Week */}
-          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md bg-[#1f2936]">
+          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md dark:bg-[#1f2936]">
             <div className="flex items-center gap-3 font-bold">
               <TrendingUp className='font-bold' size={19} />
               Trending This Week
@@ -353,7 +353,7 @@ function MainFeed() {
 
 
           {/* Suggested Developers */}
-          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md bg-[#1f2936]">
+          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md dark:bg-[#1f2936]">
             <div className="flex items-center gap-3 font-bold">
               <Users className='font-bold' size={19} />
               Suggested Developers
@@ -382,7 +382,7 @@ function MainFeed() {
 
           {/* Upcoming Events */}
 
-          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pr-5 pb-10 rounded-md bg-[#1f2936]">
+          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pr-5 pb-10 rounded-md dark:bg-[#1f2936]">
             <div className="flex items-center gap-3 font-bold">
               <Calendar className='font-bold' size={19} />
               Upcomming Events
