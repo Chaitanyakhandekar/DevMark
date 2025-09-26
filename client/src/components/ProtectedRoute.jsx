@@ -25,7 +25,7 @@ function ProtectedRoute({children}) {
     console.log(res.data)
     setLoading(false)
 
-    if(res.data.data.isLoggedIn === true){
+    if(res?.data?.data?.isLoggedIn === true){
       setIsLoggedIn(true)
     }
     else{

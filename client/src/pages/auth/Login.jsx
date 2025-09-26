@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import TestLoader from "../../test/TestLoader";
 
 
-export default function LoginPage({nextPage="/home"}) {
+export default function LoginPage({nextPage="/user/feed"}) {
 
   const navigate = useNavigate();
   const [user,setUser] = React.useState({ email: "", password: "" });

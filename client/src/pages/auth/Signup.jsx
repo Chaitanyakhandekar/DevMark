@@ -29,6 +29,7 @@ function Signup() {
     });
     const [loading, setLoading] = React.useState(false);
     const [emailSent, setEmailSent] = React.useState(false);
+    const [error, setError] = React.useState("");
 
     const clearForm = () => {
         setUser({
@@ -53,17 +54,24 @@ function Signup() {
         clearForm();
         setLoading(true);
         const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/register`,user)
-        setEmailSent(true)
-        Swal.fire({
-                    title: 'Email Verification',
-                    text: `Verification Link Sent on ${user.email}`,
-                    icon: 'success',
-                    confirmButtonText: 'Ok',
-                    timer: 2000,
-                    showConfirmButton: false,
-                    position: 'top-end',
-                    toast: true
-                      });
+
+        if(res.data.success){
+           setEmailSent(true)
+            Swal.fire({
+                          title: 'Email Verification',
+                          text: `Verification Link Sent on ${user.email}`,
+                          icon: 'success',
+                          confirmButtonText: 'Ok',
+                          timer: 2000,
+                          showConfirmButton: false,
+                          position: 'top-end',
+                          toast: true
+                            });
+        }
+        else{
+          setError(res.data.message);
+          setLoading(false);
+        }
 
         console.log("Response from server: ", res.data);
     }
@@ -200,7 +208,7 @@ function Signup() {
                     </button>
 
                     <p className="text-white font-mono">Already have an account ? <Link to="/login" className="text-[#04d8ff] cursor-pointer">Login</Link></p>
-
+                    <p className="text-md text-red-500 animate-pulse">{error && error}</p>
                 </div>
             </div>
         </div>
