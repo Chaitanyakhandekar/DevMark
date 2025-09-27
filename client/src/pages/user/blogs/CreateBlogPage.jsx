@@ -28,7 +28,7 @@ import MDEditor from "@uiw/react-md-editor"
 import rehypeHighlights from "rehype-highlight"
 import SpinLoader from "../../../components/SpinLoader"
 import Swal from 'sweetalert2'
-
+import MobileNavBottom from '../../../components/MobileNavBottom';
 
 
 function CreateBlogPage() {
@@ -321,6 +321,8 @@ function CreateBlogPage() {
 
                 </div>
             </div>
+
+            <MobileNavBottom />
 
         </div>
     )

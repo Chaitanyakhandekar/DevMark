@@ -37,7 +37,7 @@ import {
 
 function BlogCard({ tags = ["#React", "#Javascript", "#Architecture", "#Performance"] , title="" , imgUrl="" , description="" , author="" }) {
     return (
-        <div className="w-[100%] md:w-full dark:bg-[#1f2936] rounded-lg border-[0.2px] border-gray-700">
+        <div className="w-[100%] md:w-full dark:bg-[#1f2936] rounded-lg dark:border-[0.2px] dark:border-gray-700">
             <div className="w-full relative">
                 <div className="w-full ">
                 <img
