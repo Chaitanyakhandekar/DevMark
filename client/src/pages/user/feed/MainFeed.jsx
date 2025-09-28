@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Search,
   Bell,
@@ -45,6 +45,7 @@ import FollowerProfileMeta from '../../../components/feed page/FollowerProfileMe
 import EventMetaCard from '../../../components/feed page/EventMetaCard';
 import { useNavigate } from 'react-router-dom';
 import MobileNavBottom from '../../../components/MobileNavBottom';
+import axios from 'axios';
 
 function MainFeed() {
 
@@ -52,6 +53,7 @@ function MainFeed() {
   const [isDark, setIsDark] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [allBlogs, setAllBlogs] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -91,6 +93,24 @@ function MainFeed() {
       html.classList.add("dark")
     }
   }
+
+  const fetchAllBlogs = async()=>{
+    try {
+
+      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/`,{
+        withCredentials:true
+      })
+      console.log(res.data.data)
+      setAllBlogs(res.data.data)
+
+    } catch (error) {
+      console.log("Error :: Fetching All Blogs :: ",error.message)
+    }
+  }
+
+  useEffect(()=>{
+    fetchAllBlogs()
+  },[])
 
   return (
     <div className="main-feed w-screen min-w-screen dark:bg-[#111826]">
@@ -293,24 +313,21 @@ function MainFeed() {
           </div>
 
           <div className="w-full border-1 border-white text-white flex flex-col items-center gap-5">
-            <BlogCard
-            title="Building Scalable React Applications: A Complete Guide"
-            imgUrl='https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop'
-            description="Learn how to architect React applications that can grow with your team and user base. We'll cover component patterns, state management, and performance optimization techniques."
-            />
-            <BlogCard
-            title="The Art of Clean Code: Principles Every Developer Should Know"
-            imgUrl='https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop'
-            description="Explore the fundamental principles of writing clean, maintainable code that your future self and team members will thank you for."
-
-            />
-            <BlogCard
-            title="Mastering Async/Await: From Callbacks to Modern JavaScript"
-            imgUrl='https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop'
-            description="A deep dive into asynchronous JavaScript, from callback hell to promises and async/await. Includes real-world examples and common pitfalls."
-
-            />
-           
+            
+            {
+              allBlogs.length && allBlogs.map((blog)=>(
+                <BlogCard
+                key={blog._id}
+                title={blog.title}
+                imgUrl={blog.images[0]?.url}
+                description={blog.content}
+                likes={blog.totalLikes}
+                comments={blog.totalComments}
+                tags={blog.tags}
+                views={blog.views}
+                owner={blog.owner}
+                />
+            ))}
 
             <button className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">Load More Posts</button>
           </div>
