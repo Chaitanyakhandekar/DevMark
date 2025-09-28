@@ -81,11 +81,12 @@ export default function LoginPage({nextPage="/user/feed"}) {
           </div>
           <button
             type="submit"
-            className="w-full py-2 rounded-lg bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
+            disabled={user.email === "" || user.password === "" || loading}
+            className={`w-full py-2 rounded-lg bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-semibold hover:opacity-90 transition flex justify-center items-center disabled:opacity-70 disabled:cursor-not-allowed`}
             onClick={handleLogin}
           >
             {loading ? 
-            <div className="text-blue-600 w-8 h-8 border-4 animate-spin rounded-3xl"></div> : "Login"}
+            <div className="text-blue-600 w-6 h-6 border-2 border-t-gray-600 border-r-gray-600 border-gray-800  animate-spin rounded-3xl"></div> : "Login"}
           </button>
         </form>
         <p className="text-center text-gray-400 mt-6">
