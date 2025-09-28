@@ -130,5 +130,9 @@ const getAllBlogs = asyncHandler(async (req, res) => {
         )
 })
 
+const deleteBlog = asyncHandler(async (req, res) => {
+     
+})
+
 export { createBlog, getAllBlogs };
 

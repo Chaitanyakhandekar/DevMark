@@ -74,6 +74,8 @@ function BlogCard({
                     <p className='text-sm text-gray-500'>2h ago . {owner.totalFollowers} followers</p>
                     </div>
 
+                    <button className="text-sm text-gray-500 hover:underline ml-5 bg-[#4b78ef] rounded-md px-3 py-1 text-white">Follow</button>
+
                 </div>
         
 

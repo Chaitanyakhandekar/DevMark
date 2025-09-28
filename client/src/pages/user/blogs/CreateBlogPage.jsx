@@ -22,7 +22,9 @@ import {
   Lock,
   Clock,
   X,
-  Plus
+  Plus,
+  Type,
+  FileText
 } from 'lucide-react';
 import MDEditor from "@uiw/react-md-editor"
 import rehypeHighlights from "rehype-highlight"
@@ -39,7 +41,7 @@ function CreateBlogPage() {
 
     const [blogData,setBlogData] = useState({
         content: "",
-        title : "Hello",
+        title : "",
         status : "published",
         category : "Full Stack",
         tags : "",
@@ -59,7 +61,7 @@ function CreateBlogPage() {
     const clearData = () => {
         setBlogData({
             content: "",
-            title : "Hello",
+            title : "",
             status : "published",
             category : "Full Stack",
             tags : "",
@@ -84,7 +86,7 @@ function CreateBlogPage() {
 
             const formData = new FormData();
 
-            formData.append("title", blogData.title || "Hello");
+            formData.append("title", blogData.title || "Untitled Blog Post");
             formData.append("content", blogData.content);
             formData.append("category", blogData.category);
             formData.append("status", blogData.status);
@@ -144,10 +146,14 @@ function CreateBlogPage() {
             characters+=word.length
         })
 
+        // Calculate reading time (average 200 words per minute)
+        const readingTimeCalc = Math.ceil(words.length / 200);
+
         setBlogData({
             ...blogData,
             words : words.length,
-            characters : characters
+            characters : characters,
+            readingTime : readingTimeCalc > 0 ? readingTimeCalc : 1
         })
       
 
@@ -210,120 +216,195 @@ function CreateBlogPage() {
 
                     <div className="h-full flex items-center gap-3 ">
                         <button 
-                        disabled={blogData.content.trim().length === 0}
-                        title={blogData.content.trim().length === 0 ? "Cannot Save Empty Blog" : "Save Blog as Draft"}
-                        className='text-md px-3 py-2 hover:bg-gray-600 rounded-md disabled:cursor-not-allowed disabled:text-gray-400'>Save Draft</button>
+                        disabled={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length}
+                        title={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length  ? "Cannot Save Empty Blog" : "Save Blog as Draft"}
+                        className='text-md px-3 py-2 hover:bg-gray-600 rounded-md disabled:cursor-not-allowed disabled:text-gray-400 transition-all duration-200'>Save Draft</button>
                         <button
                         onClick={publishBlog}
-                        disabled={blogData.content.trim().length === 0}
-                        title={blogData.content.trim().length === 0 ? "Cannot Publish Empty Blog" : "Publish Blog"}
-                        className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] disabled:text-gray-400 disabled:cursor-not-allowed text-white  font-semibold rounded-md px-3 text-lg py-1 ">{loading ? <SpinLoader/> : "Publish"}</button>
+                        disabled={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length}
+                        title={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length ? "Title and content are required to publish" : "Publish Blog"}
+                        className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-semibold rounded-md px-3 text-lg py-1 transition-all duration-200 hover:shadow-lg">{loading ? <SpinLoader/> : "Publish"}</button>
                     </div>
                 </div>
             </nav>
 
-            <div className="md:h-[870px]  w-screen flex flex-col items-center gap-3 md:gap-5 py-2 md:flex-row md:justify-center">
+            <div className="md:h-[870px] w-screen flex flex-col items-center gap-3 md:gap-5 py-2 md:flex-row md:justify-center">
 
-                <div className=" w-[95%] md:w-[60%]">
-                    <MDEditor
-                        value={blogData.content}
-                        onChange={(value) => setBlogData({ ...blogData, content: value })}
-                        preview="live"
-                        height={750}
-                        className='dark:bg-[#1f2936] dark:rounded-lg md:p-5'
-                        previewOptions={{
-                            rehypePlugins:[[rehypeHighlights]]
-                        }}
-                    />
+                <div className="w-[95%] md:w-[60%] flex flex-col gap-4">
+                    {/* Title Input Section */}
+                    <div className="w-full">
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Type className="h-5 w-5 text-gray-400" />
+                            </div>
+                            <input
+                                type="text"
+                                name="title"
+                                value={blogData.title}
+                                onChange={handleBlogDataChange}
+                                placeholder="Enter your blog title..."
+                                className="w-full pl-10 pr-4 py-3 text-xl font-semibold bg-[#1f2936] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                maxLength={200}
+                            />
+                        </div>
+                        <div className="mt-1 text-right text-xs text-gray-400">
+                            {blogData.title.length}/200 characters
+                        </div>
+                    </div>
+
+                    {/* Enhanced Editor */}
+                    <div className="relative">
+                        <MDEditor
+                            value={blogData.content}
+                            onChange={(value) => setBlogData({ ...blogData, content: value || "" })}
+                            preview="edit"
+                            height={680}
+                            className='dark:bg-[#1f2936] dark:rounded-lg border border-gray-700 overflow-hidden'
+                            data-color-mode="dark"
+                            previewOptions={{
+                                rehypePlugins:[[rehypeHighlights, { detect: true }]]
+                            }}
+                            textareaProps={{
+                                placeholder: 'Start writing your blog content here...\n\nYou can use Markdown syntax:\n- **bold text**\n- *italic text*\n- `code`\n- # Heading\n- [link](url)\n- ![image](url)',
+                                className: 'dark:bg-[#1f2936] dark:text-white',
+                                style: {
+                                    fontSize: '14px',
+                                    lineHeight: '1.6',
+                                    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace'
+                                }
+                            }}
+                        />
+                        
+                        {/* Content Stats Overlay */}
+                        <div className="absolute bottom-2 right-2 bg-[#374150] rounded-md px-2 py-1 text-xs text-gray-300 opacity-75">
+                            <FileText size={12} className="inline mr-1" />
+                            {blogData.words} words
+                        </div>
+                    </div>
                 </div>
 
-                <div className=" w-[95%] md:w-[20%] flex flex flex-col gap-5 md:gap-[4.2rem] pb-7">
-                    <div className="border-[0.2px] border-gray-700 flex flex-col gap-3 items-start rounded-md w-full dark:bg-[#1f2936] p-5">
-                        <h1 className="text-md text-white font-bold">Publish Settings</h1>
+                <div className="w-[95%] md:w-[20%] flex flex flex-col gap-5 md:gap-5 pb-7">
+                    {/* Publish Settings */}
+                    <div className="border border-gray-700 flex flex-col gap-4 items-start rounded-lg w-full dark:bg-[#1f2936] p-5 shadow-lg">
+                        <div className="flex items-center gap-2">
+                            <Settings size={18} className="text-blue-400" />
+                            <h1 className="text-md text-white font-bold">Publish Settings</h1>
+                        </div>
+                        
                         <div className="w-full flex flex-col gap-2 text-gray-300">
-                            <label>Status</label>
-
-                            <select value={blogData.status} onChange={(e) => setBlogData({ ...blogData, status: e.target.value })} className='dark:bg-[#374150] border-none outline-none p-2 rounded-md'>
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                                <option value="private">Private</option>
+                            <label className="text-sm font-medium flex items-center gap-1">
+                                <Globe size={14} />
+                                Status
+                            </label>
+                            <select 
+                                value={blogData.status} 
+                                onChange={(e) => setBlogData({ ...blogData, status: e.target.value })} 
+                                className='dark:bg-[#374150] border border-gray-600 outline-none p-2 rounded-md focus:ring-2 focus:ring-blue-500 transition-all duration-200'
+                            >
+                                <option value="draft">📝 Draft</option>
+                                <option value="published">🌍 Published</option>
+                                <option value="private">🔒 Private</option>
                             </select>
                         </div>
 
                         <div className="w-full flex flex-col gap-2 text-gray-300">
-                            <label>Category</label>
-
+                            <label className="text-sm font-medium flex items-center gap-1">
+                                <Tag size={14} />
+                                Category
+                            </label>
                             <select
-                            value={blogData.category} 
-                            onChange={(e)=>{
-                                setBlogData({...blogData , category:e.target.value})
-                            }}
-                             className='dark:bg-[#374150] border-none outline-none p-2 rounded-md'>
-
-                                {
-                                    categories.map((category,index)=>(
-                                        <option key={index} value={category}>{category}</option>
-                                    ))
-                                }
-
+                                value={blogData.category} 
+                                onChange={(e)=>{
+                                    setBlogData({...blogData , category:e.target.value})
+                                }}
+                                className='dark:bg-[#374150] border border-gray-600 outline-none p-2 rounded-md focus:ring-2 focus:ring-blue-500 transition-all duration-200'
+                            >
+                                {categories.map((category,index)=>(
+                                    <option key={index} value={category}>{category}</option>
+                                ))}
                             </select>
                         </div>
-
                     </div>
 
-                    <div className="w-full flex flex-col gap-5 dark:bg-[#1f2936] p-5 rounded-md">
+                    {/* Tags Section */}
+                    <div className="w-full flex flex-col gap-4 dark:bg-[#1f2936] p-5 rounded-lg border border-gray-700 shadow-lg">
+                        <div className="flex items-center gap-2">
+                            <Tag size={18} className="text-green-400" />
                             <h1 className="text-white text-md font-bold">Tags</h1>
-                            <div className="flex w-full gap-5 items-center flex-col text-gray-300">
-                                 <textarea
-                                  className='w-full h-20 dark:bg-[#374150] dark:text-white border-none outline-none p-2 rounded-md'
-                                   placeholder='Add a tag'
-                                   name="tags"
-                                   value={blogData.tags}
-                                   onChange={(e)=>{
-                                    handleBlogDataChange(e)
-                                   }}
-                                   rows={3} >
-
-                                   </textarea>
-                            {/* <div className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] p-2 w-10 h-10 flex justify-center items-center rounded-md">
-                                <Plus className="text-white" size={19}/>
-                            </div> */}
-
-                            <input type="file" onChange={(e)=>{
-                                setBlogData((prev)=>{
-                                    return{
-                                        ...prev,
-                                        images : [...prev.images , e.target.files[0]]
-                                    }
-                                })
-                            }} />
+                        </div>
+                        
+                        <div className="flex w-full gap-4 items-start flex-col text-gray-300">
+                            <textarea
+                                className='w-full h-20 dark:bg-[#374150] dark:text-white border border-gray-600 outline-none p-3 rounded-md resize-none focus:ring-2 focus:ring-green-500 transition-all duration-200'
+                                placeholder='Add tags separated by # (e.g., #react #javascript #webdev)'
+                                name="tags"
+                                value={blogData.tags}
+                                onChange={handleBlogDataChange}
+                                rows={3}
+                            />
+                            
+                            {/* Image Upload Section */}
+                            <div className="w-full">
+                                <label className="text-sm font-medium flex items-center gap-1 mb-2">
+                                    <Image size={14} />
+                                    Upload Images
+                                </label>
+                                <input 
+                                    type="file" 
+                                    accept="image/*"
+                                    multiple
+                                    onChange={(e)=>{
+                                        setBlogData((prev)=>{
+                                            return{
+                                                ...prev,
+                                                images : [...prev.images , ...Array.from(e.target.files)]
+                                            }
+                                        })
+                                    }}
+                                    className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-500 file:text-white hover:file:bg-blue-600 transition-all duration-200"
+                                />
+                                {blogData.images.length > 0 && (
+                                    <p className="text-xs text-gray-400 mt-1">
+                                        {blogData.images.length} image(s) selected
+                                    </p>
+                                )}
                             </div>
-
-                            {/* <p className='dark:text-gray-300 text-sm md:text-md'>0/5 tags used</p> */}
+                        </div>
                     </div>
 
-                    <div className="w-full flex flex-col gap-5 dark:bg-[#1f2936] p-5 rounded-md">
+                    {/* Statistics Section */}
+                    <div className="w-full flex flex-col gap-4 dark:bg-[#1f2936] p-5 rounded-lg border border-gray-700 shadow-lg">
+                        <div className="flex items-center gap-2">
+                            <FileText size={18} className="text-purple-400" />
                             <h1 className="text-white text-md font-bold">Statistics</h1>
-                            <div className="flex justify-between w-full">
-                                <p className='dark:text-gray-300 text-sm md:text-md'>Words:</p>
-                                <p className='dark:text-gray-300 text-sm md:text-md'>{blogData.words}</p>
+                        </div>
+                        
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center w-full p-2 bg-[#374150] rounded-md">
+                                <p className='dark:text-gray-300 text-sm font-medium'>Words:</p>
+                                <p className='dark:text-white text-sm font-bold'>{blogData.words}</p>
                             </div>
-                            <div className="flex justify-between w-full">
-                                <p className='dark:text-gray-300 text-sm md:text-md'>Characters:</p>
-                                <p className='dark:text-gray-300 text-sm md:text-md'>{blogData.characters}</p>
+                            
+                            <div className="flex justify-between items-center w-full p-2 bg-[#374150] rounded-md">
+                                <p className='dark:text-gray-300 text-sm font-medium'>Characters:</p>
+                                <p className='dark:text-white text-sm font-bold'>{blogData.characters}</p>
                             </div>
-                            <div className="flex justify-between w-full">
-                                <p className='dark:text-gray-300 text-sm md:text-md'>Reading Time:</p>
-                                <p className='dark:text-gray-300 text-sm md:text-md'>{blogData.readingTime} min</p>
+                            
+                            <div className="flex justify-between items-center w-full p-2 bg-[#374150] rounded-md">
+                                <p className='dark:text-gray-300 text-sm font-medium'>Reading Time:</p>
+                                <p className='dark:text-white text-sm font-bold'>{blogData.readingTime} min</p>
                             </div>
+
+                            <div className="flex justify-between items-center w-full p-2 bg-[#374150] rounded-md">
+                                <p className='dark:text-gray-300 text-sm font-medium'>Title Length:</p>
+                                <p className='dark:text-white text-sm font-bold'>{blogData.title.length}</p>
+                            </div>
+                        </div>
                     </div>
-
-
                 </div>
             </div>
 
             <MobileNavBottom />
-
         </div>
     )
 }
