@@ -269,7 +269,7 @@ function MainFeed() {
         </section>
 
         {/* Section 2 Feed */}
-        <section className='md:w-[20%] max-w-[700px] min-w-[250px] border-1 border-red-700 flex-1 flex flex-col gap-3 px-5 py-3 '>
+        <section className='md:w-[20%] max-w-[700px] min-w-[250px] border-1 border-red-700 flex-1 flex flex-col gap-3 md:px-5 py-3 '>
 
           {/* Feed Filter */}
           <div className="hidden md:block sticky top-5 md:top-20 z-10 mb-5 border-[0.2px] border-gray-700 bg-gray-700/70 backdrop-blur-md text-white w-full max-w-[1000px] h-16 flex items-center justify-between gap-5 px-5 rounded-md">

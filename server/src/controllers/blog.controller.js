@@ -73,4 +73,62 @@ const createBlog = asyncHandler(async (req, res) => {
 
 })
 
-export { createBlog };
+const getAllBlogs = asyncHandler(async (req, res) => {
+
+    const totalBlogs = await Blog.countDocuments()
+    console.log(totalBlogs)
+
+    const blogs = await Blog.aggregate([
+        {
+            $sort: { createdAt: -1 }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    {
+                        $project: {
+                            username: 1,
+                            avatar: 1,
+                            totalFollowers: 1,
+                        }
+                    },
+
+                ]
+            }
+        },
+        {
+            $unwind: "$owner"
+        },
+        {
+            $project:{
+                title: 1,
+                content: 1,
+                category: 1,
+                owner: "$owner",
+                tags: 1,
+                images: 1,
+                totalLikes: 1,
+                totalComments: 1,
+                status: 1,
+                createdAt: 1,
+            }
+        }
+    ])
+
+    if (!blogs.length) {
+        throw new ApiResponse(500, "Server Error While Fetching Blogs");
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, blogs, "Blogs Fetched Successfuly.")
+        )
+})
+
+export { createBlog, getAllBlogs };
+
