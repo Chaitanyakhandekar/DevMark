@@ -29,7 +29,11 @@ function MobileNavBottom() {
             setIsProfileMenuOpen(!isProfileMenuOpen)
           }}
           className={`flex items-center gap-2 hover:bg-gray-700 ${isProfileMenuOpen ? "bg-gray-700" : ""} px-2 py-1 rounded-md cursor-pointer`}>
-          <div className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold rounded-[50%] w-7 h-7 flex justify-center items-center text-sm">JD</div>
+          <div className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold rounded-[50%] w-6 h-6 flex justify-center items-center text-sm">
+            <img
+            className='w-full h-full rounded-[50%]'
+            src="https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg" alt="" />
+          </div>
         </div>
       </div>
   )
