@@ -28,7 +28,15 @@ const userSchema = new Schema({
     },
     avatar:{
         type:String,
-        default:"default url"
+        default:"https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg"
+    },
+    totalFollowers:{
+        type:Number,
+        default:0
+    },
+    totalFollowing:{
+        type:Number,
+        default:0
     },
     publicId:{
         type:String,

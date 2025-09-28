@@ -3,7 +3,7 @@ export const asyncHandler = (requestHandler)=>{
         Promise.resolve(requestHandler(req,res,next)).catch((error)=>{
             return res.json({
                 success:false,
-                message:error.message
+                message:error.message,
             })
         })
     }
