@@ -347,13 +347,23 @@ const uploadAvatar = asyncHandler(async (req,res)=>{
         .json(
           new ApiResponse(201,"Avatar Uploaded Successfuly.")
         )
-        
+
   } catch (error) {
     throw new ApiError(500,error.message)
   }
 
+})
 
+const getUserAvatar = asyncHandler(async(req,res)=>{
+  const user = await User.findById(req.user._id)
 
+  if(!user){
+    throw new ApiError(404,"User Not Found")
+  }
+
+  return res.status(200).json({
+    avatar: user.avatar
+  })
 })
 
 export {
@@ -363,5 +373,6 @@ export {
     loginUser,
     isLoggedInUser,
     logoutUser,
-    uploadAvatar
+    uploadAvatar,
+    getUserAvatar
 }

@@ -51,7 +51,7 @@ function BlogCard({
             <div className="w-full relative">
                 <div className="w-full ">
                 <img
-                    className='max-h-[180px] max-w-[1000px] w-full fit-cover rounded-tr-md rounded-tl-md'
+                    className='max-h-[180px] max-w-[1000px] w-full h-auto fit-cover rounded-tr-md rounded-tl-md'
                     src={imgUrl} alt="" />
             </div>
                 <div className="px-3 py-2 bg-[#19181e]/75 background-blur-md absolute top-5 right-5 rounded-xl">
@@ -62,7 +62,13 @@ function BlogCard({
             <div className="w-full border-1 border-red-800 flex flex-col items-start gap-5 p-5 rounded-bl-md rounded-br-md text-black dark:text-white">
 
                 <div className="flex items-center gap-3 ">
-                    <div className="w-11 h-11 bg-gradient-to-r from-[#4e76ef] to-[#8e3de6] rounded-[50%] flex justify-center items-center font-bold text-white">SC</div>
+
+                    <div className="w-11 h-11  rounded-[50%] flex justify-center items-center font-bold text-white">
+                        <img
+                        className='w-full h-full rounded-[50%] object-cover'
+                        src={`${owner.avatar}`} alt="" />
+                    </div>
+
                     <div className='flex flex-col'>
                         <div className="flex items-center gap-2 font-bold">
                             {owner.username}

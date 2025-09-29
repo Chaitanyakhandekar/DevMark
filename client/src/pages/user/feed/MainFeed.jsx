@@ -54,7 +54,11 @@ function MainFeed() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [allBlogs, setAllBlogs] = useState([]);
-    const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(2);
+  const [loading,setLoading] = useState(false)
+  const [userAvatar,setUserAvatar] = useState("")
   const navigate = useNavigate();
 
   const categories = [
@@ -96,21 +100,43 @@ function MainFeed() {
 
   const fetchAllBlogs = async()=>{
     try {
-
-      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/`,{
+      setLoading(true)
+      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs?page=${page}&limit=${limit}`,{
         withCredentials:true
       })
-      console.log(res.data.data)
-      setAllBlogs(res.data.data)
+  
+      setAllBlogs(res.data.data.blogs)
+      setLoading(false)
+     
 
     } catch (error) {
+      setLoading(false)
       console.log("Error :: Fetching All Blogs :: ",error.message)
+    }
+  }
+
+  const fetchUserAvatar = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/avatar`, {
+        withCredentials: true
+      })
+
+      // Set the user avatar in the state
+      setUserAvatar(res.data.avatar)
+
+    } catch (error) {
+      console.log("Error :: Fetching User Avatar :: ", error.message)
     }
   }
 
   useEffect(()=>{
     fetchAllBlogs()
+    fetchUserAvatar()
   },[])
+
+  useEffect(()=>{
+    fetchAllBlogs()
+  },[limit])
 
   return (
     <div className="main-feed w-screen min-w-screen dark:bg-[#111826]">
@@ -188,7 +214,11 @@ function MainFeed() {
               setIsProfileMenuOpen(!isProfileMenuOpen)
             }}
             className={`flex items-center gap-2 hover:bg-gray-700 ${isProfileMenuOpen ? "bg-gray-700" : ""} px-2 py-1 rounded-md cursor-pointer`}>
-            <div className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold rounded-[50%] w-9 h-9 flex justify-center items-center">JD</div>
+            <div className=" text-white font-bold rounded-[50%] w-9 h-9 flex justify-center items-center">
+              <img
+              className='w-full h-full rounded-[50%] object-cover'
+              src={userAvatar} alt="" />
+            </div>
             <ChevronDown className='text-gray-400 cursor-pointer' size={20} />
           </div>
 
@@ -269,7 +299,7 @@ function MainFeed() {
 
           {/*Quick actions */}
 
-          <div className="w-60 border-[0.2px] border-gray-700 dark:bg-[#1f2936] flex flex-col gap-3 pt-5 pb-7 px-3 rounded-md">
+          <div className="w-60 border-[0.2px] border-gray-700 dark:bg-[#1f2936] sticky top-0 flex flex-col gap-3 pt-5 pb-7 px-3 rounded-md">
             <h1 className='font-bold'>Quick Actions</h1>
 
             <div className="flex items-center gap-3 px-3 py-2">
@@ -315,11 +345,14 @@ function MainFeed() {
           <div className="w-full border-1 border-white text-white flex flex-col items-center gap-5">
             
             {
-              allBlogs.length && allBlogs.map((blog)=>(
-                <BlogCard
+              allBlogs.length!==0 && allBlogs.map((blog)=>(
+               <div
                 key={blog._id}
+               className="w-full">
+                 <BlogCard
+                 key={blog._id}
                 title={blog.title}
-                imgUrl={blog.images[0]?.url}
+                imgUrl={blog.images?.length? blog.images[0].url : ""}
                 description={blog.content}
                 likes={blog.totalLikes}
                 comments={blog.totalComments}
@@ -327,9 +360,14 @@ function MainFeed() {
                 views={blog.views}
                 owner={blog.owner}
                 />
+               </div>
             ))}
 
-            <button className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">Load More Posts</button>
+            <button
+            onClick={()=>{
+              setLimit((prev)=>prev+prev)
+            }}
+            className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">{loading ? "Loading..." : "Load More Posts"}</button>
           </div>
 
         </section>
@@ -400,7 +438,7 @@ function MainFeed() {
 
           {/* Upcoming Events */}
 
-          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pr-5 pb-10 rounded-md dark:bg-[#1f2936]">
+          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pr-5 pb-10 rounded-md dark:bg-[#1f2936] sticky top-20">
             <div className="flex items-center gap-3 font-bold">
               <Calendar className='font-bold' size={19} />
               Upcomming Events
