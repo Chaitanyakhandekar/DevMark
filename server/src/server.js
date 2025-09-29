@@ -27,6 +27,9 @@ server.use(express.static("public"))
 import testRouter from "./routes/test.route.js"
 import userRouter from "./routes/user.route.js";
 import blogRouter from "./routes/blog.route.js";
+import followerRouter from "./routes/follow.route.js";
+
+server.use("/api/v1/followers" , followerRouter)
 
 server.use("/api/v1/blogs" , blogRouter)
 
