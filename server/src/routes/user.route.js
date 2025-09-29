@@ -6,11 +6,13 @@ import {
      isVerifiedUser,
      loginUser,
      isLoggedInUser,
-     logoutUser
+     logoutUser,
+     uploadAvatar
 
  } from '../controllers/user.controller.js';
  import { sendVerificationToken } from '../services/sendVerificationToken.js';
  import { userAuth } from '../middlewares/userAuth.middleware.js';
+ import { upload } from '../middlewares/multer.middleware.js';
 
 const router = Router();
 
@@ -20,5 +22,6 @@ router.route("/logout").get(userAuth,logoutUser)
 router.route("/email/verify/:token").get(verifyUser)
 router.route("/email/is-verify/:email").get(isVerifiedUser)
 router.route("/is-logged-in").get(userAuth,isLoggedInUser)
+router.route("/avatar").post(userAuth,upload.single("avatar"),uploadAvatar)
 
 export default router;
