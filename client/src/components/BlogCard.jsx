@@ -49,9 +49,9 @@ function BlogCard({
     return (
         <div className="w-[100%] md:w-full dark:bg-[#1f2936] md:rounded-lg md:dark:border-[0.2px] dark:border-gray-700">
             <div className="w-full relative">
-                <div className="w-full ">
+                <div className="w-full flex justify-center">
                 <img
-                    className='max-h-[180px] max-w-[1000px] w-full h-auto fit-cover rounded-tr-md rounded-tl-md'
+                    className='max-h-[180px] max-w-[1000px] w-[95%] md:w-full h-auto fit-cover rounded-tr-md rounded-tl-md'
                     src={imgUrl} alt="" />
             </div>
                 <div className="px-3 py-2 bg-[#19181e]/75 background-blur-md absolute top-5 right-5 rounded-xl">

@@ -366,6 +366,9 @@ const getUserAvatar = asyncHandler(async(req,res)=>{
   })
 })
 
+const followUser = asyncHandler(async(req,res)=>{})
+const unfollowUser = asyncHandler(async(req,res)=>{})
+
 export {
     registerUser,
     verifyUser,
