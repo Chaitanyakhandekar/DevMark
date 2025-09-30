@@ -9,10 +9,8 @@ import AuthLoader from "./AuthLoader"
 function ProtectedRoute({children}) {
   const [isLoggedIn , setIsLoggedIn] = useState(false)
   const [loading , setLoading] = useState(false)
- useEffect(()=>{
 
-
-    const checkAuth = async ()=>{
+  const checkAuth = async ()=>{
       setLoading(true)
         const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/is-logged-in`,
       {
@@ -34,19 +32,16 @@ function ProtectedRoute({children}) {
 
     }
 
+ useEffect(()=>{
+
     checkAuth();
 
  },[])
 
-   if(isLoggedIn){
-      return children
-    }
+ 
+ return isLoggedIn && children ||  loading && <AuthLoader/> || <LoginPage/>
 
-    if(!isLoggedIn && loading){
-      return <AuthLoader/>
-    }
 
-    return <LoginPage/>
 }
-
+  
 export default ProtectedRoute

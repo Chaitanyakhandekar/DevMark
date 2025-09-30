@@ -472,7 +472,7 @@ function MainFeed() {
       </main>
 
       {/* Mobile Bottom Navigation */}
-      <MobileNavBottom />
+      <MobileNavBottom avatarUrl={userAvatar} />
 
     </div>
   )
