@@ -12,6 +12,8 @@ export const sendVerificationToken = asyncHandler(async(req,res)=>{
         const user = req.newUser;
         const token = user.generateVerificationToken()
 
+        console.log("Generated Verification Token:", token);
+
         const userWithToken = await User.findByIdAndUpdate(
             user._id,
             {
