@@ -16,7 +16,7 @@ const Verify = () => {
   useEffect(() => {
 
     (async function verifyEmail() {
-      
+      console.log("Verifying email with id:", id);
         const res = await  axios.get(`https://devmark-8het.onrender.com/api/v1/users/email/verify/${id}`);
       setIsVerified(true);
     })();

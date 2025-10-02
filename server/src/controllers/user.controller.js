@@ -155,6 +155,7 @@ const logoutUser = asyncHandler(async(req,res)=>{
 
 const verifyUser = asyncHandler(async (req, res) => {
     const { token } = req.params;
+    console.log("Received token for verification:", token);
 
     if (!token || token.trim() === "") {
         throw new ApiError(400, "Token is required for verification")
@@ -168,6 +169,7 @@ const verifyUser = asyncHandler(async (req, res) => {
             process.env.VERIFICATION_SECRET
         )
 
+        console.log("Decoded token:", decodeToken);
         if (!decodeToken) {
             throw new ApiError(400, "Invalid or Expired Token")
         }
@@ -183,6 +185,8 @@ const verifyUser = asyncHandler(async (req, res) => {
                 new: true
             }
         )
+
+        console.log("User after verification:", user);
 
         if (!user) {
             throw new ApiError(404, "User Not Found")

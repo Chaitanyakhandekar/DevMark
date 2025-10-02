@@ -8,6 +8,7 @@ dotenv.config({path:"./.env"})
 
 const userAuth = asyncHandler(async (req,res,next)=>{
     const {accessToken} = req.cookies;
+    console.log("Access Token From Cookies : ",req.cookies)
 
     if(!accessToken || accessToken.trim()===""){
        if(req.headers["x-auth-check-type"] && req.headers["x-auth-check-type"] === "login-check-hit"){

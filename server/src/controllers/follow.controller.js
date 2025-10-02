@@ -45,7 +45,7 @@ const followUser = asyncHandler(async(req,res)=>{
         throw new ApiError(500,"Server Error In Follow Request.")
     }
 
-    res.status(200).json(new ApiResponse(201,"Followed Successfully."))
+    return res.status(200).json(new ApiResponse(201,"Followed Successfully."))
 })
 
 
