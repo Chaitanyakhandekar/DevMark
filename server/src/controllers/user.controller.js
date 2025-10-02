@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { sendVerificationToken } from "../services/sendVerificationToken.js";
 import { generateTokens } from "../services/generateTokens.js";
+import { uploadFileOnCloudinary } from "../services/cloudinary.service.js";
 
 dotenv.config({ path: "./.env" })
 
@@ -154,6 +155,7 @@ const logoutUser = asyncHandler(async(req,res)=>{
 
 const verifyUser = asyncHandler(async (req, res) => {
     const { token } = req.params;
+    console.log("Received token for verification:", token);
 
     if (!token || token.trim() === "") {
         throw new ApiError(400, "Token is required for verification")
@@ -167,6 +169,7 @@ const verifyUser = asyncHandler(async (req, res) => {
             process.env.VERIFICATION_SECRET
         )
 
+        console.log("Decoded token:", decodeToken);
         if (!decodeToken) {
             throw new ApiError(400, "Invalid or Expired Token")
         }
@@ -182,6 +185,8 @@ const verifyUser = asyncHandler(async (req, res) => {
                 new: true
             }
         )
+
+        console.log("User after verification:", user);
 
         if (!user) {
             throw new ApiError(404, "User Not Found")
@@ -311,11 +316,69 @@ const isLoggedInUser = asyncHandler(async(req,res)=>{
         )
 })
 
+const uploadAvatar = asyncHandler(async (req,res)=>{
+  
+  if(!req.file){
+    throw new ApiError(400,"Avatar Image Is Required.")
+  }
+  const avatarLocalPath = req.file.path
+
+  try {
+    const uploadData = await uploadFileOnCloudinary(avatarLocalPath)
+    if(uploadData.success === false){
+      throw new ApiError(500,uploadData.message || "Avatar Upload Failed")
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $set:{
+            avatar:uploadData.secure_url,
+            avatarPublicId: uploadData.public_id
+        }
+      },
+      {
+        new:true
+      }
+    )
+
+    if(!user){
+      throw new ApiError(500,"MongoDB Server Error While Uploading Avatar.")
+    }
+
+    return res
+        .status(201)
+        .json(
+          new ApiResponse(201,"Avatar Uploaded Successfuly.")
+        )
+
+  } catch (error) {
+    throw new ApiError(500,error.message)
+  }
+
+})
+
+const getUserAvatar = asyncHandler(async(req,res)=>{
+  const user = await User.findById(req.user._id)
+
+  if(!user){
+    throw new ApiError(404,"User Not Found")
+  }
+
+  return res.status(200).json({
+    avatar: user.avatar
+  })
+})
+
+
+
 export {
     registerUser,
     verifyUser,
     isVerifiedUser,
     loginUser,
     isLoggedInUser,
-    logoutUser
+    logoutUser,
+    uploadAvatar,
+    getUserAvatar
 }

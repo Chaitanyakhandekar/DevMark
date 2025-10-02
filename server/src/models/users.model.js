@@ -30,6 +30,9 @@ const userSchema = new Schema({
         type:String,
         default:"https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg"
     },
+    avatarPublicId:{
+        type:String
+    },
     totalFollowers:{
         type:Number,
         default:0

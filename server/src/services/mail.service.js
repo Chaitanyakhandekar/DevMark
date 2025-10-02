@@ -18,7 +18,7 @@ export const sendEmail = async(to,subject,text,html="<p>Welcome To DevMark</p>")
 
     console.log("Sending email to:", to);
     const info = await transporter.sendMail({
-        from:'"Founder of DevMark " <chaitanyakhandekar95@gmail.com>',
+        from:`"Founder of DevMark " <${to}>`,
         to,
         subject,
         text,
@@ -31,6 +31,8 @@ export const sendEmail = async(to,subject,text,html="<p>Welcome To DevMark</p>")
             message:"Email Sending Failed"
         }
     }
+
+    console.log("Email sent:", info);
 
     return {
         success:true,
