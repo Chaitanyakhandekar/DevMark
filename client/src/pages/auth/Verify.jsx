@@ -25,7 +25,7 @@ const Verify = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/login");
+      navigate("/user/feed");
     }, 4000);
 
     const interval = setInterval(() => {
