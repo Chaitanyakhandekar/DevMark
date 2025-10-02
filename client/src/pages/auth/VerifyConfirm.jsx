@@ -7,15 +7,17 @@ const VerifyConfirm = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState("");
+    const [email, setEmail] = React.useState(localStorage.getItem("emailForVerification") || "");
 
     const handleVerifyEmail = async() => {
         // Logic to verify email
         setLoading(true);
-        const res = await axios.get(`https://devmark-8het.onrender.com/api/v1/users/email/is-verify/chaitanyakhandekar95@gmail.com`)
+        const res = await axios.get(`https://devmark-8het.onrender.com/api/v1/users/email/is-verify/${email}`)
         console.log(res.data);
         setLoading(false);
         if(res.data.isVerified){
-            navigate("/login");
+            navigate("/user/feed");
+            localStorage.removeItem("emailForVerification");
         }else{
             setError("Email verification failed. Please try again.");
         }
@@ -25,7 +27,7 @@ const VerifyConfirm = () => {
     <div className="h-[100vh] w-[100vw] bg-[#030712] flex justify-center items-center">
         <div className="bg-[#111827] w-full max-w-md p-5 text-white font-mono flex flex-col justify-between items-center gap-6 rounded-md m-3">
             <h1 className="text-2xl font-extrabold text-center">Verify Your Email</h1>
-            <p className="text-gray-400 text-sm text-center"> We've sent a verification link to <span className="text-blue-400">chaitanyakhandekar95@gmail.com</span>.
+            <p className="text-gray-400 text-sm text-center"> We've sent a verification link to <span className="text-blue-400">{email}</span>.
           Please check your inbox (and spam folder) to complete verification.</p>
 
             {error && <p className="text-red-500 text-sm">{error}</p>}

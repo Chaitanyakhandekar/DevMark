@@ -46,6 +46,7 @@ function Signup() {
 
     React.useEffect(() => {
         if (emailSent) {
+          localStorage.setItem("emailForVerification", user.email);
            navigate("/verify-confirm"); // Redirect to VerifyConfirm page after email is sent
         }
     }, [emailSent]);

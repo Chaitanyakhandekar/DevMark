@@ -10,84 +10,84 @@ import { uploadFileOnCloudinary } from "../services/cloudinary.service.js";
 
 dotenv.config({ path: "./.env" })
 
-const registerUser = asyncHandler(async (req, res,next) => {
-    const {
-        username,
-        fullName,
-        email,
-        password
-    } = req.body
+const registerUser = asyncHandler(async (req, res, next) => {
+  const {
+    username,
+    fullName,
+    email,
+    password
+  } = req.body
 
-    if ([username, fullName, email, password].some((field) => (!field || field.trim() === ""))) {
-        throw new ApiError(400, "All Fields are required!")
-    }
+  if ([username, fullName, email, password].some((field) => (!field || field.trim() === ""))) {
+    throw new ApiError(400, "All Fields are required!")
+  }
 
-    if (password.length < 8) {
-        throw new ApiError(400, "Password must be atleast 8 charachers long.")
-    }
+  if (password.length < 8) {
+    throw new ApiError(400, "Password must be atleast 8 charachers long.")
+  }
 
-    const alreadyExists = await User.findOne({ email });
+  const alreadyExists = await User.findOne({ email });
 
-    if (alreadyExists) {
-        throw new ApiError(400, "User with this email already exists.")
-    }
+  if (alreadyExists) {
+    throw new ApiError(400, "User with this email already exists.")
+  }
 
-    const newUser = await User.create({
-        username,
-        fullName,
-        email,
-        password
-    })
+  const newUser = await User.create({
+    username,
+    fullName,
+    email,
+    password
+  })
 
-    if (!newUser) {
-        throw new ApiError(500, "User Creation Error")
-    }
+  if (!newUser) {
+    throw new ApiError(500, "User Creation Error")
+  }
 
-    
-    req.newUser = newUser;
-    console.log("New user created:", newUser);
-    next();
+
+  req.newUser = newUser;
+  console.log("New user created:", newUser);
+  next();
 
 })
 
-const loginUser = asyncHandler(async (req,res)=>{
-  const {email,password} = req.body
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body
 
-  if(!(email && password)){
-    throw new ApiError(400,"All Fields are Required")
+  if (!(email && password)) {
+    throw new ApiError(400, "All Fields are Required")
   }
 
-  if(email.trim() === "" || password.trim()=== ""){
-    throw new ApiError(400,"No Field can be Empty")
+  if (email.trim() === "" || password.trim() === "") {
+    throw new ApiError(400, "No Field can be Empty")
   }
 
   const user = await User.findOne({
-    email:email.toLowerCase()
+    email: email.toLowerCase()
   })
 
-  if(!user){
+  if (!user) {
     return res
-        .status(400)
-        .json(
-          new ApiResponse(400,"Acoount not found!")
-        )
+      .status(400)
+      .json(
+        new ApiResponse(400, "Acoount not found!")
+      )
   }
 
   const isCorrect = await user.isCorrectPassword(password)
 
-  if(!isCorrect){
+  if (!isCorrect) {
     return res
       .status(401)
       .json(
-        new ApiResponse(401,"Incorrect Creadentials!")
+        new ApiResponse(401, "Incorrect Creadentials!")
       )
   }
 
-  if(!user.isVerified){
+  if (!user.isVerified) {
     return res
       .status(403)
       .json(
-        new ApiResponse(403,"Email is not verified!")
+        new ApiResponse(403, "Email is not verified!")
       )
   }
 
@@ -95,112 +95,112 @@ const loginUser = asyncHandler(async (req,res)=>{
 
   user.refreshToken = refreshToken;
 
-  await user.save({validateBeforeSave:false})
+  await user.save({ validateBeforeSave: false })
 
-  return res 
-      .status(200)
-      .cookie("accessToken", accessToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-          maxAge: 24 * 60 * 60 * 1000 // 1 day
-      })
-      .cookie("refreshToken",refreshToken,{
-        httpOnly:true,
-        secure:process.env.NODE_ENV === "production",
-        sameSite:process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-      })
-      .json(
-    new ApiResponse(200, "Login Successful")
-  )
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
+    })
+    .cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    })
+    .json(
+      new ApiResponse(200, "Login Successful")
+    )
 })
 
-const logoutUser = asyncHandler(async(req,res)=>{
+const logoutUser = asyncHandler(async (req, res) => {
 
   const id = req.user._id;
 
-  if(!id || !mongoose.Types.ObjectId.isValid(id)){
-    throw new ApiError(401,"Unauthorize Request")
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(401, "Unauthorize Request")
   }
 
   const user = await User.findById(id)
 
-  if(!user){
-    throw new ApiError(404,"Cannot Find User With Given Id")
+  if (!user) {
+    throw new ApiError(404, "Cannot Find User With Given Id")
   }
 
   user.refreshToken = undefined;
 
-  await user.save({validateBeforeSave:false})
+  await user.save({ validateBeforeSave: false })
 
   return res
-        .status(200)
-        .clearCookie("accessToken",{
-          httpOnly:true,
-          secure:process.env.NODE_ENV === "production",
-          sameSite:process.env.NODE_ENV === "production" ? "none" : "lax",
-          maxAge: 24 * 60 * 60 * 1000 // 1 day
-        })
-        .clearCookie("refreshToken",{
-          httpOnly:true,
-          secure:process.env.NODE_ENV === "production",
-          sameSite:process.env.NODE_ENV === "production" ? "none" : "lax",
-          maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        })
-        .json(
-          new ApiResponse(200,"Logout Successful")
-        )
+    .status(200)
+    .clearCookie("accessToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
+    })
+    .clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    })
+    .json(
+      new ApiResponse(200, "Logout Successful")
+    )
 
 })
 
 const verifyUser = asyncHandler(async (req, res) => {
-    const { token } = req.params;
-    console.log("Received token for verification:", token);
+  const { token } = req.params;
+  console.log("Received token for verification:", token);
 
-    if (!token || token.trim() === "") {
-        throw new ApiError(400, "Token is required for verification")
+  if (!token || token.trim() === "") {
+    throw new ApiError(400, "Token is required for verification")
+  }
+
+  console.log("Verifying token:", token);
+
+  let decodeToken;
+
+  try {
+    decodeToken = jwt.verify(
+      token,
+      process.env.VERIFICATION_SECRET
+    )
+
+    console.log("Decoded token:", decodeToken);
+    if (!decodeToken) {
+      throw new ApiError(400, "Invalid or Expired Token")
     }
 
-    console.log("Verifying token:", token);
-
-    let decodeToken;
-
-    try {
-        decodeToken = jwt.verify(
-            token,
-            process.env.VERIFICATION_SECRET
-        )
-
-        console.log("Decoded token:", decodeToken);
-        if (!decodeToken) {
-            throw new ApiError(400, "Invalid or Expired Token")
+    const user = await User.findByIdAndUpdate(
+      decodeToken.id,
+      {
+        $set: {
+          isVerified: true
         }
+      },
+      {
+        new: true
+      }
+    )
 
-        const user = await User.findByIdAndUpdate(
-            decodeToken.id,
-            {
-                $set: {
-                    isVerified: true
-                }
-            },
-            {
-                new: true
-            }
-        )
+    console.log("User after verification:", user);
 
-        console.log("User after verification:", user);
+    if (!user) {
+      throw new ApiError(404, "User Not Found")
+    }
 
-        if (!user) {
-            throw new ApiError(404, "User Not Found")
-        }
-
-        return res.status(200).send(`
+    return res.status(200).send(`
             <h1>Verification Successful</h1>
             <p>Your account has been verified successfully!</p>
         `)
-    } catch (error) {
-        return res.status(500).send(`
+  } catch (error) {
+    return res.status(500).send(`
 <html>
 <head>
   <meta charset="UTF-8" />
@@ -286,86 +286,107 @@ const verifyUser = asyncHandler(async (req, res) => {
 </body>
 </html>
 `)
-    }
+  }
 })
 
-const isVerifiedUser = asyncHandler(async (req,res)=>{
-  const {email} = req.params;
+const isVerifiedUser = asyncHandler(async (req, res) => {
+  const { email } = req.params;
 
-  const user = await User.findOne({email});
+  const user = await User.findOne({ email });
+  console.log("User found for email verification check:", user.isVerified);
 
   if (!user) {
-      throw new ApiError(404, "User Not Found");
+    throw new ApiError(404, "User Not Found");
   }
 
   if (!user.isVerified) {
-      throw new ApiError(403, "User is not verified");
+    throw new ApiError(403, "User is not verified");
   }
 
-  return res.status(200).json({
-    isVerified: user.isVerified,
-  })
-})
+  const {accessToken, refreshToken} = generateTokens(user)
 
+  user.refreshToken = refreshToken;
 
-const isLoggedInUser = asyncHandler(async(req,res)=>{
+  await user.save({ validateBeforeSave: false });
+
   return res
-        .status(200)
-        .json(
-          new ApiResponse(200,{
-            success: req.user ? true : false,
-            isLoggedIn : req.user ? true : false
-          })
-        )
+    .status(200)
+    .cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    })
+    .cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    })
+    .json({
+      isVerified: user.isVerified,
+    })
 })
 
-const uploadAvatar = asyncHandler(async (req,res)=>{
-  
-  if(!req.file){
-    throw new ApiError(400,"Avatar Image Is Required.")
+
+const isLoggedInUser = asyncHandler(async (req, res) => {
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, {
+        success: req.user ? true : false,
+        isLoggedIn: req.user ? true : false
+      })
+    )
+})
+
+const uploadAvatar = asyncHandler(async (req, res) => {
+
+  if (!req.file) {
+    throw new ApiError(400, "Avatar Image Is Required.")
   }
   const avatarLocalPath = req.file.path
 
   try {
     const uploadData = await uploadFileOnCloudinary(avatarLocalPath)
-    if(uploadData.success === false){
-      throw new ApiError(500,uploadData.message || "Avatar Upload Failed")
+    if (uploadData.success === false) {
+      throw new ApiError(500, uploadData.message || "Avatar Upload Failed")
     }
 
     const user = await User.findByIdAndUpdate(
       req.user._id,
       {
-        $set:{
-            avatar:uploadData.secure_url,
-            avatarPublicId: uploadData.public_id
+        $set: {
+          avatar: uploadData.secure_url,
+          avatarPublicId: uploadData.public_id
         }
       },
       {
-        new:true
+        new: true
       }
     )
 
-    if(!user){
-      throw new ApiError(500,"MongoDB Server Error While Uploading Avatar.")
+    if (!user) {
+      throw new ApiError(500, "MongoDB Server Error While Uploading Avatar.")
     }
 
     return res
-        .status(201)
-        .json(
-          new ApiResponse(201,"Avatar Uploaded Successfuly.")
-        )
+      .status(201)
+      .json(
+        new ApiResponse(201, "Avatar Uploaded Successfuly.")
+      )
 
   } catch (error) {
-    throw new ApiError(500,error.message)
+    throw new ApiError(500, error.message)
   }
 
 })
 
-const getUserAvatar = asyncHandler(async(req,res)=>{
+const getUserAvatar = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id)
 
-  if(!user){
-    throw new ApiError(404,"User Not Found")
+  if (!user) {
+    throw new ApiError(404, "User Not Found")
   }
 
   return res.status(200).json({
@@ -376,12 +397,12 @@ const getUserAvatar = asyncHandler(async(req,res)=>{
 
 
 export {
-    registerUser,
-    verifyUser,
-    isVerifiedUser,
-    loginUser,
-    isLoggedInUser,
-    logoutUser,
-    uploadAvatar,
-    getUserAvatar
+  registerUser,
+  verifyUser,
+  isVerifiedUser,
+  loginUser,
+  isLoggedInUser,
+  logoutUser,
+  uploadAvatar,
+  getUserAvatar
 }

@@ -37,6 +37,7 @@ export const sendVerificationToken = asyncHandler(async(req,res)=>{
 
         const emailResponse = await sendEmail(
             userWithToken.email,
+            userWithToken.name,
             "DevMark Account Verification",
             `Click on the link to verify your account: <a href="https://dev-mark.vercel.app/verify/${userWithToken.verificationToken}">Verify Account</a>`,
            `<p>Click on the link to verify your account: <a href="https://dev-mark.vercel.app/verify/${userWithToken.verificationToken}">Verify Account</a></p>`
