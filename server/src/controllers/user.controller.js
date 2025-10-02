@@ -161,6 +161,8 @@ const verifyUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Token is required for verification")
     }
 
+    console.log("Verifying token:", token);
+
     let decodeToken;
 
     try {
