@@ -46,12 +46,12 @@ function Signup() {
 
     React.useEffect(() => {
         if (emailSent) {
-          localStorage.setItem("emailForVerification", user.email);
            navigate("/verify-confirm"); // Redirect to VerifyConfirm page after email is sent
         }
     }, [emailSent]);
 
     const onSubmitHandler = async() => {
+        localStorage.setItem("emailForVerification", user.email);
         clearForm();
         setLoading(true);
         const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/register`,user)
