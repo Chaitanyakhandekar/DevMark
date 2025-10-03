@@ -20,7 +20,7 @@ const VerifyConfirm = () => {
         console.log(res.data);
         setLoading(false);
         if(res.data.isVerified){
-            localStorage.removeItem("emailForVerification");
+            // localStorage.removeItem("emailForVerification");
             navigate("/user/feed");
         }else{
             setError("Email verification failed. Please try again.");
