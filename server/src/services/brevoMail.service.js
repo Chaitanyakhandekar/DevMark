@@ -4,19 +4,21 @@ const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = process.env.BREVO_API_KEY; // from Render env var
 
-const sendEmail = async () => {
+const sendEmail = async (to,subject,html) => {
+  
   const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
   const sendSmtpEmail = {
-    sender: { email: "bytecoder95@gmail.com", name: "DevMark App" },
-    to: [{ email: "chaitanyakhandekar95@gmail.com", name: "Test User" }],
-    subject: "Hello from Brevo + Render 🚀",
-    htmlContent: "<p>This email is sent using Brevo API on Render free tier!</p>"
+    sender: { email: "bytecoder95@gmail.com", name: "DevMark Admin" },
+    to: [{ email: to, name: "Test User" }],
+    subject: subject,
+    htmlContent: html
   };
 
   try {
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
     console.log("✅ Email sent successfully:", data);
+    return { success: true, data };
   } catch (error) {
     console.error("❌ Error sending email:", error.response?.body || error);
   }
