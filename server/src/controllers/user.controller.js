@@ -292,6 +292,12 @@ const verifyUser = asyncHandler(async (req, res) => {
 const isVerifiedUser = asyncHandler(async (req, res) => {
   const { email } = req.params;
 
+  console.log("Checking verification status for email:", email);
+
+  if(!email || email.trim() === ""){
+    throw new ApiError(400,"Email is required")
+  }
+
   const user = await User.findOne({ email });
   console.log("User found for email verification check:", user.isVerified);
 
