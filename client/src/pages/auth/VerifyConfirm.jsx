@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const VerifyConfirm = () => {
@@ -9,6 +9,10 @@ const VerifyConfirm = () => {
     const [error, setError] = React.useState("");
     const [email, setEmail] = React.useState(localStorage.getItem("emailForVerification") || "");
 
+    useEffect(()=>{
+        setEmail(localStorage.getItem("emailForVerification") || "");
+    },[])
+
     const handleVerifyEmail = async() => {
         // Logic to verify email
         setLoading(true);
@@ -16,8 +20,8 @@ const VerifyConfirm = () => {
         console.log(res.data);
         setLoading(false);
         if(res.data.isVerified){
-            navigate("/user/feed");
             localStorage.removeItem("emailForVerification");
+            navigate("/user/feed");
         }else{
             setError("Email verification failed. Please try again.");
         }
