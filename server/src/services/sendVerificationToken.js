@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError, ApiResponse } from "../utils/apiUtils.js";
 import { User } from "../models/users.model.js";
 import dotenv from "dotenv";
-import { sendEmail } from "./mail.service.js";
+import { sendEmail } from "./brevoMail.service.js";
 
 dotenv.config({path:"./.env"});
 
@@ -36,16 +36,16 @@ export const sendVerificationToken = asyncHandler(async(req,res)=>{
         console.log("Verification Token:", userWithToken);
 
         const emailResponse = await sendEmail(
-            userWithToken.email,
-            userWithToken.name,
-            "DevMark Account Verification",
-            `Click on the link to verify your account: <a href="https://dev-mark.vercel.app/verify/${userWithToken.verificationToken}">Verify Account</a>`,
-           `<p>Click on the link to verify your account: <a href="https://dev-mark.vercel.app/verify/${userWithToken.verificationToken}">Verify Account</a></p>`
+            // userWithToken.email,
+            // // userWithToken.name,
+            // subject="DevMark Account Verification",
+            // htmlContent=`Click on the link to verify your account: <a href="https://dev-mark.vercel.app/verify/${userWithToken.verificationToken}">Verify Account</a>`,
+            // textContent=`Click on the link to verify your account: <a href="https://dev-mark.vercel.app/verify/${userWithToken.verificationToken}">Verify Account</a>`
         )
 
-        if(!emailResponse.success){
-            throw new ApiError(500,"Email Sending Failed")
-        }
+        // if(!emailResponse.success){
+        //     throw new ApiError(500,"Email Sending Failed")
+        // }
 
         return res
         .status(200)
