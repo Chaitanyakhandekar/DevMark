@@ -36,16 +36,17 @@ export const sendVerificationToken = asyncHandler(async(req,res)=>{
         console.log("Verification Token:", userWithToken);
 
         const emailResponse = await sendEmail(
-            // userWithToken.email,
-            // // userWithToken.name,
-            // subject="DevMark Account Verification",
-            // htmlContent=`Click on the link to verify your account: <a href="https://dev-mark.vercel.app/verify/${userWithToken.verificationToken}">Verify Account</a>`,
-            // textContent=`Click on the link to verify your account: <a href="https://dev-mark.vercel.app/verify/${userWithToken.verificationToken}">Verify Account</a>`
+             
+            userWithToken.email,
+            "Verify your email address to activate your DevMark account",
+             `Click on the link to verify your account: <a href="https://dev-mark.vercel.app/verify/${userWithToken.verificationToken}">Verify Account</a>`,
         )
 
-        // if(!emailResponse.success){
-        //     throw new ApiError(500,"Email Sending Failed")
-        // }
+        console.log("Email service response:", emailResponse);
+
+        if(!emailResponse.success){
+            throw new ApiError(500,"Email Sending Failed")
+        }
 
         return res
         .status(200)
