@@ -101,9 +101,9 @@ function BlogCard({
                     </div>
 
                     <button
-                        disabled={isFollowed}
+                        disabled={owner.isFollowed}
                         onClick={handleFollow}
-                        className={`text-sm text-gray-500 cursor-pointer ml-5 ${isFollowed ? "bg-gray-600" : "bg-blue-600"} rounded-md px-3 py-1 text-white`}>{isFollowed ? "Following" : "Follow"}</button>
+                        className={`text-sm text-gray-500 cursor-pointer ml-5 ${owner.isFollowed ? "bg-gray-600" : "bg-blue-600"} rounded-md px-3 py-1 text-white`}>{owner.isFollowed ? "Following" : "Follow"}</button>
 
                 </div>
 
