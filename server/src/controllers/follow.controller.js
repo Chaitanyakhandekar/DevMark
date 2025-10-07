@@ -12,6 +12,15 @@ const followUser = asyncHandler(async(req,res)=>{
         throw new ApiError(400,"Invalid User Id.")
     }
 
+    const isAlreadyFollowing = await Follow.findOne({
+        followTo:id,
+        followedBy:req.user._id
+    })
+
+    if(isAlreadyFollowing){
+        throw new ApiError(400,"Already Followed.")
+    }
+
     const follow = await Follow.create({
         followTo:id,
         followedBy:req.user._id

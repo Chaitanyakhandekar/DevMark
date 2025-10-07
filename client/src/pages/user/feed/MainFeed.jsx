@@ -56,9 +56,10 @@ function MainFeed() {
   const [allBlogs, setAllBlogs] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(2);
+  const [limit, setLimit] = useState(4);
   const [loading,setLoading] = useState(false)
   const [userAvatar,setUserAvatar] = useState("")
+  const [followStatus,setFollowStatus] = useState({})
   const navigate = useNavigate();
 
   const categories = [
@@ -104,6 +105,8 @@ function MainFeed() {
       const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs?page=${page}&limit=${limit}`,{
         withCredentials:true
       })
+
+      console.log("blogs : ",res.data.data.blogs)
   
       setAllBlogs(res.data.data.blogs)
       setLoading(false)
@@ -139,7 +142,7 @@ function MainFeed() {
   },[limit])
 
   return (
-    <div className="main-feed w-screen min-w-screen dark:bg-[#111826]">
+    <div className="main-feed w-screen min-w-screen bg-[#f4f2ee] dark:bg-[#111826]">
 
       {/* Navbar */}
       <nav className="hidden md:block w-full h-[4rem] bg-[#1f2936] md:flex md:items-center md:justify-center md:gap-5 md:px-0 md:sticky md:top-0 z-50">
@@ -247,13 +250,13 @@ function MainFeed() {
 
 
       {/* Main Content */}
-      <main className='border-1 w-full flex justify-center items-start gap-3'>
+      <main className='border-1 w-full flex justify-center items-start gap-3 relative'>
 
         {/* Section 1 Left Sidebar*/}
-        <section className='hidden sm:hidden md:block border-1 border-blue-700 text-black dark:text-white md:flex md:flex-col md:gap-5 md:py-3 '>
+        <section className='hidden sm:hidden md:block border-1 border-blue-700 text-black dark:text-white md:flex md:flex-col md:gap-5 md:py-3 sticky top-20'>
 
           {/* Categories */}
-          <div className="w-60 flex flex-col gap-3 py-3 px-5 text-md items-start  border-[0.2px] border-gray-700 dark:bg-[#1f2936] rounded-md">
+          {/* <div className="w-60 flex flex-col gap-3 py-3 px-5 text-md items-start  border-[0.2px] border-gray-700 dark:bg-[#1f2936] rounded-md">
 
             <div className=" flex items-center gap-3 font-bold">
               <Filter size={20} className='font-bold' />
@@ -275,10 +278,10 @@ function MainFeed() {
               ))
             }
 
-          </div>
+          </div> */}
 
           {/* Trending Tags */}
-          <div className="w-60 border-[0.2px] border-gray-700 text-md dark:bg-[#1f2936] flex flex-col items-start justify-start gap-3 py-3 px-3 rounded-md">
+          {/* <div className="w-60 border-[0.2px] border-gray-700 text-md dark:bg-[#1f2936] flex flex-col items-start justify-start gap-3 py-3 px-3 rounded-md">
             <div className="flex items-center gap-3 font-bold py-3 px-2">
               <TrendingUp size={20} />
               <h1>Trending Tags</h1>
@@ -294,12 +297,12 @@ function MainFeed() {
                 </div>
               ))
             }
-          </div>
+          </div> */}
 
 
           {/*Quick actions */}
 
-          <div className="w-60 border-[0.2px] border-gray-700 dark:bg-[#1f2936] sticky top-0 flex flex-col gap-3 pt-5 pb-7 px-3 rounded-md">
+          <div className="w-60 border-[0.2px] border-gray-700 dark:bg-[#1f2936] sticky top-0 flex flex-col gap-3 pt-5 pb-7 px-3 rounded-md sticky top-2">
             <h1 className='font-bold'>Quick Actions</h1>
 
             <div className="flex items-center gap-3 px-3 py-2">
@@ -322,7 +325,7 @@ function MainFeed() {
         <section className='md:w-[20%] max-w-[700px] min-w-[250px] border-1 border-red-700 flex-1 flex flex-col gap-3 md:px-5 py-3 '>
 
           {/* Feed Filter */}
-          <div className="hidden md:block sticky top-5 md:top-20 z-10 mb-5 border-[0.2px] border-gray-700 bg-gray-700/70 backdrop-blur-md text-white w-full max-w-[1000px] h-16 flex items-center justify-between gap-5 px-5 rounded-md">
+          <div className="hidden md:block sticky top-5 md:top-20 z-10 mb-5 border-[0.2px] border-gray-700 bg-gray-700/70 backdrop-blur-md text-white w-full max-w-[1000px] h-16 md:flex items-center justify-between gap-5 px-5 rounded-md">
 
             <div className="flex items-center gap-3">
               <h1>Sort by:</h1>
@@ -374,16 +377,22 @@ function MainFeed() {
 
 
         {/* Section 3 Right Sidebar */}
-        <section className="hidden sm:hidden lg:block w-[18%] max-w-[350px] border-1 border-blue-700 text-black dark:text-white lg:flex lg:flex-col lg:gap-5 lg:py-3">
+        <section className="hidden sm:hidden lg:block w-[18%] max-w-[350px] border-1 border-blue-700 text-black dark:text-white lg:flex lg:flex-col lg:gap-5 lg:py-3 sticky top-20">
 
           {/* Trending This Week */}
-          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md dark:bg-[#1f2936]">
+          {/* <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md dark:bg-[#1f2936]">
             <div className="flex items-center gap-3 font-bold">
               <TrendingUp className='font-bold' size={19} />
               Trending This Week
             </div>
 
-            {/* Profile Section */}
+            Profile Section  ================= This is a comment ==============
+            <ProfileMeta
+              title={"Understanding Async/Await in JavaScript"}
+              views={"52.3k"}
+              username={"Jane Doe"}
+              profileText='JD'
+            />
             <ProfileMeta
               title={"10 VS Code Extensions Every Developer Needs"}
               views={"45.8k"}
@@ -405,7 +414,7 @@ function MainFeed() {
 
             />
 
-          </div>
+          </div> */}
 
 
           {/* Suggested Developers */}
@@ -438,7 +447,7 @@ function MainFeed() {
 
           {/* Upcoming Events */}
 
-          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pr-5 pb-10 rounded-md dark:bg-[#1f2936] sticky top-20">
+          {/* <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pr-5 pb-10 rounded-md dark:bg-[#1f2936] sticky top-20">
             <div className="flex items-center gap-3 font-bold">
               <Calendar className='font-bold' size={19} />
               Upcomming Events
@@ -465,7 +474,7 @@ function MainFeed() {
               border="border-[#602692]"
               linkColor="text-[#c286ec]"
             />
-          </div>
+          </div> */}
 
         </section>
 
