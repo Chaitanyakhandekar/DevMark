@@ -48,7 +48,7 @@ function BlogCard({
 
 }) {
 
-    const [isFollowed, setIsFollowed] = useState(false)
+    const [isFollowed, setIsFollowed] = useState(owner.isFollowed)
     const handleFollow = async () => {
         console.log(owner._id)
         try {
@@ -101,9 +101,9 @@ function BlogCard({
                     </div>
 
                     <button
-                        disabled={owner.isFollowed}
+                        disabled={isFollowed}
                         onClick={handleFollow}
-                        className={`text-sm text-gray-500 cursor-pointer ml-5 ${owner.isFollowed ? "bg-gray-600" : "bg-blue-600"} rounded-md px-3 py-1 text-white`}>{owner.isFollowed ? "Following" : "Follow"}</button>
+                        className={`text-sm text-gray-500 cursor-pointer ml-5 ${isFollowed ? "bg-gray-600" : "bg-blue-600"} rounded-md px-3 py-1 text-white`}>{isFollowed ? "Following" : "Follow"}</button>
 
                 </div>
 
