@@ -44,7 +44,9 @@ function BlogCard({
     likes = 0,
     comments = 0,
     views = 0,
-    owner = ""
+    owner = "",
+    followStatus,
+    setFollowStatus
 
 }) {
 
@@ -58,6 +60,12 @@ function BlogCard({
 
             console.log(res.data)
 
+            setFollowStatus(prev=>(
+                {
+                    ...prev,
+                    [owner._id]:true
+                }
+            ))
             setIsFollowed(true)
 
         } catch (error) {
@@ -101,9 +109,9 @@ function BlogCard({
                     </div>
 
                     <button
-                        disabled={isFollowed}
+                        disabled={followStatus[owner._id]}
                         onClick={handleFollow}
-                        className={`text-sm text-gray-500 cursor-pointer ml-5 ${isFollowed ? "bg-gray-600" : "bg-blue-600"} rounded-md px-3 py-1 text-white`}>{isFollowed ? "Following" : "Follow"}</button>
+                        className={`text-sm text-gray-500 cursor-pointer ml-5 ${followStatus[owner._id] ? "bg-gray-600" : "bg-blue-600"} rounded-md px-3 py-1 text-white`}>{followStatus[owner._id] ? "Following" : "Follow"}</button>
 
                 </div>
 

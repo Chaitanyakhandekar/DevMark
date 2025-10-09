@@ -99,6 +99,27 @@ function MainFeed() {
     }
   }
 
+  useEffect(() => {
+   console.log("Follow Status Updated = ",followStatus)
+  }, [followStatus])
+
+  const loadFollowStatus = (blogs)=>{
+
+    blogs.forEach((blog)=>{
+      setFollowStatus(
+        (prev)=>{
+          return {
+            ...prev,
+            [blog.owner._id]:blog.owner.isFollowed
+          }
+        }
+      )
+    })
+
+    console.log("Follow Status = ",followStatus)
+
+  }
+
   const fetchAllBlogs = async()=>{
     try {
       setLoading(true)
@@ -109,7 +130,11 @@ function MainFeed() {
       console.log("blogs : ",res.data.data.blogs)
   
       setAllBlogs(res.data.data.blogs)
+      
+      loadFollowStatus(res.data.data.blogs)
+
       setLoading(false)
+
      
 
     } catch (error) {
@@ -362,6 +387,8 @@ function MainFeed() {
                 tags={blog.tags}
                 views={blog.views}
                 owner={blog.owner}
+                followStatus={followStatus}
+                setFollowStatus={setFollowStatus}
                 />
                </div>
             ))}
