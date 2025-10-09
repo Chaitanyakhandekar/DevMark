@@ -4,7 +4,8 @@ import
 {
     createBlog,
     getAllBlogs,
-    deleteBlog
+    deleteBlog,
+    updateBlog
 
 }
  from "../controllers/blog.controller.js"
@@ -16,5 +17,6 @@ const router = Router();
 router.route("/create").post(upload.array("images",5), userAuth, createBlog)
 router.route("/").get(userAuth,getAllBlogs)
 router.route("/:id").delete(userAuth,blogOwner,deleteBlog)
+router.route("/:id").patch(userAuth,blogOwner,updateBlog)
 
 export default router;

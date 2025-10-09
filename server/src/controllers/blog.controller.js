@@ -200,9 +200,76 @@ const deleteBlog = asyncHandler(async (req, res) => {
         )
 })
 
+const updateBlog = asyncHandler(async (req,res)=>{
+  const {
+    title,
+    content,
+    category,
+    status,
+    tags,
+} = req.body
+
+  let updateData = {} 
+
+  if(!(title || content || category || status || (tags &&tags.length))){
+    throw new ApiError(400,"Atleast One Field Is Required For Update Blog.")
+  }
+
+  if(title){
+    if(title.trim()===""){
+      throw new ApiError(400,"Title Cannot Be Empty.")
+    }
+    updateData.title = title
+  }
+
+  if(content){
+    if(content.trim()===""){
+      throw new ApiError(400,"Content Cannot Be Empty.")
+    }
+    updateData.content = content
+  }
+
+  if(category ){
+    if(category.trim()===""){
+      throw new ApiError(400,"Category Cannot Be Empty.")
+    }
+    updateData.category = category
+  }
+
+  if(status){
+    if(!["draft","published","private"].includes(status)){
+      throw new ApiError(400,"Invalid Status.")
+    }
+    updateData.status = status
+  }
+
+  if(tags && tags.length){
+    updateData = {...updateData,tags}
+  }
+
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    req.blog._id,
+    {
+      $set: updateData,
+    },
+    { new: true }
+  )
+
+  if(!updatedBlog){
+    throw new ApiError(500,"Blog Updation Failed.")
+  }
+
+  return res
+      .status(200)
+      .json(
+        new ApiResponse(200,updatedBlog,"Blog Updated Successfully.")
+      )
+})
+
 export {
    createBlog,
    getAllBlogs,
-   deleteBlog
+   deleteBlog,
+   updateBlog
 };
 
