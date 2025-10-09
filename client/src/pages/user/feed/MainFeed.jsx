@@ -99,6 +99,25 @@ function MainFeed() {
     }
   }
 
+
+
+  const loadFollowStatus = (blogs)=>{
+
+    blogs.forEach((blog)=>{
+      setFollowStatus(
+        (prev)=>{
+          return {
+            ...prev,
+            [blog.owner._id]:blog.owner.isFollowed
+          }
+        }
+      )
+    })
+
+    console.log("Follow Status = ",followStatus)
+
+  }
+
   const fetchAllBlogs = async()=>{
     try {
       setLoading(true)
@@ -109,7 +128,11 @@ function MainFeed() {
       console.log("blogs : ",res.data.data.blogs)
   
       setAllBlogs(res.data.data.blogs)
+      
+      loadFollowStatus(res.data.data.blogs)
+
       setLoading(false)
+
      
 
     } catch (error) {
@@ -305,15 +328,17 @@ function MainFeed() {
           <div className="w-60 border-[0.2px] border-gray-700 dark:bg-[#1f2936] sticky top-0 flex flex-col gap-3 pt-5 pb-7 px-3 rounded-md sticky top-2">
             <h1 className='font-bold'>Quick Actions</h1>
 
-            <div className="flex items-center gap-3 px-3 py-2">
+            <div
+            onClick={()=>{navigate("/user/blogs/create")}}
+            className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
               <Pen size={19} />
               <h1 className="">Write Blog</h1>
             </div>
-            <div className="flex items-center gap-3 px-3 py-2">
+            <div className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
               <BookOpen size={19} />
               <h1 className="">My Blogs</h1>
             </div>
-            <div className="flex items-center gap-3 px-3 py-2">
+            <div className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
               <Bookmark size={19} />
               <h1 className="">Saved Blogs</h1>
             </div>
@@ -325,7 +350,7 @@ function MainFeed() {
         <section className='md:w-[20%] max-w-[700px] min-w-[250px] border-1 border-red-700 flex-1 flex flex-col gap-3 md:px-5 py-3 '>
 
           {/* Feed Filter */}
-          <div className="hidden md:block sticky top-5 md:top-20 z-10 mb-5 border-[0.2px] border-gray-700 bg-gray-700/70 backdrop-blur-md text-white w-full max-w-[1000px] h-16 md:flex items-center justify-between gap-5 px-5 rounded-md">
+          {/* <div className="hidden md:block sticky top-5 md:top-20 z-10 mb-5 border-[0.2px] border-gray-700 bg-gray-700/70 backdrop-blur-md text-white w-full max-w-[1000px] h-16 md:flex items-center justify-between gap-5 px-5 rounded-md">
 
             <div className="flex items-center gap-3">
               <h1>Sort by:</h1>
@@ -343,9 +368,9 @@ function MainFeed() {
               <Clock size={16} className='inline-block mr-1 text-gray-500' />
               <p className='text-sm text-gray-900 dark:text-gray-500 '>Last Updated : 2 minutes ago</p>
             </div>
-          </div>
+          </div> */}
 
-          <div className="w-full border-1 border-white text-white flex flex-col items-center gap-5">
+          <div className="w-full border-1 border-white text-white flex flex-col items-center gap-5 mt-5">
             
             {
               allBlogs.length!==0 && allBlogs.map((blog)=>(
@@ -362,6 +387,9 @@ function MainFeed() {
                 tags={blog.tags}
                 views={blog.views}
                 owner={blog.owner}
+                followStatus={followStatus}
+                setFollowStatus={setFollowStatus}
+                createdAt={blog.createdAt}
                 />
                </div>
             ))}
@@ -442,6 +470,8 @@ function MainFeed() {
               role={"DevOps Engineer"}
               profileText='DP'
             />
+
+            
 
           </div>
 

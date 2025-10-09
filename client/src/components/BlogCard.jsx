@@ -34,6 +34,7 @@ import {
     Star
 } from 'lucide-react';
 import axios from 'axios';
+import { getTimeAgo } from '../services/timeAgo.service';
 
 
 function BlogCard({
@@ -44,7 +45,10 @@ function BlogCard({
     likes = 0,
     comments = 0,
     views = 0,
-    owner = ""
+    owner = "",
+    followStatus,
+    setFollowStatus,
+    createdAt
 
 }) {
 
@@ -58,6 +62,12 @@ function BlogCard({
 
             console.log(res.data)
 
+            setFollowStatus(prev=>(
+                {
+                    ...prev,
+                    [owner._id]:true
+                }
+            ))
             setIsFollowed(true)
 
         } catch (error) {
@@ -67,7 +77,7 @@ function BlogCard({
     }
 
     return (
-        <div className="w-[100%] md:w-full dark:bg-[#1f2936] md:rounded-lg md:dark:border-[0.2px] dark:border-gray-700">
+        <div className="w-[100%] md:w-full dark:bg-[#1f2936] md:rounded-lg md:dark:border-[0.2px] dark:border-gray-700 cursor-pointer ">
             <div className="w-full relative">
                 <div className="w-full flex justify-center">
                     <img
@@ -97,13 +107,13 @@ function BlogCard({
                             </svg>
                         </div>
 
-                        <p className='text-sm text-gray-500'>2h ago . {owner.totalFollowers} followers</p>
+                        <p className='text-sm text-gray-500'>{getTimeAgo(createdAt)} . {owner.totalFollowers} followers</p>
                     </div>
 
                     <button
-                        disabled={isFollowed}
+                        disabled={followStatus[owner._id]}
                         onClick={handleFollow}
-                        className={`text-sm text-gray-500 cursor-pointer ml-5 ${isFollowed ? "bg-gray-600" : "bg-blue-600"} rounded-md px-3 py-1 text-white`}>{isFollowed ? "Following" : "Follow"}</button>
+                        className={`text-sm text-gray-500 cursor-pointer ml-5 ${followStatus[owner._id] ? "bg-gray-600" : "bg-blue-600"} rounded-md px-3 py-1 text-white`}>{followStatus[owner._id] ? "Following" : "Follow"}</button>
 
                 </div>
 

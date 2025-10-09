@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Blog } from "../models/blogs.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError, ApiResponse } from "../utils/apiUtils.js"
-import { uploadFileOnCloudinary } from "../services/cloudinary.service.js";
+import { uploadFileOnCloudinary,deleteFileFromCloudinary } from "../services/cloudinary.service.js";
 
 const createBlog = asyncHandler(async (req, res) => {
 
@@ -71,6 +71,118 @@ const createBlog = asyncHandler(async (req, res) => {
             new ApiResponse(201, newBlog, "Blog Created Successfully")
         )
 
+})
+
+const deleteBlog = asyncHandler(async (req, res) => {
+     const {id} = req.params
+
+     if(!id || !mongoose.Types.ObjectId.isValid(id)){
+      throw new ApiError(400,"Blog Id Required.")
+     }
+
+     await Promise.all(
+      req.blog.images.map(async(image)=>{
+        await deleteFileFromCloudinary(image.public_id)
+      })
+     )
+
+     const deletedBlog = await Blog.findByIdAndDelete(req.blog._id)
+
+     if(!deletedBlog){
+      throw new ApiError(500,"Blog Deletion Failed.")
+     }
+
+     return res
+        .status(200)
+        .json(
+          new ApiResponse(200,[],"Blog Deleted Successfully.")
+        )
+})
+
+const updateBlog = asyncHandler(async (req,res)=>{
+  const {
+    title,
+    content,
+    category,
+    status,
+    tags,
+} = req.body
+
+  let updateData = {} 
+
+  if(!(title || content || category || status || (tags &&tags.length))){
+    throw new ApiError(400,"Atleast One Field Is Required For Update Blog.")
+  }
+
+  if(title){
+    if(title.trim()===""){
+      throw new ApiError(400,"Title Cannot Be Empty.")
+    }
+    updateData.title = title
+  }
+
+  if(content){
+    if(content.trim()===""){
+      throw new ApiError(400,"Content Cannot Be Empty.")
+    }
+    updateData.content = content
+  }
+
+  if(category ){
+    if(category.trim()===""){
+      throw new ApiError(400,"Category Cannot Be Empty.")
+    }
+    updateData.category = category
+  }
+
+  if(status){
+    if(!["draft","published","private"].includes(status)){
+      throw new ApiError(400,"Invalid Status.")
+    }
+    updateData.status = status
+  }
+
+  if(tags && tags.length){
+    updateData = {...updateData,tags}
+  }
+
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    req.blog._id,
+    {
+      $set: updateData,
+    },
+    { new: true }
+  )
+
+  if(!updatedBlog){
+    throw new ApiError(500,"Blog Updation Failed.")
+  }
+
+  return res
+      .status(200)
+      .json(
+        new ApiResponse(200,updatedBlog,"Blog Updated Successfully.")
+      )
+})
+
+const getBlog = asyncHandler(async (req,res)=>{
+  const {id} = req.params
+
+  if(!id || !mongoose.Types.ObjectId.isValid(id)){
+    throw new ApiError(400,"Blog Id Is Required.")
+  }
+
+  const blog = await Blog.findById(id)
+
+  if(!blog){
+    throw new ApiError(404,"Blog Not Found.")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200,blog,"Blog Fetched Successfully.")
+    )
 })
 
 const getAllBlogs = asyncHandler(async (req, res) => {
@@ -174,9 +286,13 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   );
 });
 
-const deleteBlog = asyncHandler(async (req, res) => {
-     
-})
 
-export { createBlog, getAllBlogs };
+
+export {
+   createBlog,
+   getAllBlogs,
+   deleteBlog,
+   updateBlog,
+   getBlog
+};
 
