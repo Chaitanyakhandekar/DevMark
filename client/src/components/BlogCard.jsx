@@ -34,6 +34,7 @@ import {
     Star
 } from 'lucide-react';
 import axios from 'axios';
+import { getTimeAgo } from '../services/timeAgo.service';
 
 
 function BlogCard({
@@ -46,7 +47,8 @@ function BlogCard({
     views = 0,
     owner = "",
     followStatus,
-    setFollowStatus
+    setFollowStatus,
+    createdAt
 
 }) {
 
@@ -105,7 +107,7 @@ function BlogCard({
                             </svg>
                         </div>
 
-                        <p className='text-sm text-gray-500'>2h ago . {owner.totalFollowers} followers</p>
+                        <p className='text-sm text-gray-500'>{getTimeAgo(createdAt)} . {owner.totalFollowers} followers</p>
                     </div>
 
                     <button

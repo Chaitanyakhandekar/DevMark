@@ -389,6 +389,7 @@ function MainFeed() {
                 owner={blog.owner}
                 followStatus={followStatus}
                 setFollowStatus={setFollowStatus}
+                createdAt={blog.createdAt}
                 />
                </div>
             ))}
