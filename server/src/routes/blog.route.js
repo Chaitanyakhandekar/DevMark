@@ -5,7 +5,8 @@ import
     createBlog,
     getAllBlogs,
     deleteBlog,
-    updateBlog
+    updateBlog,
+    getBlog
 
 }
  from "../controllers/blog.controller.js"
@@ -18,5 +19,6 @@ router.route("/create").post(upload.array("images",5), userAuth, createBlog)
 router.route("/").get(userAuth,getAllBlogs)
 router.route("/:id").delete(userAuth,blogOwner,deleteBlog)
 router.route("/:id").patch(userAuth,blogOwner,updateBlog)
+router.route("/:id").get(userAuth,getBlog)
 
 export default router;
