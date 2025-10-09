@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Blog } from "../models/blogs.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError, ApiResponse } from "../utils/apiUtils.js"
-import { uploadFileOnCloudinary } from "../services/cloudinary.service.js";
+import { uploadFileOnCloudinary,deleteFileFromCloudinary } from "../services/cloudinary.service.js";
 
 const createBlog = asyncHandler(async (req, res) => {
 
@@ -175,8 +175,34 @@ const getAllBlogs = asyncHandler(async (req, res) => {
 });
 
 const deleteBlog = asyncHandler(async (req, res) => {
-     
+     const {id} = req.params
+
+     if(!id || !mongoose.Types.ObjectId.isValid(id)){
+      throw new ApiError(400,"Blog Id Required.")
+     }
+
+     await Promise.all(
+      req.blog.images.map(async(image)=>{
+        await deleteFileFromCloudinary(image.public_id)
+      })
+     )
+
+     const deletedBlog = await Blog.findByIdAndDelete(req.blog._id)
+
+     if(!deletedBlog){
+      throw new ApiError(500,"Blog Deletion Failed.")
+     }
+
+     return res
+        .status(200)
+        .json(
+          new ApiResponse(200,[],"Blog Deleted Successfully.")
+        )
 })
 
-export { createBlog, getAllBlogs };
+export {
+   createBlog,
+   getAllBlogs,
+   deleteBlog
+};
 

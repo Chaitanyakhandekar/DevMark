@@ -77,7 +77,7 @@ function BlogCard({
     }
 
     return (
-        <div className="w-[100%] md:w-full dark:bg-[#1f2936] md:rounded-lg md:dark:border-[0.2px] dark:border-gray-700">
+        <div className="w-[100%] md:w-full dark:bg-[#1f2936] md:rounded-lg md:dark:border-[0.2px] dark:border-gray-700 cursor-pointer ">
             <div className="w-full relative">
                 <div className="w-full flex justify-center">
                     <img

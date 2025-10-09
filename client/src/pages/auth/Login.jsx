@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2';
 import TestLoader from "../../test/TestLoader";
+import { userApi } from "../../api/user.api";
 
 
 export default function LoginPage({nextPage="/user/feed"}) {
@@ -23,9 +24,7 @@ export default function LoginPage({nextPage="/user/feed"}) {
     setLoading(true);
     console.log("Logging in with:", user);
 
-    const res = await axios.post(`${import.meta.env.VITE_ENV ==="production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/login`, user , {withCredentials:true})
-
-    // setLoading(false);
+    const res = await userApi.loginUser(user)
     console.log(res.data);
 
     if(res.data.message){
