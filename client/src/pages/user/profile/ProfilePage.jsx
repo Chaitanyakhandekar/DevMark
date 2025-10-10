@@ -47,7 +47,13 @@ import MobileNavBottom from '../../../components/MobileNavBottom';
 
 function ProfilePage() {
 
+    const [activeTab,setActiveTab] = useState("posts");
+
     const skills = ["JavaScript", "TypeScript", "React", "Node.js", "MongoDB", "Docker", "AWS"];
+
+    const handleTabChange = (e)=>{
+        setActiveTab(e.target.name)
+    }
 
   return (
     <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-20'>
@@ -160,9 +166,33 @@ function ProfilePage() {
 
             </section>
 
-            {/* User Posts */}
-            <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4 border-2 p-3">
+            {/* User Posts */} 
+            <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4   bg-[#1f2935] px-3">
+                    <div className="flex justify-start gap-5 items-center border-[1px] border-b-gray-500 border-t-0 border-l-0 border-r-0">
+                        <button
+                         className={`text-sm md:text-[1.1rem] font-[500] text-[#9ca3ae] mb-0 pb-5 px-3 pt-3 h-full ${activeTab==="posts" ? "border-2 border-b-[#4083f2] border-t-0 border-r-0 border-l-0 text-[#4083f2]" : "border-none text-[#9ca3ae]"}`}
+                         name="posts"
+                         onClick={handleTabChange}
+                         >
+                            Posts
+                        </button>
 
+                        <button
+                         className={`text-sm md:text-[1.1rem] font-[500] text-[#9ca3ae] mb-0 pb-5 px-3 pt-3 h-full ${activeTab==="saved" ? "border-2 border-b-[#4083f2] border-t-0 border-r-0 border-l-0 text-[#4083f2]" : "border-none text-[#9ca3ae]"}`}
+                         name="saved"
+                         onClick={handleTabChange}
+                        >
+                        Saved
+                        </button>
+
+                        <button
+                         className={`text-sm md:text-[1.1rem] font-[500] text-[#9ca3ae] mb-0 pb-5 px-3 pt-3 h-full ${activeTab==="drafts" ? "border-2 border-b-[#4083f2] border-t-0 border-r-0 border-l-0 text-[#4083f2]" : "border-none text-[#9ca3ae]"}`}
+                         name="drafts"
+                         onClick={handleTabChange}
+                         >
+                        Drafts
+                        </button>
+                    </div>
             </section>
 
            <div className="block md:hidden fixed bottom-0 w-full">
