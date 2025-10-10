@@ -48,7 +48,8 @@ function BlogCard({
     owner = "",
     followStatus,
     setFollowStatus,
-    createdAt
+    createdAt,
+    bgColor="1f2936"
 
 }) {
 
@@ -77,7 +78,7 @@ function BlogCard({
     }
 
     return (
-        <div className="w-[100%] md:w-full dark:bg-[#1f2936] md:rounded-lg md:dark:border-[0.2px] dark:border-gray-700 cursor-pointer ">
+        <div className={`w-[100%] md:w-full dark:bg-[${bgColor}] md:rounded-lg md:dark:border-[0.2px] dark:border-gray-700 cursor-pointer `}>
             <div className="w-full relative">
                 <div className="w-full flex justify-center">
                     <img
@@ -126,7 +127,7 @@ function BlogCard({
                 <div className="w-full flex items-center flex-wrap justify-start gap-5 px-3 ">
                     {
                         tags.map((tag, index) => (
-                            <button key={index} className="">{"#" + tag}</button>
+                            <button key={index} className="text-[#62a5f6]">{"#" + tag}</button>
                         ))
                     }
                 </div>

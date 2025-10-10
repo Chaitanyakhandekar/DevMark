@@ -27,6 +27,7 @@ function MobileNavBottom({avatarUrl}) {
         <div
           onClick={() => {
             setIsProfileMenuOpen(!isProfileMenuOpen)
+            handleNavigate("/user/profile")
           }}
           className={`flex items-center gap-2 hover:bg-gray-700 ${isProfileMenuOpen ? "bg-gray-700" : ""} px-2 py-1 rounded-md cursor-pointer`}>
           <div className=" text-white font-bold rounded-[50%] w-6 h-6 flex justify-center items-center text-sm">

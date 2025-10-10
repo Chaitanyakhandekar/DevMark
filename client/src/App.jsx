@@ -15,7 +15,8 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AuthLoaderDemo from './components/AuthLoader'
 import MainFeed from './pages/user/feed/MainFeed'
 import MainFeed1 from './pages/user/feed/MainFeed1'
-import ProfilePage from './pages/user/profile/Profile'
+import ProfilePage1 from './pages/user/profile/Profile'
+import ProfilePage from './pages/user/profile/ProfilePage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -29,6 +30,7 @@ function App() {
       <Route path="/user/blogs/create" element={<ProtectedRoute><CreateBlogPage/></ProtectedRoute>} />
       <Route path="/user/feed1" element={<ProtectedRoute><MainFeed1/></ProtectedRoute>} />
       <Route path="/user/feed" element={<ProtectedRoute><MainFeed/></ProtectedRoute>} />
+      <Route path="/user/profile-1/" element={<ProtectedRoute><ProfilePage1/></ProtectedRoute>} />
       <Route path="/user/profile/" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>} />
 
 

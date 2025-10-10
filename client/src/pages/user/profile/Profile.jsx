@@ -43,6 +43,7 @@ import {
   Activity
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+import axios from 'axios'
 
 function ProfilePage() {
   const [searchFocused, setSearchFocused] = useState(false);
@@ -76,6 +77,7 @@ function ProfilePage() {
     }
   };
 
+  
   const userPosts = [
     {
       id: 1,
