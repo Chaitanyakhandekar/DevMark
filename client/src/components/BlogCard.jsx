@@ -126,7 +126,7 @@ function BlogCard({
                 <div className="w-full flex items-center flex-wrap justify-start gap-5 px-3 ">
                     {
                         tags.map((tag, index) => (
-                            <button key={index} className="">{"#" + tag}</button>
+                            <button key={index} className="text-[#62a5f6]">{"#" + tag}</button>
                         ))
                     }
                 </div>
