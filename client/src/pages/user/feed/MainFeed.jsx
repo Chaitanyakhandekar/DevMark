@@ -121,7 +121,7 @@ function MainFeed() {
   const fetchAllBlogs = async()=>{
     try {
       setLoading(true)
-      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs?page=${page}&limit=${limit}`,{
+      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/all?page=${page}&limit=${limit}`,{
         withCredentials:true
       })
 
@@ -249,8 +249,10 @@ function MainFeed() {
           </div>
 
           {/* Dropdown Menu */}
-          <div className={`${isProfileMenuOpen ? "block" : "hidden"}  bg-[#1f2936] absolute right-0 bottom-[-8.9rem] text-white w-60 rounded-md flex flex-col gap-3 shadow-lg p-3`}>
-            <div className='flex items-center gap-2'>
+          <div className={`${isProfileMenuOpen ? "block" : "hidden"}  bg-[#1f2936] cursor-pointer absolute right-0 bottom-[-8.9rem] text-white w-60 rounded-md flex flex-col gap-3 shadow-lg p-3`}>
+            <div
+            onClick={()=>{navigate("/user/profile")}}
+            className='flex items-center gap-2'>
               <User size={20} />
               <h1>Profile</h1>
             </div>

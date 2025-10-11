@@ -286,6 +286,51 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   );
 });
 
+const getUserBlogs = asyncHandler(async (req,res)=>{
+  
+  const blogs = await Blog.aggregate([
+    {
+      $match:{
+        owner:new mongoose.Types.ObjectId(req.user._id)
+      }
+    },
+    {
+      $sort:{createdAt:-1}
+    },
+    {
+      $lookup:{
+          from:"users",
+          localField:"owner",
+          foreignField:"_id",
+          as:"owner",
+          pipeline:[
+            {
+              $project:{
+                username:1,
+                avatar:1,
+                totalFollowers:1
+              }
+            }
+          ]
+      }
+    },
+    {
+      $unwind:"$owner"
+    }
+
+  ])
+  if(!blogs.length){
+    throw new ApiError(500,"Server Error While Fetching User Blogs.")
+  }
+
+  return res
+      .status(200)
+      .json(
+        new ApiResponse(200,blogs,"User Blogs Fetched Successfully.")
+      )
+
+})
+
 
 
 export {
@@ -293,6 +338,7 @@ export {
    getAllBlogs,
    deleteBlog,
    updateBlog,
-   getBlog
+   getBlog,
+   getUserBlogs
 };
 

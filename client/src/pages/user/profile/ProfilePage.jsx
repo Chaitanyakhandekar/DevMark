@@ -64,12 +64,12 @@ function ProfilePage() {
         // For this example, we'll use static data defined below
 
         try {
-            const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs?page=${1}&limit=${10}`, {
+            const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/user?page=${1}&limit=${10}`, {
                 withCredentials: true
             })
 
-            setUserPosts(res.data.data.blogs)
-            console.log("blogs : ", res.data.data.blogs)
+            setUserPosts(res.data.data)
+            console.log("blogs : ", res.data.data)
 
 
         } catch (error) {
