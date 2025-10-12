@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Search, 
-  Bell, 
-  BookOpen, 
-  Bookmark, 
-  User, 
-  Settings, 
-  LogOut, 
+import React, { useEffect, useState } from 'react'
+import {
+  Search,
+  Bell,
+  BookOpen,
+  Bookmark,
+  User,
+  Settings,
+  LogOut,
   Home,
   Edit3,
   Heart,
@@ -31,523 +31,468 @@ import {
   Users,
   Tag,
   Plus,
-  Star
+  Star,
+  MoveDown,
+  Pen,
+  Sparkles,
+  Flame,
+  Activity,
+  Award
 } from 'lucide-react';
+import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
-const MainFeed1 = () => {
+function MainFeed() {
+  const [searchFocused, setSearchFocused] = useState(false);
   const [isDark, setIsDark] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState('Latest');
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [likedPosts, setLikedPosts] = useState(new Set());
-  const [savedPosts, setSavedPosts] = useState(new Set());
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(4);
+  const [loading, setLoading] = useState(false);
+  const [userAvatar, setUserAvatar] = useState("https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop");
+  const [followStatus, setFollowStatus] = useState({});
 
-  // Mock data - in real app, this would come from API
   const categories = [
-    { name: 'All', icon: <Home size={16} />, count: 1247 },
-    { name: 'JavaScript', icon: <Code size={16} />, count: 324 },
-    { name: 'React', icon: <Zap size={16} />, count: 289 },
-    { name: 'Node.js', icon: <Coffee size={16} />, count: 156 },
-    { name: 'Career', icon: <Briefcase size={16} />, count: 98 },
-    { name: 'Open Source', icon: <Github size={16} />, count: 87 }
+    { name: "All", icon: <Home size={16} />, totalPosts: 1200 },
+    { name: "Javascript", icon: <Code size={16} />, totalPosts: 800 },
+    { name: "React", icon: <Zap size={16} />, totalPosts: 600 },
+    { name: "Node.js", icon: <Briefcase size={16} />, totalPosts: 400 },
+    { name: "Career", icon: <Coffee size={16} />, totalPosts: 300 },
+    { name: "Open Source", icon: <FaGithub size={16} />, totalPosts: 200 },
   ];
 
   const trendingTags = [
-    '#WebDev', '#AI', '#MachineLearning', '#DevOps', '#CloudComputing',
-    '#Debugging', '#Performance', '#Security', '#Mobile', '#Database'
+    { name: "#WebDev", totalPosts: 1200 },
+    { name: "#MachineLearning", totalPosts: 800 },
+    { name: "#DevOps", totalPosts: 600 },
+    { name: "#CloudComputing", totalPosts: 400 },
+    { name: "#Debugging", totalPosts: 300 },
+    { name: "#Performance", totalPosts: 200 },
+    { name: "#Mobile", totalPosts: 100 },
   ];
 
-  const blogPosts = [
-    {
-      id: 1,
-      author: {
-        name: "Sarah Chen",
-        avatar: "SC",
-        verified: true,
-        followers: 12500
-      },
-      title: "Building Scalable React Applications: A Complete Guide",
-      description: "Learn how to architect React applications that can grow with your team and user base. We'll cover component patterns, state management, and performance optimization techniques.",
-      coverImage: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop",
-      tags: ["React", "JavaScript", "Architecture", "Performance"],
-      publishedAt: "2h ago",
-      readTime: "8 min read",
-      stats: {
-        views: 2345,
-        likes: 187,
-        comments: 34
-      },
-      category: "React"
-    },
-    {
-      id: 2,
-      author: {
-        name: "Alex Kumar",
-        avatar: "AK",
-        verified: false,
-        followers: 3400
-      },
-      title: "The Art of Clean Code: Principles Every Developer Should Know",
-      description: "Explore the fundamental principles of writing clean, maintainable code that your future self and team members will thank you for.",
-      coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop",
-      tags: ["CleanCode", "BestPractices", "Programming"],
-      publishedAt: "5h ago",
-      readTime: "12 min read",
-      stats: {
-        views: 4567,
-        likes: 312,
-        comments: 67
-      },
-      category: "Programming"
-    },
-    {
-      id: 3,
-      author: {
-        name: "Maria Rodriguez",
-        avatar: "MR",
-        verified: true,
-        followers: 8900
-      },
-      title: "Mastering Async/Await: From Callbacks to Modern JavaScript",
-      description: "A deep dive into asynchronous JavaScript, from callback hell to promises and async/await. Includes real-world examples and common pitfalls.",
-      coverImage: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop",
-      tags: ["JavaScript", "Async", "Promises", "ES6"],
-      publishedAt: "1d ago",
-      readTime: "15 min read",
-      stats: {
-        views: 6789,
-        likes: 445,
-        comments: 89
-      },
-      category: "JavaScript"
+  const handleTheme = () => {
+    const html = document.documentElement;
+    if (html.classList.contains("dark")) {
+      setIsDark(false);
+      html.classList.remove("dark");
+      html.classList.add("light");
+    } else {
+      setIsDark(true);
+      html.classList.remove("light");
+      html.classList.add("dark");
     }
-  ];
-
-  const suggestedDevelopers = [
-    { name: "John Smith", role: "Full Stack Dev", followers: "15.2k", avatar: "JS" },
-    { name: "Emma Wilson", role: "React Expert", followers: "22.1k", avatar: "EW" },
-    { name: "David Park", role: "DevOps Engineer", followers: "18.7k", avatar: "DP" }
-  ];
-
-  const trendingBlogs = [
-    { title: "10 VS Code Extensions Every Developer Needs", views: "45.2k", author: "Tech Insider" },
-    { title: "Why TypeScript is Taking Over JavaScript", views: "38.7k", author: "Code Masters" },
-    { title: "Building Your First Docker Container", views: "29.3k", author: "DevOps Daily" }
-  ];
-
-  const toggleTheme = () => {
-    setIsDark(!isDark);
   };
 
-  const handleLike = (postId) => {
-    setLikedPosts(prev => {
-      const newLiked = new Set(prev);
-      if (newLiked.has(postId)) {
-        newLiked.delete(postId);
-      } else {
-        newLiked.add(postId);
+  // Mock data for demo
+  useEffect(() => {
+    setAllBlogs([
+      {
+        _id: "1",
+        title: "Building Scalable Microservices with Node.js",
+        content: "Learn how to architect and deploy production-ready microservices using Node.js, Docker, and Kubernetes. This comprehensive guide covers everything from basic setup to advanced deployment strategies...",
+        images: [{ url: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop" }],
+        totalLikes: 342,
+        totalComments: 45,
+        views: 2341,
+        tags: ["Node.js", "Microservices", "Architecture"],
+        owner: { 
+          _id: "1",
+          name: "Sarah Johnson", 
+          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+          isFollowed: false
+        },
+        createdAt: new Date().toISOString()
+      },
+      {
+        _id: "2",
+        title: "Modern React Patterns You Should Know in 2025",
+        content: "Exploring the latest patterns and best practices in React development. From hooks to suspense, learn how to write cleaner, more efficient React code...",
+        images: [{ url: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop" }],
+        totalLikes: 521,
+        totalComments: 67,
+        views: 3892,
+        tags: ["React", "JavaScript", "Frontend"],
+        owner: { 
+          _id: "2",
+          name: "Michael Chen", 
+          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+          isFollowed: true
+        },
+        createdAt: new Date(Date.now() - 86400000).toISOString()
+      },
+      {
+        _id: "3",
+        title: "The Ultimate Guide to TypeScript Best Practices",
+        content: "Master TypeScript with these essential best practices. Learn about advanced types, generics, and how to structure large-scale TypeScript applications...",
+        images: [{ url: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&h=400&fit=crop" }],
+        totalLikes: 689,
+        totalComments: 92,
+        views: 5234,
+        tags: ["TypeScript", "JavaScript", "Best Practices"],
+        owner: { 
+          _id: "3",
+          name: "Emma Wilson", 
+          avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
+          isFollowed: false
+        },
+        createdAt: new Date(Date.now() - 172800000).toISOString()
+      },
+      {
+        _id: "4",
+        title: "Docker Essentials: From Zero to Production",
+        content: "Everything you need to know about Docker containerization. Build, ship, and run applications anywhere with confidence using Docker and Docker Compose...",
+        images: [{ url: "https://images.unsplash.com/photo-1605745341112-85968b19335b?w=800&h=400&fit=crop" }],
+        totalLikes: 445,
+        totalComments: 58,
+        views: 3156,
+        tags: ["Docker", "DevOps", "Containers"],
+        owner: { 
+          _id: "4",
+          name: "David Park", 
+          avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+          isFollowed: false
+        },
+        createdAt: new Date(Date.now() - 259200000).toISOString()
       }
-      return newLiked;
-    });
+    ]);
+  }, []);
+
+  const formatTimeAgo = (date) => {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    if (seconds < 60) return 'Just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
   };
-
-  const handleSave = (postId) => {
-    setSavedPosts(prev => {
-      const newSaved = new Set(prev);
-      if (newSaved.has(postId)) {
-        newSaved.delete(postId);
-      } else {
-        newSaved.add(postId);
-      }
-      return newSaved;
-    });
-  };
-
-  const BlogCard = ({ post }) => (
-    <div className="bg-white dark:bg-[#1f2937] rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
-      {post.coverImage && (
-        <div className="relative h-48 overflow-hidden">
-          <img 
-            src={post.coverImage} 
-            alt={post.title}
-            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-          />
-          <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
-            {post.readTime}
-          </div>
-        </div>
-      )}
-      
-      <div className="p-6">
-        {/* Author Info */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-gradient-to-r from-[#4777f4] to-[#9035ea] rounded-full flex items-center justify-center text-white font-semibold">
-            {post.author.avatar}
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <span className="font-medium text-gray-900 dark:text-white">{post.author.name}</span>
-              {post.author.verified && (
-                <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                  <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span>{post.publishedAt}</span>
-              <span>•</span>
-              <span>{post.author.followers.toLocaleString()} followers</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Content */}
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2 hover:text-[#4777f4] cursor-pointer transition-colors">
-          {post.title}
-        </h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-          {post.description}
-        </p>
-
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {post.tags.map((tag) => (
-            <span 
-              key={tag}
-              className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer transition-colors"
-            >
-              #{tag}
-            </span>
-          ))}
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
-          <div className="flex items-center gap-6">
-            <button
-              onClick={() => handleLike(post.id)}
-              className={`flex items-center gap-2 transition-colors ${
-                likedPosts.has(post.id) 
-                  ? 'text-red-500' 
-                  : 'text-gray-500 hover:text-red-500'
-              }`}
-            >
-              <Heart size={18} fill={likedPosts.has(post.id) ? 'currentColor' : 'none'} />
-              <span className="text-sm">{post.stats.likes + (likedPosts.has(post.id) ? 1 : 0)}</span>
-            </button>
-            
-            <button className="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors">
-              <MessageCircle size={18} />
-              <span className="text-sm">{post.stats.comments}</span>
-            </button>
-
-            <button
-              onClick={() => handleSave(post.id)}
-              className={`flex items-center gap-2 transition-colors ${
-                savedPosts.has(post.id) 
-                  ? 'text-yellow-500' 
-                  : 'text-gray-500 hover:text-yellow-500'
-              }`}
-            >
-              <Bookmark size={18} fill={savedPosts.has(post.id) ? 'currentColor' : 'none'} />
-            </button>
-
-            <button className="flex items-center gap-2 text-gray-500 hover:text-green-500 transition-colors">
-              <Share2 size={18} />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2 text-gray-400">
-            <Eye size={16} />
-            <span className="text-sm">{post.stats.views.toLocaleString()}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
-    <div className={`min-h-screen ${isDark ? 'dark bg-[#111827]' : 'bg-gray-50'} transition-colors duration-300`}>
-      {/* Navigation */}
-      <nav className="bg-white dark:bg-[#1f2937] border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="h-10 w-10 bg-gradient-to-r from-[#4777f4] to-[#9035ea] rounded-md flex items-center justify-center text-white font-mono font-bold">
-                  {'<>'}
-                </div>
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">DevMark</span>
-              </div>
-            </div>
-
-            {/* Search Bar */}
-            <div className="hidden md:flex flex-1 max-w-lg mx-8">
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                <input
-                  type="text"
-                  placeholder="Search by title, tags, or author..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4777f4] focus:border-transparent text-gray-900 dark:text-white"
-                />
-              </div>
-            </div>
-
-            {/* Navigation Links & Actions */}
-            <div className="hidden md:flex items-center gap-6">
-              <div className="flex items-center gap-4 text-gray-600 dark:text-gray-300">
-                <a href="#" className="hover:text-[#4777f4] transition-colors flex items-center gap-1">
-                  <Home size={18} />
-                  <span>Home</span>
-                </a>
-                <a href="#" className="hover:text-[#4777f4] transition-colors">Categories</a>
-                <a href="#" className="hover:text-[#4777f4] transition-colors flex items-center gap-1">
-                  <Edit3 size={18} />
-                  <span>Write</span>
-                </a>
-                <a href="#" className="hover:text-[#4777f4] transition-colors flex items-center gap-1">
-                  <Bookmark size={18} />
-                  <span>Bookmarks</span>
-                </a>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                >
-                  {isDark ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-gray-600" />}
-                </button>
-
-                <button className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors relative">
-                  <Bell size={18} className="text-gray-600 dark:text-gray-300" />
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-                </button>
-
-                <button className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white px-4 py-2 rounded-lg hover:scale-105 transition-transform font-medium">
-                  Write Blog
-                </button>
-
-                {/* User Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => setShowUserDropdown(!showUserDropdown)}
-                    className="flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-r from-[#4777f4] to-[#9035ea] rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                      JD
-                    </div>
-                    <ChevronDown size={16} className="text-gray-600 dark:text-gray-300" />
-                  </button>
-
-                  {showUserDropdown && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
-                      <a href="#" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
-                        <User size={16} />
-                        Profile
-                      </a>
-                      <a href="#" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
-                        <Settings size={16} />
-                        Settings
-                      </a>
-                      <hr className="my-1 border-gray-200 dark:border-gray-600" />
-                      <a href="#" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600">
-                        <LogOut size={16} />
-                        Logout
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="md:hidden p-2 text-gray-600 dark:text-gray-300"
-            >
-              <Menu size={24} />
-            </button>
+    <div className="main-feed w-screen min-h-screen bg-gradient-to-br from-[#0f172a] via-[#0f172a] to-[#1e293b]">
+      
+      {/* Enhanced Navbar */}
+      <nav className="hidden md:flex w-full h-16 bg-[#1e293b]/95 backdrop-blur-xl border-b border-slate-700/50 items-center justify-center gap-8 px-6 sticky top-0 z-50 shadow-2xl">
+        
+        {/* Logo */}
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="h-10 w-10 flex justify-center items-center bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white font-mono font-bold rounded-xl shadow-lg group-hover:shadow-purple-500/50 transition-all group-hover:scale-110">
+            {'<>'}
+          </div>
+          <div className="text-white text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            DevMark
           </div>
         </div>
 
-        {/* Mobile Search */}
-        <div className="md:hidden px-4 pb-4">
+        {/* Search Bar */}
+        <div className={`flex-1 max-w-xl flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all ${
+          searchFocused 
+            ? "bg-slate-800 border-2 border-blue-500 shadow-lg shadow-blue-500/20" 
+            : "bg-slate-800/50 border-2 border-slate-700"
+        }`}>
+          <Search className={`${searchFocused ? 'text-blue-400' : 'text-slate-400'} transition-colors`} size={20} />
+          <input
+            className='bg-transparent border-none outline-none w-full text-slate-200 placeholder-slate-400'
+            type="text"
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            placeholder='Search articles, topics, or authors...'
+          />
+          {searchFocused && (
+            <kbd className="px-2 py-1 text-xs bg-slate-700 text-slate-400 rounded">ESC</kbd>
+          )}
+        </div>
+
+        {/* Navigation Links */}
+        <div className='flex items-center gap-6'>
+          <button className='flex items-center gap-2 text-slate-300 hover:text-white transition-all group'>
+            <Home size={18} className='group-hover:scale-110 transition-transform' />
+            <span className="font-medium">Home</span>
+          </button>
+          <button className='flex items-center gap-2 text-slate-300 hover:text-white transition-all group'>
+            <Bookmark size={18} className='group-hover:scale-110 transition-transform' />
+            <span className="font-medium">Saved</span>
+          </button>
+        </div>
+
+        {/* Theme Toggle */}
+        <button
+          onClick={handleTheme}
+          className="p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl transition-all hover:scale-110 border border-slate-700"
+        >
+          {isDark ? <Sun className="text-yellow-400" size={20} /> : <Moon className="text-slate-400" size={20} />}
+        </button>
+
+        {/* Actions */}
+        <div className="flex items-center gap-4">
+          <button className="relative p-2.5 hover:bg-slate-800 rounded-xl transition-all group">
+            <Bell className='text-slate-400 group-hover:text-white transition-colors' size={20} />
+            <span className='absolute top-1 right-1 w-2 h-2 rounded-full bg-gradient-to-r from-red-500 to-pink-500 animate-pulse'></span>
+          </button>
+
+          <button className="px-5 py-2.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-purple-500/50 transition-all hover:scale-105 flex items-center gap-2">
+            <Pen size={16} />
+            Write
+          </button>
+
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4777f4] text-gray-900 dark:text-white"
-            />
+            <button
+              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${
+                isProfileMenuOpen ? 'bg-slate-800' : 'hover:bg-slate-800'
+              }`}
+            >
+              <img
+                className='w-9 h-9 rounded-full object-cover ring-2 ring-purple-500/50'
+                src={userAvatar}
+                alt="Profile"
+              />
+              <ChevronDown className={`text-slate-400 transition-transform ${isProfileMenuOpen ? 'rotate-180' : ''}`} size={18} />
+            </button>
+
+            {/* Enhanced Dropdown */}
+            {isProfileMenuOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-slate-800 rounded-xl shadow-2xl border border-slate-700 overflow-hidden">
+                <div className="p-2">
+                  <button className='w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition-all group'>
+                    <User size={18} className="text-blue-400" />
+                    <span className="font-medium">Profile</span>
+                  </button>
+                  <button className='w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition-all group'>
+                    <Settings size={18} className="text-purple-400" />
+                    <span className="font-medium">Settings</span>
+                  </button>
+                  <div className="border-t border-slate-700 my-2"></div>
+                  <button className='w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-lg transition-all group'>
+                    <LogOut size={18} />
+                    <span className="font-medium">Logout</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto flex gap-8 px-4 sm:px-6 lg:px-8 py-6">
+      {/* Main Content */}
+      <main className='w-full flex justify-center gap-6 px-4 py-6'>
+
         {/* Left Sidebar */}
-        <aside className="hidden lg:block w-64 space-y-6">
-          {/* Categories */}
-          <div className="bg-white dark:bg-[#1f2937] rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Filter size={18} />
-              Categories
-            </h3>
+        <aside className='hidden lg:block w-72 space-y-6 sticky top-24 h-fit'>
+          
+          {/* Quick Actions Card */}
+          <div className="bg-gradient-to-br from-slate-800/90 to-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6 shadow-xl">
+            <div className="flex items-center gap-2 mb-6">
+              <Sparkles className="text-purple-400" size={20} />
+              <h2 className='text-lg font-bold text-white'>Quick Actions</h2>
+            </div>
+            
             <div className="space-y-2">
-              {categories.map((category) => (
-                <button
-                  key={category.name}
-                  onClick={() => setSelectedCategory(category.name)}
-                  className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
-                    selectedCategory === category.name
-                      ? 'bg-[#4777f4] text-white'
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    {category.icon}
-                    <span>{category.name}</span>
-                  </div>
-                  <span className="text-sm opacity-70">{category.count}</span>
-                </button>
-              ))}
+              <button className="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 rounded-xl transition-all group border border-transparent hover:border-purple-500/30">
+                <Pen size={18} className="text-blue-400 group-hover:scale-110 transition-transform" />
+                <span className="font-medium">Write Blog</span>
+              </button>
+              <button className="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 rounded-xl transition-all group border border-transparent hover:border-purple-500/30">
+                <BookOpen size={18} className="text-purple-400 group-hover:scale-110 transition-transform" />
+                <span className="font-medium">My Blogs</span>
+              </button>
+              <button className="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 rounded-xl transition-all group border border-transparent hover:border-purple-500/30">
+                <Bookmark size={18} className="text-pink-400 group-hover:scale-110 transition-transform" />
+                <span className="font-medium">Saved Blogs</span>
+              </button>
             </div>
           </div>
 
-          {/* Trending Tags */}
-          <div className="bg-white dark:bg-[#1f2937] rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <TrendingUp size={18} />
-              Trending Tags
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {trendingTags.map((tag) => (
-                <button
-                  key={tag}
-                  className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#4777f4] hover:text-white transition-colors"
-                >
-                  {tag}
+          {/* Trending Topics */}
+          {/* <div className="bg-gradient-to-br from-slate-800/90 to-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6 shadow-xl">
+            <div className="flex items-center gap-2 mb-6">
+              <Flame className="text-orange-400" size={20} />
+              <h2 className='text-lg font-bold text-white'>Trending Now</h2>
+            </div>
+            
+            <div className="space-y-3">
+              {trendingTags.slice(0, 5).map((tag, index) => (
+                <button key={index} className="w-full flex items-center justify-between px-4 py-2 text-slate-300 hover:bg-slate-700/50 rounded-lg transition-all group">
+                  <span className="font-medium text-sm">{tag.name}</span>
+                  <span className="text-xs text-slate-500 group-hover:text-purple-400 transition-colors">{tag.totalPosts.toLocaleString()}</span>
                 </button>
               ))}
             </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="bg-white dark:bg-[#1f2937] rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
-            <div className="space-y-2">
-              <button className="w-full flex items-center gap-2 p-3 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-700 dark:text-gray-300">
-                <Edit3 size={16} />
-                Write Blog
-              </button>
-              <button className="w-full flex items-center gap-2 p-3 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-700 dark:text-gray-300">
-                <BookOpen size={16} />
-                My Blogs
-              </button>
-              <button className="w-full flex items-center gap-2 p-3 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-700 dark:text-gray-300">
-                <Bookmark size={16} />
-                Saved Blogs
-              </button>
-            </div>
-          </div>
+          </div> */}
         </aside>
 
-        {/* Main Feed */}
-        <main className="flex-1 space-y-6">
-          {/* Filter Bar */}
-          <div className="bg-white dark:bg-[#1f2937] rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        {/* Feed Section */}
+        <section className='flex-1 max-w-3xl space-y-6'>
+          
+          {/* Feed Header */}
+          <div className="bg-gradient-to-br from-slate-800/90 to-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6 shadow-xl">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="text-gray-700 dark:text-gray-300 font-medium">Sort by:</span>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#4777f4]"
-                >
-                  <option value="Latest">Latest</option>
-                  <option value="Trending">Trending</option>
-                  <option value="Most Liked">Most Liked</option>
-                  <option value="Most Viewed">Most Viewed</option>
-                </select>
+                <button className={`px-4 py-2 rounded-xl font-semibold transition-all ${
+                  activeCategory === "All" 
+                    ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg" 
+                    : "text-slate-400 hover:text-white hover:bg-slate-700"
+                }`}>
+                  Latest
+                </button>
+                <button className="px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-slate-700 transition-all">
+                  Following
+                </button>
+                <button className="px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-slate-700 transition-all">
+                  Popular
+                </button>
               </div>
               
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <Clock size={16} />
-                <span>Last updated: 2 minutes ago</span>
-              </div>
+              <button className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl transition-all">
+                <Filter size={16} />
+                <span className="text-sm font-medium">Filter</span>
+              </button>
             </div>
           </div>
 
           {/* Blog Posts */}
           <div className="space-y-6">
-            {blogPosts.map((post) => (
-              <BlogCard key={post.id} post={post} />
+            {allBlogs.map((blog) => (
+              <article key={blog._id} className="bg-gradient-to-br from-slate-800/90 to-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-purple-500/10 transition-all group">
+                
+                {/* Author Info */}
+                <div className="p-6 pb-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <img 
+                      src={blog.owner.avatar} 
+                      alt={blog.owner.name}
+                      className="w-12 h-12 rounded-full object-cover ring-2 ring-purple-500/30"
+                    />
+                    <div>
+                      <h3 className="font-semibold text-white">{blog.owner.name}</h3>
+                      <p className="text-sm text-slate-400">{formatTimeAgo(blog.createdAt)}</p>
+                    </div>
+                  </div>
+                  
+                  <button className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all ${
+                    blog.owner.isFollowed
+                      ? "bg-slate-700 text-white hover:bg-slate-600"
+                      : "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:shadow-lg hover:shadow-purple-500/50"
+                  }`}>
+                    {blog.owner.isFollowed ? 'Following' : '+ Follow'}
+                  </button>
+                </div>
+
+                {/* Content */}
+                <div className="px-6">
+                  <h2 className="text-2xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-400 group-hover:bg-clip-text transition-all cursor-pointer">
+                    {blog.title}
+                  </h2>
+                  <p className="text-slate-300 leading-relaxed mb-4 line-clamp-2">
+                    {blog.content}
+                  </p>
+                </div>
+
+                {/* Image */}
+                {blog.images?.[0] && (
+                  <div className="px-6 mb-4">
+                    <div className="relative rounded-xl overflow-hidden">
+                      <img 
+                        src={blog.images[0].url} 
+                        alt={blog.title}
+                        className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Tags */}
+                <div className="px-6 mb-4 flex flex-wrap gap-2">
+                  {blog.tags.map((tag, idx) => (
+                    <span key={idx} className="px-3 py-1 text-xs font-medium bg-blue-500/10 text-blue-300 rounded-full border border-blue-500/30 hover:bg-blue-500/20 transition-all cursor-pointer">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Stats & Actions */}
+                <div className="px-6 pb-6 flex items-center justify-between border-t border-slate-700 pt-4">
+                  <div className="flex items-center gap-6 text-sm">
+                    <button className="flex items-center gap-2 text-slate-400 hover:text-red-400 transition-all group/like">
+                      <Heart size={18} className="group-hover/like:scale-110 transition-transform" />
+                      <span className="font-medium">{blog.totalLikes}</span>
+                    </button>
+                    <button className="flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-all group/comment">
+                      <MessageCircle size={18} className="group-hover/comment:scale-110 transition-transform" />
+                      <span className="font-medium">{blog.totalComments}</span>
+                    </button>
+                    <div className="flex items-center gap-2 text-slate-400">
+                      <Eye size={18} />
+                      <span className="font-medium">{blog.views.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <button className="p-2 hover:bg-slate-700 rounded-lg transition-all">
+                      <Bookmark size={18} className="text-slate-400 hover:text-purple-400 transition-colors" />
+                    </button>
+                    <button className="p-2 hover:bg-slate-700 rounded-lg transition-all">
+                      <Share2 size={18} className="text-slate-400 hover:text-blue-400 transition-colors" />
+                    </button>
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
 
           {/* Load More */}
-          <div className="flex justify-center py-8">
-            <button className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white px-6 py-3 rounded-lg hover:scale-105 transition-transform font-medium">
-              Load More Posts
-            </button>
-          </div>
-        </main>
+          <button 
+            onClick={() => setLimit(prev => prev + 4)}
+            className="w-full py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                Loading...
+              </>
+            ) : (
+              <>
+                <MoveDown size={20} />
+                Load More Posts
+              </>
+            )}
+          </button>
+        </section>
 
         {/* Right Sidebar */}
-        <aside className="hidden xl:block w-80 space-y-6">
-          {/* Trending Blogs */}
-          <div className="bg-white dark:bg-[#1f2937] rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <TrendingUp size={18} />
-              Trending This Week
-            </h3>
+        <aside className='hidden xl:block w-80 space-y-6 sticky top-24 h-fit'>
+          
+          {/* Featured Developers */}
+          <div className="bg-gradient-to-br from-slate-800/90 to-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6 shadow-xl">
+            <div className="flex items-center gap-2 mb-6">
+              <Award className="text-yellow-400" size={20} />
+              <h2 className='text-lg font-bold text-white'>Top Developers</h2>
+            </div>
+            
             <div className="space-y-4">
-              {trendingBlogs.map((blog, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer">
-                  <div className="w-8 h-8 bg-gradient-to-r from-[#4777f4] to-[#9035ea] rounded-full flex items-center justify-center text-white font-bold text-sm">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-gray-900 dark:text-white text-sm line-clamp-2 mb-1">
-                      {blog.title}
-                    </h4>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Eye size={12} />
-                      <span>{blog.views}</span>
-                      <span>•</span>
-                      <span>{blog.author}</span>
+              {[
+                { name: "Sarah Johnson", role: "Full Stack Dev", followers: "29.3k", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
+                { name: "Emma Wilson", role: "React Expert", followers: "24.1k", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" },
+                { name: "David Park", role: "DevOps Engineer", followers: "18.7k", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" }
+              ].map((dev, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 hover:bg-slate-700/30 rounded-xl transition-all group cursor-pointer">
+                  <div className="flex items-center gap-3">
+                    <img 
+                      src={dev.avatar} 
+                      alt={dev.name}
+                      className="w-12 h-12 rounded-full object-cover ring-2 ring-purple-500/30"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-white text-sm">{dev.name}</h4>
+                      <p className="text-xs text-slate-400">{dev.role}</p>
+                      <p className="text-xs text-slate-500">{dev.followers} followers</p>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Suggested Developers */}
-          <div className="bg-white dark:bg-[#1f2937] rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Users size={18} />
-              Suggested Developers
-            </h3>
-            <div className="space-y-4">
-              {suggestedDevelopers.map((dev, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                  <div className="w-10 h-10 bg-gradient-to-r from-[#4777f4] to-[#9035ea] rounded-full flex items-center justify-center text-white font-semibold">
-                    {dev.avatar}
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium text-gray-900 dark:text-white text-sm">{dev.name}</h4>
-                    <p className="text-xs text-gray-500">{dev.role}</p>
-                    <p className="text-xs text-gray-400">{dev.followers} followers</p>
-                  </div>
-                  <button className="px-3 py-1 bg-[#4777f4] text-white rounded-lg text-sm hover:bg-[#3d6ce8] transition-colors">
+                  <button className="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:shadow-lg">
                     Follow
                   </button>
                 </div>
@@ -555,58 +500,36 @@ const MainFeed1 = () => {
             </div>
           </div>
 
-          {/* Tech Events */}
-          <div className="bg-white dark:bg-[#1f2937] rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Calendar size={18} />
-              Upcoming Events
-            </h3>
-            <div className="space-y-3">
-              <div className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">React Conf 2025</h4>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">March 15-16, Virtual</p>
-                <button className="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline">
-                  Learn More →
-                </button>
+          {/* Stats Card */}
+          {/* <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-2xl border border-purple-500/30 p-6 shadow-xl">
+            <div className="flex items-center gap-2 mb-4">
+              <Activity className="text-purple-400" size={20} />
+              <h2 className='text-lg font-bold text-white'>Your Stats</h2>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center p-3 bg-slate-800/50 rounded-xl">
+                <p className="text-2xl font-bold text-white">24</p>
+                <p className="text-xs text-slate-400 mt-1">Posts</p>
               </div>
-              
-              <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                              <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">Open Source Summit</h4>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">April 2-4, San Francisco</p>
-                <button className="text-xs text-green-600 dark:text-green-400 font-medium hover:underline">
-                  Learn More →
-                </button>
+              <div className="text-center p-3 bg-slate-800/50 rounded-xl">
+                <p className="text-2xl font-bold text-white">1.2K</p>
+                <p className="text-xs text-slate-400 mt-1">Followers</p>
               </div>
-
-              <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
-                <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">AI & Dev Summit</h4>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">May 10-12, Online</p>
-                <button className="text-xs text-purple-600 dark:text-purple-400 font-medium hover:underline">
-                  Learn More →
-                </button>
+              <div className="text-center p-3 bg-slate-800/50 rounded-xl">
+                <p className="text-2xl font-bold text-white">12.5K</p>
+                <p className="text-xs text-slate-400 mt-1">Views</p>
+              </div>
+              <div className="text-center p-3 bg-slate-800/50 rounded-xl">
+                <p className="text-2xl font-bold text-white">890</p>
+                <p className="text-xs text-slate-400 mt-1">Likes</p>
               </div>
             </div>
-          </div>
+          </div> */}
         </aside>
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-white dark:bg-[#1f2937] border-t border-gray-200 dark:border-gray-700 py-6 mt-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            © {new Date().getFullYear()} DevMark. All rights reserved.
-          </p>
-          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-            <a href="#" className="hover:text-[#4777f4]">Privacy Policy</a>
-            <a href="#" className="hover:text-[#4777f4]">Terms of Service</a>
-            <a href="#" className="hover:text-[#4777f4] flex items-center gap-1">
-              <Github size={14} /> GitHub
-            </a>
-          </div>
-        </div>
-      </footer>
+      </main>
     </div>
   );
-};
+}
 
-export default MainFeed1;
+export default MainFeed;

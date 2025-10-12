@@ -276,7 +276,7 @@ function ProfilePage() {
                     activeTab==="saved" &&
 
                     <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center">
-                        <h1 className="text-xl text-gray-400 py-5">No Saved Posts Yet</h1>
+                        <h1 className="text-md md:text-xl text-gray-400 py-5">No saved posts yet</h1>
                     </div>
                 }
 
@@ -287,7 +287,7 @@ function ProfilePage() {
                     activeTab==="drafts" &&
 
                     <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center">
-                        <h1 className="text-xl text-gray-400 py-5">No Drafts Yet</h1>
+                        <h1 className="text-md md:text-xl text-gray-400 py-5">No drafts yet</h1>
                     </div>
                 }
 

@@ -49,6 +49,12 @@ const userSchema = new Schema({
         default:"no bio",
         maxLength:160
     },
+    skills:[
+        String
+    ],
+    location:{
+        type:String
+    },
     isActive:{
         type:Boolean,
         default:false
