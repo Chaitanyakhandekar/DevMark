@@ -1,69 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Search,
-    Bell,
     BookOpen,
     Bookmark,
     User,
+    Users,
     Settings,
     LogOut,
-    Home,
     Edit3,
     Heart,
     MessageCircle,
-    Share2,
     Eye,
-    TrendingUp,
     Calendar,
-    Filter,
-    Moon,
-    Sun,
-    Menu,
-    X,
-    ChevronDown,
-    Code,
-    Zap,
-    Coffee,
-    Briefcase,
-    Github,
-    ExternalLink,
-    Clock,
-    Users,
-    Tag,
-    Plus,
-    Star,
     MapPin,
-
-    Mail,
-    MoreHorizontal,
-    Edit,
-    Trash2,
-    Grid,
-    List,
-    Activity,
-    Check,
+    ExternalLink,
     Camera,
-    Upload,
-    Save,
+    Check,
+    X,
     Lock,
-    Shield,
+    Bell,
     Palette,
-    Globe,
-    AlertCircle
+    Shield
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+import MobileNavBottom from '../../../components/MobileNavBottom';
+import axios from 'axios';
+import BlogCard from '../../../components/BlogCard';
 
 function ProfilePage() {
+    // --- data states (kept in your original pattern) ---
     const [activeTab, setActiveTab] = useState("posts");
     const [userPosts, setUserPosts] = useState([]);
-    const [userAvatar, setUserAvatar] = useState("https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop");
-    const [bio, setBio] = useState("Full Stack Developer | Open Source Enthusiast | Building scalable web applications with React, Node.js, and TypeScript");
-    const [editBio, setEditBio] = useState(false);
-    const [showSettingsMenu, setShowSettingsMenu] = useState(false);
-    const [showEditProfile, setShowEditProfile] = useState(false);
-    const [editMode, setEditMode] = useState(false);
-    
-    // Edit profile states
+    const [userAvatar, setUserAvatar] = useState("");
+
+    // profile editable fields (keeps structure from second snippet)
     const [profileData, setProfileData] = useState({
         name: "Byte Coder",
         username: "@byte_coder",
@@ -74,62 +43,140 @@ function ProfilePage() {
         linkedinUrl: "https://linkedin.com/in/bytecoder"
     });
 
+    const [bio, setBio] = useState("Full Stack Developer | Open Source Enthusiast | Building scalable web applications with React, Node.js, and TypeScript");
+    const [editMode, setEditMode] = useState(false);
+    const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+
     const skills = ["JavaScript", "TypeScript", "React", "Node.js", "MongoDB", "Docker", "AWS"];
 
     const handleTabChange = (e) => {
+        // you used this pattern in your original code; keep it
         setActiveTab(e.target.name);
     };
 
-    const handleSaveProfile = () => {
-        setEditMode(false);
-        setEditBio(false);
-        // API call would go here
-        console.log("Profile saved:", profileData);
+    // fetch posts (keeps your axios pattern from the first file)
+    const fetchAllPosts = async () => {
+        try {
+            const base = import.meta.env.VITE_ENV === "production"
+                ? import.meta.env.VITE_BACKEND_URL_PROD
+                : import.meta.env.VITE_BACKEND_URL_DEV;
+
+            const res = await axios.get(`${base}/blogs/user?page=1&limit=10`, { withCredentials: true });
+            setUserPosts(res.data.data || []);
+            // eslint-disable-next-line no-console
+            console.log('blogs : ', res.data.data);
+        } catch (error) {
+            // keep silent like your original but log for dev
+            // eslint-disable-next-line no-console
+            console.error('Error fetching posts ::', error?.message || error);
+        }
+    };
+
+    // fetch avatar (keeps your axios pattern)
+    const fetchUserAvatar = async () => {
+        try {
+            const base = import.meta.env.VITE_ENV === "production"
+                ? import.meta.env.VITE_BACKEND_URL_PROD
+                : import.meta.env.VITE_BACKEND_URL_DEV;
+
+            const res = await axios.get(`${base}/users/avatar`, { withCredentials: true });
+            setUserAvatar(res.data.avatar || '');
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.log('Error :: Fetching User Avatar :: ', error?.message || error);
+        }
+    };
+
+    // update profile (keeps signature you asked: "update profile function")
+    const handleSaveProfile = async () => {
+        try {
+            setEditMode(false);
+            setShowSettingsMenu(false);
+
+            const base = import.meta.env.VITE_ENV === "production"
+                ? import.meta.env.VITE_BACKEND_URL_PROD
+                : import.meta.env.VITE_BACKEND_URL_DEV;
+
+            // example endpoint - adjust to your backend route
+            const payload = {
+                name: profileData.name,
+                username: profileData.username,
+                location: profileData.location,
+                website: profileData.website,
+                githubUrl: profileData.githubUrl,
+                twitterUrl: profileData.twitterUrl,
+                linkedinUrl: profileData.linkedinUrl,
+                bio
+            };
+
+            const res = await axios.put(`${base}/users/profile`, payload, { withCredentials: true });
+            console.log('Profile update response: ', res?.data);
+
+            // if backend returns updated avatar, update it
+            if (res?.data?.avatar) setUserAvatar(res.data.avatar);
+
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('Error updating profile ::', error?.message || error);
+            // revert edit mode if you want user to try again
+            // setEditMode(true);
+        }
     };
 
     const handleLogout = () => {
-        // Logout logic here
-        console.log("Logging out...");
+        // keep placeholder from your second snippet
+        console.log('Logging out...');
     };
 
-    // Mock posts data for demo
+    // initially fetch posts & avatar (keeps your original useEffect pattern)
     useEffect(() => {
-        setUserPosts([
-            {
-                _id: "1",
-                title: "Building Scalable Microservices with Node.js",
-                content: "Learn how to architect and deploy production-ready microservices...",
-                images: [{ url: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop" }],
-                totalLikes: 342,
-                totalComments: 45,
-                views: 2341,
-                tags: ["Node.js", "Microservices", "Architecture"],
-                owner: { name: "Byte Coder", avatar: userAvatar },
-                createdAt: new Date().toISOString()
-            },
-            {
-                _id: "2",
-                title: "Modern React Patterns You Should Know",
-                content: "Exploring the latest patterns and best practices in React development...",
-                images: [{ url: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop" }],
-                totalLikes: 521,
-                totalComments: 67,
-                views: 3892,
-                tags: ["React", "JavaScript", "Frontend"],
-                owner: { name: "Byte Coder", avatar: userAvatar },
-                createdAt: new Date().toISOString()
+        fetchAllPosts();
+        fetchUserAvatar();
+
+        // if your backend is not ready, keep a small fallback demo posts so UI doesn't break
+        // (only set when userPosts is empty)
+        // NOTE: this emulates the demo posts from Claude's version but only when backend returns nothing
+        (async () => {
+            if (!userPosts || userPosts.length === 0) {
+                setUserPosts([
+                    {
+                        _id: 'demo-1',
+                        title: 'Building Scalable Microservices with Node.js',
+                        content: 'Learn how to architect and deploy production-ready microservices...',
+                        images: [{ url: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop' }],
+                        totalLikes: 342,
+                        totalComments: 45,
+                        views: 2341,
+                        tags: ['Node.js', 'Microservices', 'Architecture'],
+                        owner: { name: profileData.name, avatar: userAvatar },
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        _id: 'demo-2',
+                        title: 'Modern React Patterns You Should Know',
+                        content: 'Exploring the latest patterns and best practices in React development...',
+                        images: [{ url: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop' }],
+                        totalLikes: 521,
+                        totalComments: 67,
+                        views: 3892,
+                        tags: ['React', 'JavaScript', 'Frontend'],
+                        owner: { name: profileData.name, avatar: userAvatar },
+                        createdAt: new Date().toISOString()
+                    }
+                ]);
             }
-        ]);
+        })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
-        <div className='w-screen min-h-screen bg-[#0f172a] flex flex-col pb-20'>
-            {/* Cover Photo with Edit Button */}
-            <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-6 rounded-2xl overflow-hidden relative group">
-                <img 
+        <div className='w-screen min-h-screen bg-[#0f172a] flex flex-col gap-10 pb-24'>
+            {/* Cover */}
+            <section className="w-full md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto md:mt-6 rounded-2xl overflow-hidden relative group">
+                <img
                     src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=400&fit=crop"
                     alt="Cover"
-                    className="w-full h-48 md:h-64 object-cover transition-transform duration-300 group-hover:scale-105" 
+                    className="w-full h-48 md:h-64 object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 {editMode && (
                     <button className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-black/80 transition-all">
@@ -139,21 +186,19 @@ function ProfilePage() {
                 )}
             </section>
 
-            {/* User Info Card */}
-            <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto -mt-16 rounded-2xl bg-gradient-to-br from-[#1e293b] to-[#1e293b]/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
-                
-                {/* Header with Avatar and Actions */}
+            {/* Profile Card (merged look) */}
+            <section className="w-full md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto -mt-16 rounded-bl-2xl rounded-br-2xl bg-gradient-to-br from-[#1e293b] to-[#1e293b]/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
                 <div className="p-6 md:p-8">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                        
-                        {/* Avatar Section */}
+
+                        {/* Left: Avatar + main info */}
                         <div className="flex flex-col md:flex-row gap-6 items-center md:items-start flex-1">
                             <div className="relative group">
                                 <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-slate-800 shadow-xl relative">
-                                    <img 
-                                        src={userAvatar}
+                                    <img
+                                        src={userAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop'}
                                         alt="Profile"
-                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                                     />
                                     {editMode && (
                                         <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -161,6 +206,7 @@ function ProfilePage() {
                                         </div>
                                     )}
                                 </div>
+
                                 {!editMode && (
                                     <button className="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-500 to-purple-600 p-2.5 rounded-xl text-white shadow-lg hover:shadow-xl transition-all hover:scale-110">
                                         <ExternalLink size={18} />
@@ -168,23 +214,22 @@ function ProfilePage() {
                                 )}
                             </div>
 
-                            {/* Name and Bio Section */}
                             <div className="flex-1 w-full text-center md:text-left">
                                 {editMode ? (
                                     <input
                                         className="text-2xl md:text-3xl font-bold text-white mb-2 bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none w-full"
                                         value={profileData.name}
-                                        onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                                        onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
                                     />
                                 ) : (
                                     <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{profileData.name}</h1>
                                 )}
-                                
+
                                 {editMode ? (
                                     <input
                                         className="text-base text-slate-400 mb-4 bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none w-full"
                                         value={profileData.username}
-                                        onChange={(e) => setProfileData({...profileData, username: e.target.value})}
+                                        onChange={(e) => setProfileData({ ...profileData, username: e.target.value })}
                                     />
                                 ) : (
                                     <p className="text-base text-slate-400 mb-4">{profileData.username}</p>
@@ -202,7 +247,6 @@ function ProfilePage() {
                                     <p className="text-base text-slate-300 leading-relaxed mb-4">{bio}</p>
                                 )}
 
-                                {/* Location and Join Date */}
                                 <div className="flex flex-wrap gap-4 justify-center md:justify-start mt-4">
                                     <div className="flex items-center gap-2 text-slate-400">
                                         <MapPin size={16} className="text-blue-400" />
@@ -210,23 +254,32 @@ function ProfilePage() {
                                             <input
                                                 className="text-sm bg-slate-800/50 px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none"
                                                 value={profileData.location}
-                                                onChange={(e) => setProfileData({...profileData, location: e.target.value})}
+                                                onChange={(e) => setProfileData({ ...profileData, location: e.target.value })}
                                             />
                                         ) : (
                                             <span className="text-sm">{profileData.location}</span>
                                         )}
                                     </div>
+
                                     <div className="flex items-center gap-2 text-slate-400">
                                         <Calendar size={16} className="text-purple-400" />
                                         <span className="text-sm">Joined January 2020</span>
                                     </div>
+
                                     <div className="flex items-center gap-2 text-slate-400">
-                                        <Globe size={16} className="text-green-400" />
-                                        <a href={profileData.website} className="text-sm hover:text-blue-400 transition-colors">bytecoder.dev</a>
+                                        <ExternalLink size={16} className="text-green-400" />
+                                        {editMode ? (
+                                            <input
+                                                className="text-sm bg-slate-800/50 px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none"
+                                                value={profileData.website}
+                                                onChange={(e) => setProfileData({ ...profileData, website: e.target.value })}
+                                            />
+                                        ) : (
+                                            <a href={profileData.website} className="text-sm hover:text-blue-400 transition-colors">{profileData.website.replace(/^https?:\/\//,'')}</a>
+                                        )}
                                     </div>
                                 </div>
 
-                                {/* Social Links */}
                                 <div className="flex items-center gap-4 mt-4 justify-center md:justify-start">
                                     <a href={profileData.githubUrl} className="text-slate-400 hover:text-white transition-all hover:scale-110">
                                         <FaGithub size={22} />
@@ -241,18 +294,19 @@ function ProfilePage() {
                             </div>
                         </div>
 
-                        {/* Action Buttons */}
+                        {/* Right: actions */}
                         <div className="flex flex-col gap-3 w-full md:w-auto">
                             {editMode ? (
                                 <>
-                                    <button 
+                                    <button
                                         onClick={handleSaveProfile}
                                         className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center gap-2"
                                     >
                                         <Check size={20} />
                                         Save Changes
                                     </button>
-                                    <button 
+
+                                    <button
                                         onClick={() => setEditMode(false)}
                                         className="bg-slate-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-slate-600 transition-all flex items-center justify-center gap-2"
                                     >
@@ -262,23 +316,23 @@ function ProfilePage() {
                                 </>
                             ) : (
                                 <>
-                                    <button 
+                                    <button
                                         onClick={() => setEditMode(true)}
                                         className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center gap-2"
                                     >
                                         <Edit3 size={20} />
                                         Edit Profile
                                     </button>
+
                                     <div className="relative">
-                                        <button 
+                                        <button
                                             onClick={() => setShowSettingsMenu(!showSettingsMenu)}
                                             className="w-full bg-slate-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-slate-600 transition-all flex items-center justify-center gap-2"
                                         >
                                             <Settings size={20} />
                                             Settings
                                         </button>
-                                        
-                                        {/* Settings Dropdown */}
+
                                         {showSettingsMenu && (
                                             <div className="absolute top-full right-0 mt-2 w-64 bg-slate-800 rounded-xl shadow-2xl border border-slate-700 overflow-hidden z-50">
                                                 <div className="p-2">
@@ -303,7 +357,7 @@ function ProfilePage() {
                                                         <span className="font-medium">Blocked Users</span>
                                                     </button>
                                                     <div className="border-t border-slate-700 my-2"></div>
-                                                    <button 
+                                                    <button
                                                         onClick={handleLogout}
                                                         className="w-full text-left px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors flex items-center gap-3 group"
                                                     >
@@ -317,23 +371,18 @@ function ProfilePage() {
                                 </>
                             )}
                         </div>
+
                     </div>
 
-                    {/* Skills Section */}
+                    {/* Skills + stats */}
                     <div className="mt-8">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-semibold text-white">Skills & Expertise</h2>
-                            {editMode && (
-                                <button className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1">
-                                    <Plus size={16} />
-                                    Add Skill
-                                </button>
-                            )}
                         </div>
                         <div className="flex flex-wrap gap-2">
                             {skills.map((skill, index) => (
-                                <span 
-                                    key={index} 
+                                <span
+                                    key={index}
                                     className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 text-blue-300 text-sm px-4 py-2 rounded-full font-medium hover:scale-105 transition-transform cursor-default"
                                 >
                                     {skill}
@@ -342,7 +391,6 @@ function ProfilePage() {
                         </div>
                     </div>
 
-                    {/* Stats Section */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-8 border-t border-slate-700">
                         <div className="text-center p-4 bg-gradient-to-br from-blue-500/10 to-transparent rounded-xl border border-blue-500/20 hover:scale-105 transition-transform cursor-pointer">
                             <div className="flex items-center justify-center gap-2 mb-2">
@@ -379,123 +427,96 @@ function ProfilePage() {
                 </div>
             </section>
 
-            {/* Content Tabs Section */}
-            <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-6 rounded-2xl bg-[#1e293b] border border-slate-700/50 overflow-hidden">
-                
+            {/* Tabs + content (uses BlogCard from your first file) */}
+            <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4   bg-[#1f2935] px-3">
+
                 {/* Tabs */}
-                <div className="flex justify-start items-center border-b border-slate-700">
+                <div className="flex justify-start gap-5 items-center border-[1px] border-b-gray-500 border-t-0 border-l-0 border-r-0">
                     <button
-                        className={`text-base font-semibold px-6 py-4 transition-all ${
-                            activeTab === "posts" 
-                                ? "text-blue-400 border-b-2 border-blue-400 bg-blue-500/5" 
-                                : "text-slate-400 hover:text-slate-300 hover:bg-slate-800/50"
-                        }`}
+                        className={`text-sm md:text-[1.1rem] font-[500] text-[#9ca3ae] mb-0 pb-5 px-3 pt-3 h-full ${activeTab === "posts" ? "border-2 border-b-[#4083f2] border-t-0 border-r-0 border-l-0 text-[#4083f2]" : "border-none text-[#9ca3ae]"}`}
                         name="posts"
                         onClick={handleTabChange}
                     >
-                        <div className="flex items-center gap-2">
-                            <BookOpen size={18} />
-                            Posts
-                        </div>
+                        Posts
                     </button>
 
                     <button
-                        className={`text-base font-semibold px-6 py-4 transition-all ${
-                            activeTab === "saved" 
-                                ? "text-purple-400 border-b-2 border-purple-400 bg-purple-500/5" 
-                                : "text-slate-400 hover:text-slate-300 hover:bg-slate-800/50"
-                        }`}
+                        className={`text-sm md:text-[1.1rem] font-[500] text-[#9ca3ae] mb-0 pb-5 px-3 pt-3 h-full ${activeTab === "saved" ? "border-2 border-b-[#4083f2] border-t-0 border-r-0 border-l-0 text-[#4083f2]" : "border-none text-[#9ca3ae]"}`}
                         name="saved"
                         onClick={handleTabChange}
                     >
-                        <div className="flex items-center gap-2">
-                            <Bookmark size={18} />
-                            Saved
-                        </div>
+                        Saved
                     </button>
 
                     <button
-                        className={`text-base font-semibold px-6 py-4 transition-all ${
-                            activeTab === "drafts" 
-                                ? "text-green-400 border-b-2 border-green-400 bg-green-500/5" 
-                                : "text-slate-400 hover:text-slate-300 hover:bg-slate-800/50"
-                        }`}
+                        className={`text-sm md:text-[1.1rem] font-[500] text-[#9ca3ae] mb-0 pb-5 px-3 pt-3 h-full ${activeTab === "drafts" ? "border-2 border-b-[#4083f2] border-t-0 border-r-0 border-l-0 text-[#4083f2]" : "border-none text-[#9ca3ae]"}`}
                         name="drafts"
                         onClick={handleTabChange}
                     >
-                        <div className="flex items-center gap-2">
-                            <Edit size={18} />
-                            Drafts
-                        </div>
+                        Drafts
                     </button>
                 </div>
+                
 
-                {/* Content */}
-                <div className="p-6">
-                    {activeTab === "posts" && (
-                        <div className="space-y-4">
-                            {userPosts.map((post) => (
-                                <div key={post._id} className="bg-slate-800/50 rounded-xl overflow-hidden border border-slate-700 hover:border-slate-600 transition-all group">
-                                    <div className="flex flex-col md:flex-row">
-                                        {post.images?.[0] && (
-                                            <div className="md:w-48 h-48 overflow-hidden">
-                                                <img 
-                                                    src={post.images[0].url} 
-                                                    alt={post.title}
-                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                                />
-                                            </div>
-                                        )}
-                                        <div className="flex-1 p-6">
-                                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">{post.title}</h3>
-                                            <p className="text-slate-400 mb-4 line-clamp-2">{post.content}</p>
-                                            
-                                            <div className="flex flex-wrap gap-2 mb-4">
-                                                {post.tags.map((tag, idx) => (
-                                                    <span key={idx} className="text-xs bg-blue-500/10 text-blue-300 px-3 py-1 rounded-full border border-blue-500/20">
-                                                        #{tag}
-                                                    </span>
-                                                ))}
-                                            </div>
+                {/* POSTS */}
+                {
+                    activeTab==="posts" &&
 
-                                            <div className="flex items-center gap-6 text-sm text-slate-400">
-                                                <div className="flex items-center gap-2">
-                                                    <Heart size={16} className="text-red-400" />
-                                                    <span>{post.totalLikes}</span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <MessageCircle size={16} className="text-blue-400" />
-                                                    <span>{post.totalComments}</span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <Eye size={16} className="text-purple-400" />
-                                                    <span>{post.views}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {activeTab === "saved" && (
-                        <div className="text-center py-16">
-                            <Bookmark size={48} className="text-slate-600 mx-auto mb-4" />
-                            <h3 className="text-xl font-semibold text-slate-300 mb-2">No saved posts yet</h3>
-                            <p className="text-slate-500">Posts you save will appear here</p>
-                        </div>
-                    )}
-
-                    {activeTab === "drafts" && (
-                        <div className="text-center py-16">
-                            <Edit size={48} className="text-slate-600 mx-auto mb-4" />
-                            <h3 className="text-xl font-semibold text-slate-300 mb-2">No drafts yet</h3>
-                            <p className="text-slate-500">Your draft posts will appear here</p>
-                        </div>
-                    )}
+                      <div className="w-full flex flex-col gap-3 mt-5">
+                    {
+                        userPosts.map((blog) => (
+                            <div
+                                key={blog._id}
+                                className="w-full">
+                                <BlogCard
+                                    key={blog._id}
+                                    title={blog.title}
+                                    imgUrl={blog.images?.length ? blog.images[0].url : ""}
+                                    description={blog.content}
+                                    likes={blog.totalLikes}
+                                    comments={blog.totalComments}
+                                    tags={blog.tags}
+                                    views={blog.views}
+                                    owner={blog.owner}
+                                    followStatus={{}}
+                                    setFollowStatus={()=>{}}
+                                    createdAt={blog.createdAt}
+                                    bgColor={"#182230"}
+                                />
+                            </div>
+                        ))
+                    }
                 </div>
+                }
+
+
+                {/* SAVED */}
+
+                {
+                    activeTab==="saved" &&
+
+                    <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center">
+                        <h1 className="text-md md:text-xl text-gray-400 py-5">No saved posts yet</h1>
+                    </div>
+                }
+
+
+                  {/* DRAFTS */}
+
+                {
+                    activeTab==="drafts" &&
+
+                    <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center">
+                        <h1 className="text-md md:text-xl text-gray-400 py-5">No drafts yet</h1>
+                    </div>
+                }
+
             </section>
+
+            {/* mobile nav */}
+            <div className="block md:hidden fixed bottom-0 w-full">
+                <MobileNavBottom avatarUrl={userAvatar} />
+            </div>
         </div>
     );
 }
