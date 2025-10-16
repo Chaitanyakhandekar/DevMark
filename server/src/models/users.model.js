@@ -41,13 +41,39 @@ const userSchema = new Schema({
         type:Number,
         default:0
     },
+    totalBlogs:{
+        type:Number,
+        default:0
+    },
+    totalSavedBlogs:{
+        type:Number,
+        default:0
+    },
     publicId:{
         type:String,
     },
     bio:{
         type:String,
-        default:"no bio",
+        default:"",
         maxLength:160
+    },
+    skills:[
+        String
+    ],
+    location:{
+        type:String
+    },
+    website:{
+        type:String
+    },
+    githubUrl:{
+        type:String,
+    },
+    linkedinUrl:{
+        type:String
+    },
+    twitterUrl:{
+        type:String
     },
     isActive:{
         type:Boolean,

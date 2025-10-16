@@ -195,6 +195,9 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   const totalBlogs = await Blog.countDocuments();
 
   const blogs = await Blog.aggregate([
+    {
+      $match: { status: "published" },
+    },
     { $sort: { createdAt: -1 } },
     { $skip: skip },
     { $limit: limit },
@@ -287,6 +290,10 @@ const getAllBlogs = asyncHandler(async (req, res) => {
 });
 
 const getUserBlogs = asyncHandler(async (req,res)=>{
+
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page -1 )*limit;
   
   const blogs = await Blog.aggregate([
     {
@@ -294,6 +301,8 @@ const getUserBlogs = asyncHandler(async (req,res)=>{
         owner:new mongoose.Types.ObjectId(req.user._id)
       }
     },
+    { $skip:skip},
+    { $limit:limit},
     {
       $sort:{createdAt:-1}
     },
@@ -326,9 +335,32 @@ const getUserBlogs = asyncHandler(async (req,res)=>{
   return res
       .status(200)
       .json(
-        new ApiResponse(200,blogs,"User Blogs Fetched Successfully.")
+        new ApiResponse(200,{
+          blogs,
+          page,
+          limit,
+          totalBlogs: await Blog.countDocuments({owner:req.user._id}),
+          totalPages: Math.ceil(await Blog.countDocuments({owner:req.user._id})/limit),
+          hasNextPage: limit*page < await Blog.countDocuments({owner:req.user._id})
+        },"User Blogs Fetched Successfully.")
       )
 
+})
+
+const getUserDrafts = asyncHandler(async (req,res)=>{
+  const drafts = await Blog.find({
+    owner:req.user._id,
+    status:"draft"
+  })
+
+  if(!drafts){
+    throw new ApiError(500,"Server Error While Fetching Drafts.")
+  }
+  return res
+      .status(200)
+      .json(
+        new ApiResponse(200,drafts,"Drafts Fetched Successfully.")
+      )
 })
 
 
@@ -339,6 +371,7 @@ export {
    deleteBlog,
    updateBlog,
    getBlog,
-   getUserBlogs
+   getUserBlogs,
+   getUserDrafts
 };
 

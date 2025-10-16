@@ -238,6 +238,7 @@ function MainFeed() {
           <div
             onClick={() => {
               setIsProfileMenuOpen(!isProfileMenuOpen)
+              document.querySelector(".arrow-down").classList.toggle("rotate-180")
             }}
             className={`flex items-center gap-2 hover:bg-gray-700 ${isProfileMenuOpen ? "bg-gray-700" : ""} px-2 py-1 rounded-md cursor-pointer`}>
             <div className=" text-white font-bold rounded-[50%] w-9 h-9 flex justify-center items-center">
@@ -245,7 +246,8 @@ function MainFeed() {
               className='w-full h-full rounded-[50%] object-cover'
               src={userAvatar} alt="" />
             </div>
-            <ChevronDown className='text-gray-400 cursor-pointer' size={20} />
+            <ChevronDown
+            className='arrow-down text-gray-400 cursor-pointer' size={20} />
           </div>
 
           {/* Dropdown Menu */}

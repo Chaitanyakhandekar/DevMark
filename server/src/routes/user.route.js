@@ -8,7 +8,8 @@ import {
      isLoggedInUser,
      logoutUser,
      uploadAvatar,
-     getUserAvatar
+     getUserAvatar,
+     getUserProfile
 
  } from '../controllers/user.controller.js';
  import { sendVerificationToken } from '../services/sendVerificationToken.js';
@@ -20,10 +21,11 @@ const router = Router();
 router.route("/register").post(registerUser, sendVerificationToken)
 router.route("/login").post(loginUser)
 router.route("/logout").get(userAuth,logoutUser)
+router.route("/avatar").post(userAuth,upload.single("avatar"),uploadAvatar)
 router.route("/avatar").get(userAuth,getUserAvatar)
+router.route("/profile").get(userAuth,getUserProfile)
 router.route("/email/verify/:token").get(verifyUser)
 router.route("/email/is-verify/:email").get(isVerifiedUser)
 router.route("/is-logged-in").get(userAuth,isLoggedInUser)
-router.route("/avatar").post(userAuth,upload.single("avatar"),uploadAvatar)
 
 export default router;

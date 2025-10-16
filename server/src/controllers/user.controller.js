@@ -334,7 +334,6 @@ const isVerifiedUser = asyncHandler(async (req, res) => {
     })
 })
 
-
 const isLoggedInUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
@@ -400,6 +399,51 @@ const getUserAvatar = asyncHandler(async (req, res) => {
   })
 })
 
+const getUserProfile = asyncHandler(async (req,res)=>{
+
+  const user = await User.aggregate([
+    {
+      $match:{
+        _id:new mongoose.Types.ObjectId(req.user._id)
+      }
+    },
+    {
+      $project:{
+        fullName:1,
+        username:1,
+        avatar:1,
+        totalFollowers:1,
+        totalFollowing:1,
+        totalBlogs:1,
+        totalSavedBlogs:1,
+        bio:1,
+        skills:1,
+        location:1,
+        website:1,
+        githubUrl:1,
+        linkedinUrl:1,
+        twitterUrl:1,
+        createdAt:1, 
+        joinedDate:{
+          $dateToString:{ format:"%Y-%m-%d", date:"$createdAt" }
+        } 
+
+      }
+    }
+  ])
+
+  if(!user.length){
+    throw new ApiError(500,"Server Error While Fetching User Profile.")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200,user[0],"User Profile Fetched Successfully.")
+    )
+
+})
+
 
 
 export {
@@ -410,5 +454,6 @@ export {
   isLoggedInUser,
   logoutUser,
   uploadAvatar,
-  getUserAvatar
+  getUserAvatar,
+  getUserProfile
 }
