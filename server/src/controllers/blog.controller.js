@@ -195,6 +195,9 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   const totalBlogs = await Blog.countDocuments();
 
   const blogs = await Blog.aggregate([
+    {
+      $match: { status: "published" },
+    },
     { $sort: { createdAt: -1 } },
     { $skip: skip },
     { $limit: limit },
@@ -344,6 +347,22 @@ const getUserBlogs = asyncHandler(async (req,res)=>{
 
 })
 
+const getUserDrafts = asyncHandler(async (req,res)=>{
+  const drafts = await Blog.find({
+    owner:req.user._id,
+    status:"draft"
+  })
+
+  if(!drafts){
+    throw new ApiError(500,"Server Error While Fetching Drafts.")
+  }
+  return res
+      .status(200)
+      .json(
+        new ApiResponse(200,drafts,"Drafts Fetched Successfully.")
+      )
+})
+
 
 
 export {
@@ -352,6 +371,7 @@ export {
    deleteBlog,
    updateBlog,
    getBlog,
-   getUserBlogs
+   getUserBlogs,
+   getUserDrafts
 };
 

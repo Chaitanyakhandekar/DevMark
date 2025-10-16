@@ -26,6 +26,7 @@ export default function LoginPage({nextPage="/user/feed"}) {
 
     const res = await userApi.loginUser(user)
     console.log(res.data);
+    setLoading(false);
 
     if(res.data.message){
       Swal.fire({
