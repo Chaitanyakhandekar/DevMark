@@ -54,7 +54,7 @@ const userSchema = new Schema({
     },
     bio:{
         type:String,
-        default:"no bio",
+        default:"",
         maxLength:160
     },
     skills:[

@@ -422,7 +422,11 @@ const getUserProfile = asyncHandler(async (req,res)=>{
         website:1,
         githubUrl:1,
         linkedinUrl:1,
-        twitterUrl:1  
+        twitterUrl:1,
+        createdAt:1, 
+        joinedDate:{
+          $dateToString:{ format:"%Y-%m-%d", date:"$createdAt" }
+        } 
 
       }
     }

@@ -49,6 +49,7 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+import { userApi } from '../../../api/user.api';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState("posts");
@@ -56,44 +57,90 @@ function ProfilePage() {
     const [userAvatar, setUserAvatar] = useState("");
 
     const [profileData, setProfileData] = useState({
-        name: "Byte Coder",
-        username: "@byte_coder",
+        name: "",
+        username: "",
         location: "",
         website: "",
         githubUrl: "",
         twitterUrl: "",
         linkedinUrl: "",
-        joinedDate: "January 2020"
+        joinedDate: "",
+        bio:"",
+        totalFollowers:0,
+        totalFollowing:0,
+        totalBlogs:0,
+        totalSavedBlogs:0,
+        skills:[],
+        avatar:""
+
     });
     
-    const [bio, setBio] = useState("");
+    // const [profileData.bio, setprofileData.bio] = useState("");
     const [editMode, setEditMode] = useState(false);
     const [showSettingsMenu, setShowSettingsMenu] = useState(false);
-    const [skills, setSkills] = useState([]);
+    // const [profileData.skills, setprofileData.skills] = useState([]);
     const [newSkill, setNewSkill] = useState("");
     const [showSkillInput, setShowSkillInput] = useState(false);
+
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+
+    const fetchUserProfile = async ()=>{
+        const res = await userApi.fetchUserProfile()
+        console.log(res.data)
+        setProfileData({
+            name: res.data.fullName || "",
+            username: res.data.username || "",
+            location: res.data.location || "",
+            website: res.data.website || "",
+            githubUrl: res.data.githubUrl || "",
+            twitterUrl: res.data.twitterUrl || "",
+            linkedinUrl: res.data.linkedinUrl || "",
+            joinedDate: months[new Date(res.data.createdAt).getMonth()] + " " + new Date(res.data.createdAt).getFullYear() || "",
+            bio: res.data.bio || "",
+            totalFollowers: res.data.totalFollowers || 0,
+            totalFollowing: res.data.totalFollowing || 0,
+            totalBlogs: res.data.totalBlogs || 0,
+            totalSavedBlogs: res.data.totalSavedBlogs || 0,
+            skills: res.data.skills || [],
+            avatar: res.data.avatar || ""
+        });
+
+        console.log("Profile Data = ",res.data.joinedDate)
+        console.log("Profile Data = ",new Date(res.data.createdAt).getMonth())
+
+    }
+
+    const handleProfileDataChange = (e)=>{
+        setProfileData((prev)=>(
+            {
+                ...prev,
+                [e.target.name]:e.target.value
+            }
+        ))
+    }
 
     const handleTabChange = (e) => {
         setActiveTab(e.target.name);
     };
 
     const handleAddSkill = () => {
-        if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-            setSkills([...skills, newSkill.trim()]);
+        if (newSkill.trim() && !profileData.skills.includes(newSkill.trim())) {
+            setprofileData.skills([...profileData.skills, newSkill.trim()]);
             setNewSkill("");
             setShowSkillInput(false);
         }
     };
 
     const handleRemoveSkill = (skillToRemove) => {
-        setSkills(skills.filter(skill => skill !== skillToRemove));
+        setprofileData.skills(profileData.skills.filter(skill => skill !== skillToRemove));
     };
 
     const handleSaveProfile = async () => {
         try {
             setEditMode(false);
             setShowSettingsMenu(false);
-            console.log('Saving profile:', { profileData, bio, skills });
+            console.log('Saving profile:', { profileData, bio:profileData.bio, skills:profileData.skills });
             // Add your API call here
         } catch (error) {
             console.error('Error updating profile ::', error?.message || error);
@@ -104,8 +151,14 @@ function ProfilePage() {
         console.log('Logging out...');
     };
 
+    useEffect(()=>{
+       
+        fetchUserProfile()
+        
+    },[])
+
     // Check if profile is incomplete
-    const isProfileIncomplete = !bio || !profileData.location || skills.length === 0;
+    const isProfileIncomplete = !profileData.bio || !profileData.location || profileData.skills.length === 0;
 
     return (
         <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-20'>
@@ -168,10 +221,12 @@ function ProfilePage() {
                             <div className="flex-1 w-full text-center md:text-left">
                                 {editMode ? (
                                     <input
+                                        name='fullName'
                                         className="text-2xl md:text-3xl font-bold text-white mb-2 bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none w-full"
                                         value={profileData.name}
-                                        onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                                        onChange={handleProfileDataChange}
                                         placeholder="Your Name"
+
                                     />
                                 ) : (
                                     <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{profileData.name}</h1>
@@ -179,9 +234,10 @@ function ProfilePage() {
 
                                 {editMode ? (
                                     <input
+                                        name='username'
                                         className="text-base text-slate-400 mb-4 bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none w-full"
                                         value={profileData.username}
-                                        onChange={(e) => setProfileData({ ...profileData, username: e.target.value })}
+                                        onChange={handleProfileDataChange}
                                         placeholder="@username"
                                     />
                                 ) : (
@@ -192,14 +248,15 @@ function ProfilePage() {
                                     <textarea
                                         className="text-base text-slate-300 leading-relaxed bg-slate-800/50 px-4 py-3 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none w-full resize-none"
                                         rows="3"
-                                        value={bio}
-                                        onChange={(e) => setBio(e.target.value)}
+                                        name='bio'
+                                        value={profileData.bio}
+                                        onChange={handleProfileDataChange}
                                         placeholder="Tell us about yourself..."
                                     />
                                 ) : (
                                     <>
-                                        {bio ? (
-                                            <p className="text-base text-slate-300 leading-relaxed mb-4">{bio}</p>
+                                        {profileData.bio ? (
+                                            <p className="text-base text-slate-300 leading-relaxed mb-4">{profileData.bio}</p>
                                         ) : (
                                             <p className="text-base text-slate-500 italic mb-4">No bio added yet</p>
                                         )}
@@ -211,9 +268,10 @@ function ProfilePage() {
                                         <div className="flex items-center gap-2 text-slate-400">
                                             <MapPin size={16} className="text-blue-400" />
                                             <input
+                                                name='location'
                                                 className="text-sm bg-slate-800/50 px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none"
                                                 value={profileData.location}
-                                                onChange={(e) => setProfileData({ ...profileData, location: e.target.value })}
+                                                onChange={handleProfileDataChange}
                                                 placeholder="Add location"
                                             />
                                         </div>
@@ -228,16 +286,17 @@ function ProfilePage() {
 
                                     <div className="flex items-center gap-2 text-slate-400">
                                         <Calendar size={16} className="text-purple-400" />
-                                        <span className="text-sm">Joined {profileData.joinedDate}</span>
+                                        <span className="text-sm">Joined on {profileData.joinedDate}</span>
                                     </div>
 
                                     {editMode ? (
                                         <div className="flex items-center gap-2 text-slate-400">
                                             <ExternalLink size={16} className="text-green-400" />
                                             <input
+                                                name='website'
                                                 className="text-sm bg-slate-800/50 px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none"
                                                 value={profileData.website}
-                                                onChange={(e) => setProfileData({ ...profileData, website: e.target.value })}
+                                                onChange={handleProfileDataChange}
                                                 placeholder="Your website"
                                             />
                                         </div>
@@ -258,28 +317,31 @@ function ProfilePage() {
                                     <div className="mt-4 space-y-2">
                                         <div className="flex items-center gap-2">
                                             <FaGithub size={18} className="text-slate-400" />
-                                            <input
+                                            <   input
+                                                name='githubUrl'
                                                 className="text-sm bg-slate-800/50 px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none flex-1"
                                                 value={profileData.githubUrl}
-                                                onChange={(e) => setProfileData({ ...profileData, githubUrl: e.target.value })}
+                                                onChange={handleProfileDataChange}
                                                 placeholder="GitHub profile URL"
                                             />
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <FaTwitter size={18} className="text-slate-400" />
                                             <input
+                                                    name='twitterUrl'
                                                 className="text-sm bg-slate-800/50 px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none flex-1"
                                                 value={profileData.twitterUrl}
-                                                onChange={(e) => setProfileData({ ...profileData, twitterUrl: e.target.value })}
+                                                onChange={handleProfileDataChange}
                                                 placeholder="Twitter profile URL"
                                             />
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <FaLinkedin size={18} className="text-slate-400" />
                                             <input
+                                                name='linkedinUrl'
                                                 className="text-sm bg-slate-800/50 px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none flex-1"
                                                 value={profileData.linkedinUrl}
-                                                onChange={(e) => setProfileData({ ...profileData, linkedinUrl: e.target.value })}
+                                                onChange={handleProfileDataChange}
                                                 placeholder="LinkedIn profile URL"
                                             />
                                         </div>
@@ -387,10 +449,10 @@ function ProfilePage() {
                         </div>
                     </div>
 
-                    {/* Skills Section */}
+                    {/* profileData.skills Section */}
                     <div className="mt-8">
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-semibold text-white">Skills & Expertise</h2>
+                            <h2 className="text-lg font-semibold text-white">profileData.skills & Expertise</h2>
                             {editMode && (
                                 <button
                                     onClick={() => setShowSkillInput(true)}
@@ -430,9 +492,9 @@ function ProfilePage() {
                             </div>
                         )}
 
-                        {skills.length > 0 ? (
+                        {profileData.skills.length > 0 ? (
                             <div className="flex flex-wrap gap-2">
-                                {skills.map((skill, index) => (
+                                {profileData.skills.map((skill, index) => (
                                     <span
                                         key={index}
                                         className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 text-blue-300 text-sm px-4 py-2 rounded-full font-medium hover:scale-105 transition-transform cursor-default flex items-center gap-2"
@@ -453,7 +515,7 @@ function ProfilePage() {
                             <div className="text-center py-8 border-2 border-dashed border-slate-700 rounded-xl">
                                 <Code size={32} className="text-slate-600 mx-auto mb-2" />
                                 <p className="text-slate-500 text-sm">
-                                    {editMode ? "Click 'Add Skill' to showcase your expertise" : "No skills added yet"}
+                                    {editMode ? "Click 'Add Skill' to showcase your expertise" : "No profileData.skills added yet"}
                                 </p>
                             </div>
                         )}
