@@ -446,7 +446,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
 const updateUserProfile = asyncHandler(async (req, res) => {
   const {
-    name,
+    fullName,
     username,
     location,
     website,
@@ -457,7 +457,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     skills,
   } = req.body
 
-  const fields = [name, username, location, website, githubUrl, twitterUrl, linkedinUrl, bio]
+  const fields = [fullName, username, location, website, githubUrl, twitterUrl, linkedinUrl, bio]
   const fieldsName = ["fullName", "username", "location", "website", "githubUrl", "twitterUrl", "linkedinUrl", "bio"]
   let updateFields = {}
   let throwError = false

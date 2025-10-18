@@ -114,7 +114,7 @@ function ProfilePage() {
         const res = await userApi.fetchUserProfile()
         console.log(res.data)
         setProfileData({
-            name: res.data.fullName || "",
+            fullName: res.data.fullName || "",
             username: res.data.username || "",
             location: res.data.location || "",
             website: res.data.website || "",
@@ -180,7 +180,7 @@ function ProfilePage() {
             }
             if(res.success){
                 setProfileData({
-                    name: res.data.fullName,
+                    fullName: res.data.fullName,
                     username:res.data.username,
                     location:res.data.location || "",
                     website:res.data.website || "",
@@ -289,13 +289,13 @@ function ProfilePage() {
                                     <input
                                         name='fullName'
                                         className="text-2xl md:text-3xl font-bold text-white mb-2 bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none w-full"
-                                        value={profileData.name}
+                                        value={profileData.fullName}
                                         onChange={handleProfileDataChange}
                                         placeholder="Your Name"
 
                                     />
                                 ) : (
-                                    <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{profileData.name}</h1>
+                                    <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{profileData.fullName}</h1>
                                 )}
 
                                 {editMode ? (
