@@ -9,7 +9,8 @@ import {
      logoutUser,
      uploadAvatar,
      getUserAvatar,
-     getUserProfile
+     getUserProfile,
+     updateUserProfile
 
  } from '../controllers/user.controller.js';
  import { sendVerificationToken } from '../services/sendVerificationToken.js';
@@ -24,6 +25,7 @@ router.route("/logout").get(userAuth,logoutUser)
 router.route("/avatar").post(userAuth,upload.single("avatar"),uploadAvatar)
 router.route("/avatar").get(userAuth,getUserAvatar)
 router.route("/profile").get(userAuth,getUserProfile)
+router.route("/profile").patch(userAuth,updateUserProfile)
 router.route("/email/verify/:token").get(verifyUser)
 router.route("/email/is-verify/:email").get(isVerifiedUser)
 router.route("/is-logged-in").get(userAuth,isLoggedInUser)

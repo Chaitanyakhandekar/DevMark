@@ -294,8 +294,8 @@ const isVerifiedUser = asyncHandler(async (req, res) => {
 
   console.log("Checking verification status for email:", email);
 
-  if(!email || email.trim() === ""){
-    throw new ApiError(400,"Email is required")
+  if (!email || email.trim() === "") {
+    throw new ApiError(400, "Email is required")
   }
 
   const user = await User.findOne({ email });
@@ -309,7 +309,7 @@ const isVerifiedUser = asyncHandler(async (req, res) => {
     throw new ApiError(403, "User is not verified");
   }
 
-  const {accessToken, refreshToken} = generateTokens(user)
+  const { accessToken, refreshToken } = generateTokens(user)
 
   user.refreshToken = refreshToken;
 
@@ -399,53 +399,127 @@ const getUserAvatar = asyncHandler(async (req, res) => {
   })
 })
 
-const getUserProfile = asyncHandler(async (req,res)=>{
+const getUserProfile = asyncHandler(async (req, res) => {
 
   const user = await User.aggregate([
     {
-      $match:{
-        _id:new mongoose.Types.ObjectId(req.user._id)
+      $match: {
+        _id: new mongoose.Types.ObjectId(req.user._id)
       }
     },
     {
-      $project:{
-        fullName:1,
-        username:1,
-        avatar:1,
-        totalFollowers:1,
-        totalFollowing:1,
-        totalBlogs:1,
-        totalSavedBlogs:1,
-        bio:1,
-        skills:1,
-        location:1,
-        website:1,
-        githubUrl:1,
-        linkedinUrl:1,
-        twitterUrl:1,
-        createdAt:1, 
-        joinedDate:{
-          $dateToString:{ format:"%Y-%m-%d", date:"$createdAt" }
-        } 
+      $project: {
+        fullName: 1,
+        username: 1,
+        avatar: 1,
+        totalFollowers: 1,
+        totalFollowing: 1,
+        totalBlogs: 1,
+        totalSavedBlogs: 1,
+        bio: 1,
+        skills: 1,
+        location: 1,
+        website: 1,
+        githubUrl: 1,
+        linkedinUrl: 1,
+        twitterUrl: 1,
+        createdAt: 1,
+        joinedDate: {
+          $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+        }
 
       }
     }
   ])
 
-  if(!user.length){
-    throw new ApiError(500,"Server Error While Fetching User Profile.")
+  if (!user.length) {
+    throw new ApiError(500, "Server Error While Fetching User Profile.")
   }
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200,user[0],"User Profile Fetched Successfully.")
+      new ApiResponse(200, user[0], "User Profile Fetched Successfully.")
     )
 
 })
 
-const updateUserProfile = asyncHandler(async (req,res)=>{
-  // const 
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const {
+    name,
+    username,
+    location,
+    website,
+    githubUrl,
+    twitterUrl,
+    linkedinUrl,
+    bio,
+    skills,
+  } = req.body
+
+  const fields = [name, username, location, website, githubUrl, twitterUrl, linkedinUrl, bio]
+  const fieldsName = ["fullName", "username", "location", "website", "githubUrl", "twitterUrl", "linkedinUrl", "bio"]
+  let updateFields = {}
+  let throwError = false
+  let skillError = false
+  let filteredSkills
+
+  if (skills) {
+    if (!Array.isArray(skills)) {
+      throw new ApiError(400, "Skills Must Be Array.")
+    }
+    if (Array.isArray(skills) && !skills.length) {
+      skillError = true
+    }
+    else if (Array.isArray(skills) && skills.length) {
+
+      filteredSkills = skills.filter(skill => skill && skill.trim() !== "")
+      if (!filteredSkills.length) {
+        skillError = true
+      }
+    }
+  }
+
+  if (!fields.some(field => field)) {
+    throwError = true
+  }
+
+  if (throwError && skillError) {
+    throw new ApiError(400, "Atleast One Field is Required for Profile Update.")
+  }
+
+  fields.forEach((field,index) => {
+    if (field && field.trim() !== "") {
+      updateFields = { ...updateFields, [fieldsName[index]]: field }
+    }
+  })
+
+  if (skills && skills.length) {
+    updateFields.skills = filteredSkills
+  }
+
+  console.log("Update Fields = ", updateFields)
+
+  const updatedProfile = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set:updateFields
+    },
+    {
+      new:true
+    }
+  )
+
+  if(!updatedProfile){
+    throw new ApiError(500,"Server Error While Updating Profile Details.")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, updatedProfile, "Profile Updated Successfully.")
+    )
+
 })
 
 
@@ -459,5 +533,6 @@ export {
   logoutUser,
   uploadAvatar,
   getUserAvatar,
-  getUserProfile
+  getUserProfile,
+  updateUserProfile
 }

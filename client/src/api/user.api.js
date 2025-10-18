@@ -28,6 +28,27 @@ class UserApi {
         }
     }
 
+    async logoutUser() {
+        try {
+            const res = await axios
+                .get(`${this.baseUrl}/users/logout
+                `,
+                    {
+                        withCredentials: true
+                    }
+                )
+
+            console.log("data = ", res.data)
+            return {
+                success: true,
+                data: res.data
+            }
+        } catch (error) {
+            console.log("Logout User :: Error :: ", error.message)
+            return error
+        }
+    }
+
     async signupUser(user) {
         try {
             const res = await axios.post(`${this.baseUrl}/users/register`, user)

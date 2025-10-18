@@ -53,6 +53,7 @@ import { userApi } from '../../../api/user.api';
 import MobileNavBottom from '../../../components/MobileNavBottom';
 import BlogCard from '../../../components/BlogCard';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState("posts");
@@ -84,6 +85,7 @@ function ProfilePage() {
     // const [profileData.skills, setprofileData.skills] = useState([]);
     const [newSkill, setNewSkill] = useState("");
     const [showSkillInput, setShowSkillInput] = useState(false);
+    const navigate = useNavigate()
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -169,8 +171,12 @@ function ProfilePage() {
         }
     };
 
-    const handleLogout = () => {
-        console.log('Logging out...');
+    const handleLogout = async() => {
+        const res = await userApi.logoutUser()
+
+        if(res.success){
+            navigate("/login")
+        }
     };
 
     useEffect(()=>{
