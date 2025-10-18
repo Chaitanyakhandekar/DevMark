@@ -66,6 +66,20 @@ class UserApi {
         }
     }
 
+    async updateUserProfile(profileData){
+        try {
+
+            const res = await axios.patch(`${this.baseUrl}/api/v1/users/profile`)
+            
+        } catch (error) {
+            console.log("Update User Profile :: ERROR :: ",error.message)
+            return{
+                success:false,
+                message:error.message
+            }
+        }
+    }
+
 }
 
 export const userApi = new UserApi();

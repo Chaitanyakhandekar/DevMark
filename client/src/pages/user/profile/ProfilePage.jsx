@@ -50,10 +50,13 @@ import {
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 import { userApi } from '../../../api/user.api';
+import MobileNavBottom from '../../../components/MobileNavBottom';
+import BlogCard from '../../../components/BlogCard';
+import axios from 'axios';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState("posts");
-    const [userPosts, setUserPosts] = useState([]);
+    const [allBlogs, setAllBlogs] = useState([]);
     const [userAvatar, setUserAvatar] = useState("");
 
     const [profileData, setProfileData] = useState({
@@ -84,6 +87,25 @@ function ProfilePage() {
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+
+     const fetchAllBlogs = async()=>{
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/all?page=${1}&limit=${10}`,{
+        withCredentials:true
+      })
+
+      console.log("blogs : ",res.data.data.blogs)
+  
+      setAllBlogs(res.data.data.blogs)
+      
+      console.log("Hello = ",res.data.data.blogs)
+
+     
+
+    } catch (error) {
+      console.log("Error :: Fetching All Blogs :: ",error.message)
+    }
+  }
 
     const fetchUserProfile = async ()=>{
         const res = await userApi.fetchUserProfile()
@@ -154,6 +176,7 @@ function ProfilePage() {
     useEffect(()=>{
        
         fetchUserProfile()
+        fetchAllBlogs()
         
     },[])
 
@@ -161,7 +184,7 @@ function ProfilePage() {
     const isProfileIncomplete = !profileData.bio || !profileData.location || profileData.skills.length === 0;
 
     return (
-        <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-20'>
+        <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-0'>
             {/* Cover Photo */}
             <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4 rounded-md py-3 px-x">
                 <img 
@@ -172,7 +195,7 @@ function ProfilePage() {
             </section>
 
             {/* User Info */}
-            <section className="w-full md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto -mt-16 rounded-bl-2xl rounded-br-2xl bg-gradient-to-br from-[#1e293b] to-[#1e293b]/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
+            <section className="w-full md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-16 rounded-bl-0 rounded-br-0   md:rounded-bl-2xl md:rounded-br-2xl bg-gradient-to-br from-[#1e293b] to-[#1e293b]/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
                 <div className="p-6 md:p-8">
                     {/* Incomplete Profile Banner */}
                     {!editMode && isProfileIncomplete && (
@@ -200,7 +223,7 @@ function ProfilePage() {
                             <div className="relative group">
                                 <div className="w-32 h-32 rounded-[50%] overflow-hidden border-4 border-slate-800 shadow-xl relative">
                                     <img
-                                        src={userAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop'}
+                                        src={profileData?.avatar || "https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg"}
                                         alt="Profile"
                                         className="w-full h-full object-cover transition-transform rounded-[50%] duration-300 group-hover:scale-110"
                                     />
@@ -300,7 +323,7 @@ function ProfilePage() {
                                                 placeholder="Your website"
                                             />
                                         </div>
-                                    ) : (
+                                    ) : ( 
                                         profileData.website && (
                                             <div className="flex items-center gap-2 text-slate-400">
                                                 <ExternalLink size={16} className="text-green-400" />
@@ -526,15 +549,15 @@ function ProfilePage() {
                         <div className="text-center p-4 bg-gradient-to-br from-blue-500/10 to-transparent rounded-xl border border-blue-500/20 hover:scale-105 transition-transform cursor-pointer">
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <BookOpen size={20} className='text-blue-400' />
-                                <p className='text-2xl font-bold text-white'>0</p>
+                                <p className='text-2xl font-bold text-white'>{profileData?.totalBlogs || 0}</p>
                             </div>
-                            <p className="text-sm text-slate-400 font-medium">Posts</p>
+                            <p className="text-sm text-slate-400 font-medium">Blogs</p>
                         </div>
 
                         <div className="text-center p-4 bg-gradient-to-br from-purple-500/10 to-transparent rounded-xl border border-purple-500/20 hover:scale-105 transition-transform cursor-pointer">
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <Users size={20} className='text-purple-400' />
-                                <p className='text-2xl font-bold text-white'>0</p>
+                                <p className='text-2xl font-bold text-white'>{profileData?.totalFollowers || 0}</p>
                             </div>
                             <p className="text-sm text-slate-400 font-medium">Followers</p>
                         </div>
@@ -542,7 +565,7 @@ function ProfilePage() {
                         <div className="text-center p-4 bg-gradient-to-br from-green-500/10 to-transparent rounded-xl border border-green-500/20 hover:scale-105 transition-transform cursor-pointer">
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <User size={20} className='text-green-400' />
-                                <p className='text-2xl font-bold text-white'>0</p>
+                                <p className='text-2xl font-bold text-white'>{profileData?.totalFollowing || 0}</p>
                             </div>
                             <p className="text-sm text-slate-400 font-medium">Following</p>
                         </div>
@@ -559,7 +582,7 @@ function ProfilePage() {
             </section>
 
             {/* User Posts */}
-            <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4 bg-[#1f2935] px-3">
+            <section className="w-full md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4 bg-[#1f2935] px-3 mb-5">
                 <div className="flex justify-start gap-5 items-center border-[1px] border-b-gray-500 border-t-0 border-l-0 border-r-0">
                     <button
                         className={`text-sm md:text-[1.1rem] font-[500] text-[#9ca3ae] mb-0 pb-5 px-3 pt-3 h-full ${activeTab === "posts" ? "border-2 border-b-[#4083f2] border-t-0 border-r-0 border-l-0 text-[#4083f2]" : "border-none text-[#9ca3ae]"}`}
@@ -586,13 +609,47 @@ function ProfilePage() {
                     </button>
                 </div>
 
-                {activeTab === "posts" && (
-                    <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center py-8">
+                {activeTab === "posts" &&  allBlogs.length>0 &&
+
+                
+                <div className="w-full flex flex-col gap-3 mt-5">
+                    {
+                        allBlogs.map((blog) => (
+                            <div
+                                key={blog._id}
+                                className="w-full">
+                                <BlogCard
+                                    key={blog._id}
+                                    title={blog.title}
+                                    imgUrl={blog.images?.length ? blog.images[0].url : ""}
+                                    description={blog.content}
+                                    likes={blog.totalLikes}
+                                    comments={blog.totalComments}
+                                    tags={blog.tags}
+                                    views={blog.views}
+                                    owner={blog.owner}
+                                    followStatus={{}}
+                                    setFollowStatus={()=>{}}
+                                    createdAt={blog.createdAt}
+                                    bgColor={"#182230"}
+                                    isOwner={true}
+                                />
+                            </div>
+                        ))
+                    }
+                </div>
+
+                ||
+
+                 <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center py-8">
                         <BookOpen size={48} className="text-slate-600 mb-2" />
                         <h1 className="text-md md:text-xl text-gray-400">No posts yet</h1>
                         <p className="text-sm text-slate-500">Start writing your first blog post!</p>
                     </div>
-                )}
+                
+
+                  
+                }
 
                 {activeTab === "saved" && (
                     <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center py-8">
@@ -608,6 +665,9 @@ function ProfilePage() {
                     </div>
                 )}
             </section>
+
+      <MobileNavBottom avatarUrl={profileData.avatar} />
+
         </div>
     );
 }

@@ -444,6 +444,10 @@ const getUserProfile = asyncHandler(async (req,res)=>{
 
 })
 
+const updateUserProfile = asyncHandler(async (req,res)=>{
+  // const 
+})
+
 
 
 export {
