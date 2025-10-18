@@ -508,7 +508,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     {
       new:true
     }
-  )
+  ).select("-password -refreshToken -verificationToken -verificationTokenExpiry -email")
 
   if(!updatedProfile){
     throw new ApiError(500,"Server Error While Updating Profile Details.")

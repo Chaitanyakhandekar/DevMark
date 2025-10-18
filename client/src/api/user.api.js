@@ -90,7 +90,22 @@ class UserApi {
     async updateUserProfile(profileData){
         try {
 
-            const res = await axios.patch(`${this.baseUrl}/api/v1/users/profile`)
+            const res = await axios.patch(
+                `${this.baseUrl}/users/profile`,
+                profileData,
+                {
+                    withCredentials:true
+                }
+            )
+
+            if(res.data.success){
+                return {
+                    success:true,
+                    data:res.data.data
+                }
+            }
+
+            console.log("update Data response = ",res.data)
             
         } catch (error) {
             console.log("Update User Profile :: ERROR :: ",error.message)

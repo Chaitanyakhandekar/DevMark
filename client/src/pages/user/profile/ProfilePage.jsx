@@ -82,9 +82,10 @@ function ProfilePage() {
     // const [profileData.bio, setprofileData.bio] = useState("");
     const [editMode, setEditMode] = useState(false);
     const [showSettingsMenu, setShowSettingsMenu] = useState(false);
-    // const [profileData.skills, setprofileData.skills] = useState([]);
+    // const [skills, setskills] = useState([]);
     const [newSkill, setNewSkill] = useState("");
     const [showSkillInput, setShowSkillInput] = useState(false);
+    const [skills,setSkills] = useState([])
     const navigate = useNavigate()
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -130,6 +131,8 @@ function ProfilePage() {
             avatar: res.data.avatar || ""
         });
 
+        setSkills(res.data.skills)
+
         console.log("Profile Data = ",res.data.joinedDate)
         console.log("Profile Data = ",new Date(res.data.createdAt).getMonth())
 
@@ -149,23 +152,52 @@ function ProfilePage() {
     };
 
     const handleAddSkill = () => {
-        if (newSkill.trim() && !profileData.skills.includes(newSkill.trim())) {
-            setprofileData.skills([...profileData.skills, newSkill.trim()]);
+        setShowSkillInput(true)
+        if (newSkill.trim() && !skills.includes(newSkill.trim())) {
+            setSkills((prev)=>[...prev, newSkill.trim()]);
             setNewSkill("");
             setShowSkillInput(false);
         }
+        // console.log(skills)
     };
 
     const handleRemoveSkill = (skillToRemove) => {
-        setprofileData.skills(profileData.skills.filter(skill => skill !== skillToRemove));
+        setSkills((prev)=>prev.filter(skill=>skill!=skillToRemove))
     };
 
     const handleSaveProfile = async () => {
         try {
             setEditMode(false);
             setShowSettingsMenu(false);
-            console.log('Saving profile:', { profileData, bio:profileData.bio, skills:profileData.skills });
-            // Add your API call here
+            console.log('Saving profile:', { profileData, bio:profileData.bio, skills:skills });
+            
+            const res = await userApi.updateUserProfile({
+                ...profileData,skills:skills
+            })
+
+            if(!res.success){
+                throw new Error(res.error)
+            }
+            if(res.success){
+                setProfileData({
+                    name: res.data.fullName,
+                    username:res.data.username,
+                    location:res.data.location || "",
+                    website:res.data.website || "",
+                    githubUrl:res.data.githubUrl || "",
+                    twitterUrl:res.data.twitterUrl || "",
+                    linkedinUrl:res.data.linkedinUrl || "",
+                    joinedDate:months[new Date(res.data.createdAt).getMonth()] + " " + new Date(res.data.createdAt).getFullYear(),
+                    bio:res.data.bio || "",
+                    totalFollowers:res.data.totalFollowers || 0,
+                    totalFollowing:res.data.totalFollowing || 0,
+                    totalBlogs:res.data.totalBlogs || 0,
+                    totalSavedBlogs:res.data.totalSavedBlogs || 0,
+                    skills:res.data.skills || [],
+                    avatar:res.data.avatar || ""
+                })
+            }
+
         } catch (error) {
             console.error('Error updating profile ::', error?.message || error);
         }
@@ -185,9 +217,14 @@ function ProfilePage() {
         fetchAllBlogs()
         
     },[])
+    useEffect(()=>{
+       
+       console.log("dfdsfdsfsddsgsdfgdfssssssssssssssssssss = ",profileData)
+        
+    },[profileData])
 
     // Check if profile is incomplete
-    const isProfileIncomplete = !profileData.bio || !profileData.location || profileData.skills.length === 0;
+    const isProfileIncomplete = !profileData.bio || !profileData.location || skills.length === 0;
 
     return (
         <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-0'>
@@ -478,13 +515,13 @@ function ProfilePage() {
                         </div>
                     </div>
 
-                    {/* profileData.skills Section */}
+                    {/* skills Section */}
                     <div className="mt-8">
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-semibold text-white">profileData.skills & Expertise</h2>
+                            <h2 className="text-lg font-semibold text-white">Skills & Expertise</h2>
                             {editMode && (
                                 <button
-                                    onClick={() => setShowSkillInput(true)}
+                                    onClick={handleAddSkill}
                                     className="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1 text-sm"
                                 >
                                     <Plus size={16} />
@@ -521,9 +558,9 @@ function ProfilePage() {
                             </div>
                         )}
 
-                        {profileData.skills.length > 0 ? (
+                        {skills.length > 0 ? (
                             <div className="flex flex-wrap gap-2">
-                                {profileData.skills.map((skill, index) => (
+                                {skills.map((skill, index) => (
                                     <span
                                         key={index}
                                         className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 text-blue-300 text-sm px-4 py-2 rounded-full font-medium hover:scale-105 transition-transform cursor-default flex items-center gap-2"
@@ -544,7 +581,7 @@ function ProfilePage() {
                             <div className="text-center py-8 border-2 border-dashed border-slate-700 rounded-xl">
                                 <Code size={32} className="text-slate-600 mx-auto mb-2" />
                                 <p className="text-slate-500 text-sm">
-                                    {editMode ? "Click 'Add Skill' to showcase your expertise" : "No profileData.skills added yet"}
+                                    {editMode ? "Click 'Add Skill' to showcase your expertise" : "No skills added yet"}
                                 </p>
                             </div>
                         )}
