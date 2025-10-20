@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { sendVerificationToken } from "../services/sendVerificationToken.js";
 import { generateTokens } from "../services/generateTokens.js";
-import { uploadFileOnCloudinary } from "../services/cloudinary.service.js";
+import { deleteFileFromCloudinary, uploadFileOnCloudinary } from "../services/cloudinary.service.js";
 
 dotenv.config({ path: "./.env" })
 
@@ -387,6 +387,47 @@ const uploadAvatar = asyncHandler(async (req, res) => {
 
 })
 
+const deleteUserAvatar = asyncHandler(async (req,res)=>{
+
+  if(!req.user.avatar || !req.user.public_id){
+    throw new ApiError(400,"No Avatar To Delete.")
+  }
+
+  await deleteFileFromCloudinary(req.user.public_id)
+
+  const avatarDeleted = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set:{
+        avatar:"",
+        public_id:""
+      }
+    },
+    {
+      new:true
+    }
+  ).select("-password -refreshToken")
+
+  if(!avatarDeleted){
+    throw new ApiError(500,"Server Error While Deleting Avatar.")
+  }
+
+  if(req.headers["x-delete-only"] && req.headers["x-delete-only"]==="true"){
+    return res
+        .status(200)
+        .json(
+          new ApiResponse(200,null,"Avatar Deleted Successfully.")
+        )
+  }
+
+  return  {
+      success:true,
+      message:"Avatar Deleted Successfully."
+    }
+
+
+})
+
 const getUserAvatar = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id)
 
@@ -534,5 +575,6 @@ export {
   uploadAvatar,
   getUserAvatar,
   getUserProfile,
-  updateUserProfile
+  updateUserProfile,
+  deleteUserAvatar
 }

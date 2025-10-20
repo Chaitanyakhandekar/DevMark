@@ -86,7 +86,7 @@ function BlogCard({
                         className='max-h-[180px] max-w-[1000px] w-[95%] md:w-full h-auto fit-cover rounded-tr-md rounded-tl-md'
                         src={imgUrl} alt="" />
                 </div>
-                <div className="px-3 py-2 bg-[#19181e]/75 background-blur-md absolute top-5 right-5 rounded-xl">
+                <div className="px-3 py-2 bg-[#19181e]/75 background-blur-md absolute top-5 right-5 rounded-xl text-white">
                     8 min read
                 </div>
             </div>

@@ -212,7 +212,10 @@ function ProfilePage() {
     };
 
     useEffect(()=>{
-       
+        window.scrollTo({
+            top:0,
+            behavior:"instant"
+        })
         fetchUserProfile()
         fetchAllBlogs()
         
