@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Search,
     Bell,
@@ -42,19 +42,28 @@ import {
     List,
     Activity,
     Palette,
-    Shield, 
+    Shield,
     Lock,
     Check,
     Camera,
-    AlertCircle
+    AlertCircle,
+    Delete,
+    Save
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 import { userApi } from '../../../api/user.api';
+import MobileNavBottom from '../../../components/MobileNavBottom';
+import BlogCard from '../../../components/BlogCard';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import SpinLoader from '../../../components/SpinLoader';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState("posts");
-    const [userPosts, setUserPosts] = useState([]);
+    const [allBlogs, setAllBlogs] = useState([]);
     const [userAvatar, setUserAvatar] = useState("");
+    const [file, setFile] = useState(null)
+    const [saveButton, setSaveButton] = useState(false)
 
     const [profileData, setProfileData] = useState({
         name: "",
@@ -65,31 +74,55 @@ function ProfilePage() {
         twitterUrl: "",
         linkedinUrl: "",
         joinedDate: "",
-        bio:"",
-        totalFollowers:0,
-        totalFollowing:0,
-        totalBlogs:0,
-        totalSavedBlogs:0,
-        skills:[],
-        avatar:""
+        bio: "",
+        totalFollowers: 0,
+        totalFollowing: 0,
+        totalBlogs: 0,
+        totalSavedBlogs: 0,
+        skills: [],
+        avatar: ""
 
     });
-    
+
     // const [profileData.bio, setprofileData.bio] = useState("");
     const [editMode, setEditMode] = useState(false);
     const [showSettingsMenu, setShowSettingsMenu] = useState(false);
-    // const [profileData.skills, setprofileData.skills] = useState([]);
+    // const [skills, setskills] = useState([]);
     const [newSkill, setNewSkill] = useState("");
     const [showSkillInput, setShowSkillInput] = useState(false);
+    const [skills, setSkills] = useState([])
+    const [loading,setLoading] = useState(false)
+    const [profilePopup, setProfilePopup] = useState(false)
+    const navigate = useNavigate()
+    const fileInputRef = useRef(null);
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 
-    const fetchUserProfile = async ()=>{
+    const fetchAllBlogs = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/user?page=${1}&limit=${10}`, {
+                withCredentials: true
+            })
+
+            console.log("blogs : ", res.data.data.blogs)
+
+            setAllBlogs(res.data.data.blogs)
+
+            console.log("Hello = ", res.data.data.blogs)
+
+
+
+        } catch (error) {
+            console.log("Error :: Fetching All Blogs :: ", error.message)
+        }
+    }
+
+    const fetchUserProfile = async () => {
         const res = await userApi.fetchUserProfile()
         console.log(res.data)
         setProfileData({
-            name: res.data.fullName || "",
+            fullName: res.data.fullName || "",
             username: res.data.username || "",
             location: res.data.location || "",
             website: res.data.website || "",
@@ -106,16 +139,18 @@ function ProfilePage() {
             avatar: res.data.avatar || ""
         });
 
-        console.log("Profile Data = ",res.data.joinedDate)
-        console.log("Profile Data = ",new Date(res.data.createdAt).getMonth())
+        setSkills(res.data.skills)
+
+        console.log("Profile Data = ", res.data.joinedDate)
+        console.log("Profile Data = ", new Date(res.data.createdAt).getMonth())
 
     }
 
-    const handleProfileDataChange = (e)=>{
-        setProfileData((prev)=>(
+    const handleProfileDataChange = (e) => {
+        setProfileData((prev) => (
             {
                 ...prev,
-                [e.target.name]:e.target.value
+                [e.target.name]: e.target.value
             }
         ))
     }
@@ -125,54 +160,189 @@ function ProfilePage() {
     };
 
     const handleAddSkill = () => {
-        if (newSkill.trim() && !profileData.skills.includes(newSkill.trim())) {
-            setprofileData.skills([...profileData.skills, newSkill.trim()]);
+        setShowSkillInput(true)
+        if (newSkill.trim() && !skills.includes(newSkill.trim())) {
+            setSkills((prev) => [...prev, newSkill.trim()]);
             setNewSkill("");
             setShowSkillInput(false);
         }
+        // console.log(skills)
     };
 
     const handleRemoveSkill = (skillToRemove) => {
-        setprofileData.skills(profileData.skills.filter(skill => skill !== skillToRemove));
+        setSkills((prev) => prev.filter(skill => skill != skillToRemove))
     };
 
     const handleSaveProfile = async () => {
         try {
             setEditMode(false);
             setShowSettingsMenu(false);
-            console.log('Saving profile:', { profileData, bio:profileData.bio, skills:profileData.skills });
-            // Add your API call here
+            console.log('Saving profile:', { profileData, bio: profileData.bio, skills: skills });
+
+            const res = await userApi.updateUserProfile({
+                ...profileData, skills: skills
+            })
+
+            if (!res.success) {
+                throw new Error(res.error)
+            }
+            if (res.success) {
+                setProfileData({
+                    fullName: res.data.fullName,
+                    username: res.data.username,
+                    location: res.data.location || "",
+                    website: res.data.website || "",
+                    githubUrl: res.data.githubUrl || "",
+                    twitterUrl: res.data.twitterUrl || "",
+                    linkedinUrl: res.data.linkedinUrl || "",
+                    joinedDate: months[new Date(res.data.createdAt).getMonth()] + " " + new Date(res.data.createdAt).getFullYear(),
+                    bio: res.data.bio || "",
+                    totalFollowers: res.data.totalFollowers || 0,
+                    totalFollowing: res.data.totalFollowing || 0,
+                    totalBlogs: res.data.totalBlogs || 0,
+                    totalSavedBlogs: res.data.totalSavedBlogs || 0,
+                    skills: res.data.skills || [],
+                    avatar: res.data.avatar || ""
+                })
+            }
+
         } catch (error) {
             console.error('Error updating profile ::', error?.message || error);
         }
     };
 
-    const handleLogout = () => {
-        console.log('Logging out...');
+    const handleLogout = async () => {
+        const res = await userApi.logoutUser()
+
+        if (res.success) {
+            navigate("/login")
+        }
     };
 
-    useEffect(()=>{
-       
+    const handleCameraClick = () => {
+        fileInputRef.current.click(); // triggers file picker
+    };
+
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0])
+        const file1 = event.target.files[0];
+        if (file1) {
+            setSaveButton(true)
+            console.log("Selected file:", file1);
+            setProfileData((prev) => ({ ...prev, avatar: URL.createObjectURL(file1) }))
+
+            // You can handle preview or upload logic here
+        }
+    };
+
+    const handleAvatarUpload = async ()=>{
+        const formData =  new FormData()
+
+        formData.set("newAvatar",file)
+        setLoading(true)
+        const res = await userApi.updateUserAvatar(formData)
+        setProfilePopup(false)
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: "instant"
+        })
         fetchUserProfile()
-        
-    },[])
+        fetchAllBlogs()
+
+    }, [])
+    useEffect(() => {
+
+        console.log("dfdsfdsfsddsgsdfgdfssssssssssssssssssss = ", profileData)
+
+    }, [profileData])
 
     // Check if profile is incomplete
-    const isProfileIncomplete = !profileData.bio || !profileData.location || profileData.skills.length === 0;
+    const isProfileIncomplete = !profileData.bio || !profileData.location || skills.length === 0;
 
     return (
-        <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-20'>
+        <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-0'>
             {/* Cover Photo */}
             <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4 rounded-md py-3 px-x">
-                <img 
+                <img
                     src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=400&fit=crop"
                     alt="Cover"
-                    className="w-full h-auto rounded-md" 
+                    className="w-full h-auto rounded-md"
                 />
             </section>
 
+            {
+                profilePopup &&
+
+                <div className="w-screen h-screen bg-transparent backdrop-blur-sm fixed inset-0 z-10 flex justify-center items-center">
+                    <div className="w-[95%] md:w-[30%] h-[45%] bg-gray-900 rounded-xl shadow-lg flex flex-col justify-center items-center gap-4 relative">
+
+                        {/* Profile Picture */}
+                        <div className="border-2 border-gray-700 w-[8rem] h-[8rem] bg-gray-800 rounded-full flex justify-center items-center overflow-hidden">
+                            <img
+                                className="w-full h-full object-cover rounded-full"
+                                src={profileData.avatar || "https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg"}
+                                alt="Profile"
+                            />
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="flex gap-4 mt-4">
+                            <button
+                                onClick={handleCameraClick}
+                                className="px-5 py-2 bg-gray-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
+                                <Camera size={20} />
+                            </button>
+                            <button className="px-5 py-2 bg-gray-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
+                                <Trash2 size={20} />
+                            </button>
+
+                            {
+                                saveButton &&
+                                <button
+                                onClick={handleAvatarUpload}
+                                className="px-5 py-2 bg-green-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
+                                    {
+                                        loading && 
+                                        <SpinLoader/>
+
+                                        ||
+
+                                    <Save size={20} />
+
+                                    }
+                                </button>
+
+                            }
+                        </div>
+
+                        {/* Optional Close Button */}
+                        <button
+                            className="absolute top-3 right-4 text-gray-400 hover:text-gray-200 text-xl font-bold transition-all duration-150"
+                            onClick={() => setProfilePopup(false)} // if you have a state to close modal
+                        >
+                            ×
+                        </button>
+                    </div>
+
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="hidden"
+                    />
+                </div>
+
+            }
+
             {/* User Info */}
-            <section className="w-full md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto -mt-16 rounded-bl-2xl rounded-br-2xl bg-gradient-to-br from-[#1e293b] to-[#1e293b]/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
+            <section className="w-full md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-16 rounded-bl-0 rounded-br-0   md:rounded-bl-2xl md:rounded-br-2xl bg-gradient-to-br from-[#1e293b] to-[#1e293b]/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
+
+
                 <div className="p-6 md:p-8">
                     {/* Incomplete Profile Banner */}
                     {!editMode && isProfileIncomplete && (
@@ -200,7 +370,7 @@ function ProfilePage() {
                             <div className="relative group">
                                 <div className="w-32 h-32 rounded-[50%] overflow-hidden border-4 border-slate-800 shadow-xl relative">
                                     <img
-                                        src={userAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop'}
+                                        src={profileData?.avatar || "https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg"}
                                         alt="Profile"
                                         className="w-full h-full object-cover transition-transform rounded-[50%] duration-300 group-hover:scale-110"
                                     />
@@ -212,7 +382,9 @@ function ProfilePage() {
                                 </div>
 
                                 {!editMode && (
-                                    <button className="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-500 to-purple-600 p-2.5 rounded-xl text-white shadow-lg hover:shadow-xl transition-all hover:scale-110">
+                                    <button
+                                        onClick={() => { setProfilePopup(true) }}
+                                        className="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-500 to-purple-600 p-2.5 rounded-xl text-white shadow-lg hover:shadow-xl transition-all hover:scale-110">
                                         <ExternalLink size={18} />
                                     </button>
                                 )}
@@ -223,13 +395,13 @@ function ProfilePage() {
                                     <input
                                         name='fullName'
                                         className="text-2xl md:text-3xl font-bold text-white mb-2 bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none w-full"
-                                        value={profileData.name}
+                                        value={profileData.fullName}
                                         onChange={handleProfileDataChange}
                                         placeholder="Your Name"
 
                                     />
                                 ) : (
-                                    <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{profileData.name}</h1>
+                                    <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{profileData.fullName}</h1>
                                 )}
 
                                 {editMode ? (
@@ -314,12 +486,12 @@ function ProfilePage() {
 
                                 {/* Social Links */}
                                 {editMode ? (
-                                    <div className="mt-4 space-y-2">
+                                    <div className="mt-4 space-y-2 text-white">
                                         <div className="flex items-center gap-2">
                                             <FaGithub size={18} className="text-slate-400" />
                                             <   input
                                                 name='githubUrl'
-                                                className="text-sm bg-slate-800/50 px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none flex-1"
+                                                className="text-sm bg-slate-800/50 text-white px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none flex-1"
                                                 value={profileData.githubUrl}
                                                 onChange={handleProfileDataChange}
                                                 placeholder="GitHub profile URL"
@@ -328,7 +500,7 @@ function ProfilePage() {
                                         <div className="flex items-center gap-2">
                                             <FaTwitter size={18} className="text-slate-400" />
                                             <input
-                                                    name='twitterUrl'
+                                                name='twitterUrl'
                                                 className="text-sm bg-slate-800/50 px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none flex-1"
                                                 value={profileData.twitterUrl}
                                                 onChange={handleProfileDataChange}
@@ -449,13 +621,13 @@ function ProfilePage() {
                         </div>
                     </div>
 
-                    {/* profileData.skills Section */}
+                    {/* skills Section */}
                     <div className="mt-8">
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-semibold text-white">profileData.skills & Expertise</h2>
+                            <h2 className="text-lg font-semibold text-white">Skills & Expertise</h2>
                             {editMode && (
                                 <button
-                                    onClick={() => setShowSkillInput(true)}
+                                    onClick={handleAddSkill}
                                     className="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1 text-sm"
                                 >
                                     <Plus size={16} />
@@ -492,9 +664,9 @@ function ProfilePage() {
                             </div>
                         )}
 
-                        {profileData.skills.length > 0 ? (
+                        {skills.length > 0 ? (
                             <div className="flex flex-wrap gap-2">
-                                {profileData.skills.map((skill, index) => (
+                                {skills.map((skill, index) => (
                                     <span
                                         key={index}
                                         className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 text-blue-300 text-sm px-4 py-2 rounded-full font-medium hover:scale-105 transition-transform cursor-default flex items-center gap-2"
@@ -515,7 +687,7 @@ function ProfilePage() {
                             <div className="text-center py-8 border-2 border-dashed border-slate-700 rounded-xl">
                                 <Code size={32} className="text-slate-600 mx-auto mb-2" />
                                 <p className="text-slate-500 text-sm">
-                                    {editMode ? "Click 'Add Skill' to showcase your expertise" : "No profileData.skills added yet"}
+                                    {editMode ? "Click 'Add Skill' to showcase your expertise" : "No skills added yet"}
                                 </p>
                             </div>
                         )}
@@ -526,15 +698,15 @@ function ProfilePage() {
                         <div className="text-center p-4 bg-gradient-to-br from-blue-500/10 to-transparent rounded-xl border border-blue-500/20 hover:scale-105 transition-transform cursor-pointer">
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <BookOpen size={20} className='text-blue-400' />
-                                <p className='text-2xl font-bold text-white'>0</p>
+                                <p className='text-2xl font-bold text-white'>{profileData?.totalBlogs || 0}</p>
                             </div>
-                            <p className="text-sm text-slate-400 font-medium">Posts</p>
+                            <p className="text-sm text-slate-400 font-medium">Blogs</p>
                         </div>
 
                         <div className="text-center p-4 bg-gradient-to-br from-purple-500/10 to-transparent rounded-xl border border-purple-500/20 hover:scale-105 transition-transform cursor-pointer">
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <Users size={20} className='text-purple-400' />
-                                <p className='text-2xl font-bold text-white'>0</p>
+                                <p className='text-2xl font-bold text-white'>{profileData?.totalFollowers || 0}</p>
                             </div>
                             <p className="text-sm text-slate-400 font-medium">Followers</p>
                         </div>
@@ -542,7 +714,7 @@ function ProfilePage() {
                         <div className="text-center p-4 bg-gradient-to-br from-green-500/10 to-transparent rounded-xl border border-green-500/20 hover:scale-105 transition-transform cursor-pointer">
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <User size={20} className='text-green-400' />
-                                <p className='text-2xl font-bold text-white'>0</p>
+                                <p className='text-2xl font-bold text-white'>{profileData?.totalFollowing || 0}</p>
                             </div>
                             <p className="text-sm text-slate-400 font-medium">Following</p>
                         </div>
@@ -559,7 +731,7 @@ function ProfilePage() {
             </section>
 
             {/* User Posts */}
-            <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4 bg-[#1f2935] px-3">
+            <section className="w-full md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4 bg-[#1f2935] px-3 mb-5">
                 <div className="flex justify-start gap-5 items-center border-[1px] border-b-gray-500 border-t-0 border-l-0 border-r-0">
                     <button
                         className={`text-sm md:text-[1.1rem] font-[500] text-[#9ca3ae] mb-0 pb-5 px-3 pt-3 h-full ${activeTab === "posts" ? "border-2 border-b-[#4083f2] border-t-0 border-r-0 border-l-0 text-[#4083f2]" : "border-none text-[#9ca3ae]"}`}
@@ -586,13 +758,47 @@ function ProfilePage() {
                     </button>
                 </div>
 
-                {activeTab === "posts" && (
+                {activeTab === "posts" && allBlogs.length > 0 &&
+
+
+                    <div className="w-full flex flex-col gap-3 mt-5">
+                        {
+                            allBlogs.map((blog) => (
+                                <div
+                                    key={blog._id}
+                                    className="w-full">
+                                    <BlogCard
+                                        key={blog._id}
+                                        title={blog.title}
+                                        imgUrl={blog.images?.length ? blog.images[0].url : ""}
+                                        description={blog.content}
+                                        likes={blog.totalLikes}
+                                        comments={blog.totalComments}
+                                        tags={blog.tags}
+                                        views={blog.views}
+                                        owner={blog.owner}
+                                        followStatus={{}}
+                                        setFollowStatus={() => { }}
+                                        createdAt={blog.createdAt}
+                                        bgColor={"#182230"}
+                                        isOwner={true}
+                                    />
+                                </div>
+                            ))
+                        }
+                    </div>
+
+                    ||
+
                     <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center py-8">
                         <BookOpen size={48} className="text-slate-600 mb-2" />
                         <h1 className="text-md md:text-xl text-gray-400">No posts yet</h1>
                         <p className="text-sm text-slate-500">Start writing your first blog post!</p>
                     </div>
-                )}
+
+
+
+                }
 
                 {activeTab === "saved" && (
                     <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center py-8">
@@ -608,6 +814,9 @@ function ProfilePage() {
                     </div>
                 )}
             </section>
+
+            <MobileNavBottom avatarUrl={profileData.avatar} />
+
         </div>
     );
 }

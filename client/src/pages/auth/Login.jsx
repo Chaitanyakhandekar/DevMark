@@ -33,6 +33,7 @@ export default function LoginPage({nextPage="/user/feed"}) {
         icon: 'success',
         title: 'Login Successful',
         text: 'Welcome back!',
+        timer:900
       });
       navigate(nextPage);
     }else{

@@ -33,7 +33,7 @@ function MobileNavBottom({avatarUrl}) {
           <div className=" text-white font-bold rounded-[50%] w-6 h-6 flex justify-center items-center text-sm">
             <img
             className='w-full h-full rounded-[50%]'
-            src={avatarUrl} alt="" />
+            src={avatarUrl || "https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg"} alt="" />
           </div>
         </div>
       </div>

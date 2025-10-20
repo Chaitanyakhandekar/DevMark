@@ -38,6 +38,7 @@ function CreateBlogPage() {
     const [tags,setTags] = useState([])
     const [error,setError] = useState(null)
     const [loading,setLoading] = useState(false)
+    const [userAvatar,setUserAvatar] = useState("https://res.cloudinary.com/dzgtlxfhv/image/upload/v1759152185/dfwvfrdrczaf96nfnar8.png")
 
     const [blogData,setBlogData] = useState({
         content: "",
@@ -71,6 +72,20 @@ function CreateBlogPage() {
             readingTime : 0
         })
     }
+
+     const fetchUserAvatar = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/avatar`, {
+        withCredentials: true
+      })
+
+      // Set the user avatar in the state
+      setUserAvatar(res.data.avatar)
+      console.log(res.data.avatar)
+    } catch (error) {
+      console.log("Error :: Fetching User Avatar :: ", error.message)
+    }
+  }
 
     const publishBlog = async () => {
         setLoading(true)
@@ -160,6 +175,7 @@ function CreateBlogPage() {
     },[blogData.content])
     
     useEffect(() => {
+        fetchUserAvatar()
         const html = document.documentElement
         html.classList.add("dark")
 
@@ -404,7 +420,7 @@ function CreateBlogPage() {
                 </div>
             </div>
 
-            <MobileNavBottom />
+            <MobileNavBottom avatarUrl={userAvatar}/>
         </div>
     )
 }

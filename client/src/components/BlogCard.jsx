@@ -49,7 +49,8 @@ function BlogCard({
     followStatus,
     setFollowStatus,
     createdAt,
-    bgColor="1f2936"
+    bgColor="1f2936",
+    isOwner=false
 
 }) {
 
@@ -85,7 +86,7 @@ function BlogCard({
                         className='max-h-[180px] max-w-[1000px] w-[95%] md:w-full h-auto fit-cover rounded-tr-md rounded-tl-md'
                         src={imgUrl} alt="" />
                 </div>
-                <div className="px-3 py-2 bg-[#19181e]/75 background-blur-md absolute top-5 right-5 rounded-xl">
+                <div className="px-3 py-2 bg-[#19181e]/75 background-blur-md absolute top-5 right-5 rounded-xl text-white">
                     8 min read
                 </div>
             </div>
@@ -111,10 +112,13 @@ function BlogCard({
                         <p className='text-sm text-gray-500'>{getTimeAgo(createdAt)} . {owner.totalFollowers} followers</p>
                     </div>
 
-                    <button
+                   {
+                    !isOwner && 
+                     <button
                         disabled={followStatus[owner._id]}
                         onClick={handleFollow}
                         className={`text-sm text-gray-500 cursor-pointer ml-5 ${followStatus[owner._id] ? "bg-gray-600" : "bg-blue-600"} rounded-md px-3 py-1 text-white`}>{followStatus[owner._id] ? "Following" : "Follow"}</button>
+                   }
 
                 </div>
 
