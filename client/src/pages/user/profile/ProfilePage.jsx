@@ -93,7 +93,7 @@ function ProfilePage() {
 
      const fetchAllBlogs = async()=>{
     try {
-      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/all?page=${1}&limit=${10}`,{
+      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/user?page=${1}&limit=${10}`,{
         withCredentials:true
       })
 
@@ -383,12 +383,12 @@ function ProfilePage() {
 
                                 {/* Social Links */}
                                 {editMode ? (
-                                    <div className="mt-4 space-y-2">
+                                    <div className="mt-4 space-y-2 text-white">
                                         <div className="flex items-center gap-2">
                                             <FaGithub size={18} className="text-slate-400" />
                                             <   input
                                                 name='githubUrl'
-                                                className="text-sm bg-slate-800/50 px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none flex-1"
+                                                className="text-sm bg-slate-800/50 text-white px-3 py-1 rounded-md border border-slate-600 focus:border-blue-500 focus:outline-none flex-1"
                                                 value={profileData.githubUrl}
                                                 onChange={handleProfileDataChange}
                                                 placeholder="GitHub profile URL"

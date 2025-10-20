@@ -387,20 +387,20 @@ const uploadAvatar = asyncHandler(async (req, res) => {
 
 })
 
-const deleteUserAvatar = asyncHandler(async (req,res)=>{
+const deleteUserAvatar = asyncHandler(async (req,res)=>{   // Header x-delete-only:"true"  if only deletion operation
 
-  if(!req.user.avatar || !req.user.public_id){
+  if(!req.user.avatar || !req.user.avatarPublicId){
     throw new ApiError(400,"No Avatar To Delete.")
   }
 
-  await deleteFileFromCloudinary(req.user.public_id)
+  await deleteFileFromCloudinary(req.user.avatarPublicId)
 
   const avatarDeleted = await User.findByIdAndUpdate(
     req.user._id,
     {
       $set:{
         avatar:"",
-        public_id:""
+        avatarPublicId:""
       }
     },
     {
@@ -438,6 +438,49 @@ const getUserAvatar = asyncHandler(async (req, res) => {
   return res.status(200).json({
     avatar: user.avatar
   })
+})
+
+const updateUserAvatar = asyncHandler(async (req,res)=>{
+  if(!req.file){
+    throw new ApiError(400,"Avatar Image is Required for Updating Avatar.")
+  }
+
+  const newAvatar = req.file.path
+
+  await deleteUserAvatar(req,res)
+
+    const uploadData = await uploadFileOnCloudinary(newAvatar)
+
+    if(uploadData.success===false){
+      throw new ApiError(500,uploadData.message)
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $set:{
+          avatar: uploadData.secure_url,
+          avatarPublicId: uploadData.public_id
+        }
+      },
+      {
+        new:true
+      }
+    ).select("-password -refreshToken")
+
+    if(!user){
+      throw new ApiError(500,"Server Error While Updating Avatar.")
+    }
+
+    return res
+        .status(200)
+        .json(
+          new ApiResponse(200,{
+            _id:user._id,
+            avatar:uploadData.secure_url
+          })
+        )
+
 })
 
 const getUserProfile = asyncHandler(async (req, res) => {
@@ -576,5 +619,6 @@ export {
   getUserAvatar,
   getUserProfile,
   updateUserProfile,
-  deleteUserAvatar
+  deleteUserAvatar,
+  updateUserAvatar
 }
