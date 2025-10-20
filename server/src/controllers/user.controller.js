@@ -441,6 +441,7 @@ const getUserAvatar = asyncHandler(async (req, res) => {
 })
 
 const updateUserAvatar = asyncHandler(async (req,res)=>{
+  console.log("Avatar :",req.file)
   if(!req.file){
     throw new ApiError(400,"Avatar Image is Required for Updating Avatar.")
   }

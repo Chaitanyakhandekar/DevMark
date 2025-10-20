@@ -116,6 +116,38 @@ class UserApi {
         }
     }
 
+    async updateUserAvatar(data){
+        try {
+            const res = await axios.patch(`
+                    ${this.baseUrl}/users/avatar
+                `,
+                data,
+                {
+                    withCredentials:true,
+                    headers:{
+                        "Content-Type":"multipart/form-data"
+                    }
+                }
+            )
+
+            if(!res.data.success){
+                throw new Error("Update Avatar Failure.")
+            }
+
+            console.log("Avatar Update ",res.data)
+
+            return {
+                success:true,
+                data:res.data
+            }
+        } catch (error) {
+            return {
+                success:false,
+                error:error.message
+            }
+        }
+    }
+
 }
 
 export const userApi = new UserApi();

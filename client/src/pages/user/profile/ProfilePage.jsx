@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Search,
     Bell,
@@ -47,7 +47,8 @@ import {
     Check,
     Camera,
     AlertCircle,
-    Delete
+    Delete,
+    Save
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 import { userApi } from '../../../api/user.api';
@@ -55,11 +56,14 @@ import MobileNavBottom from '../../../components/MobileNavBottom';
 import BlogCard from '../../../components/BlogCard';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import SpinLoader from '../../../components/SpinLoader';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState("posts");
     const [allBlogs, setAllBlogs] = useState([]);
     const [userAvatar, setUserAvatar] = useState("");
+    const [file, setFile] = useState(null)
+    const [saveButton, setSaveButton] = useState(false)
 
     const [profileData, setProfileData] = useState({
         name: "",
@@ -87,8 +91,10 @@ function ProfilePage() {
     const [newSkill, setNewSkill] = useState("");
     const [showSkillInput, setShowSkillInput] = useState(false);
     const [skills, setSkills] = useState([])
-    const [profilePopup, setProfilePopup] = useState(true)
+    const [loading,setLoading] = useState(false)
+    const [profilePopup, setProfilePopup] = useState(false)
     const navigate = useNavigate()
+    const fileInputRef = useRef(null);
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -213,6 +219,32 @@ function ProfilePage() {
         }
     };
 
+    const handleCameraClick = () => {
+        fileInputRef.current.click(); // triggers file picker
+    };
+
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0])
+        const file1 = event.target.files[0];
+        if (file1) {
+            setSaveButton(true)
+            console.log("Selected file:", file1);
+            setProfileData((prev) => ({ ...prev, avatar: URL.createObjectURL(file1) }))
+
+            // You can handle preview or upload logic here
+        }
+    };
+
+    const handleAvatarUpload = async ()=>{
+        const formData =  new FormData()
+
+        formData.set("newAvatar",file)
+        setLoading(true)
+        const res = await userApi.updateUserAvatar(formData)
+        setProfilePopup(false)
+        setLoading(false)
+    }
+
     useEffect(() => {
         window.scrollTo({
             top: 0,
@@ -252,19 +284,39 @@ function ProfilePage() {
                         <div className="border-2 border-gray-700 w-[8rem] h-[8rem] bg-gray-800 rounded-full flex justify-center items-center overflow-hidden">
                             <img
                                 className="w-full h-full object-cover rounded-full"
-                                src={profileData.avatar}
+                                src={profileData.avatar || "https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg"}
                                 alt="Profile"
                             />
                         </div>
 
                         {/* Buttons */}
                         <div className="flex gap-4 mt-4">
-                            <button className="px-5 py-2 bg-gray-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
-                                <Camera size={20}/>
+                            <button
+                                onClick={handleCameraClick}
+                                className="px-5 py-2 bg-gray-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
+                                <Camera size={20} />
                             </button>
                             <button className="px-5 py-2 bg-gray-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
-                                <Trash2 size={20}/>
+                                <Trash2 size={20} />
                             </button>
+
+                            {
+                                saveButton &&
+                                <button
+                                onClick={handleAvatarUpload}
+                                className="px-5 py-2 bg-green-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
+                                    {
+                                        loading && 
+                                        <SpinLoader/>
+
+                                        ||
+
+                                    <Save size={20} />
+
+                                    }
+                                </button>
+
+                            }
                         </div>
 
                         {/* Optional Close Button */}
@@ -275,6 +327,14 @@ function ProfilePage() {
                             ×
                         </button>
                     </div>
+
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="hidden"
+                    />
                 </div>
 
             }
@@ -323,8 +383,8 @@ function ProfilePage() {
 
                                 {!editMode && (
                                     <button
-                                    onClick={()=>{setProfilePopup(true)}}
-                                    className="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-500 to-purple-600 p-2.5 rounded-xl text-white shadow-lg hover:shadow-xl transition-all hover:scale-110">
+                                        onClick={() => { setProfilePopup(true) }}
+                                        className="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-500 to-purple-600 p-2.5 rounded-xl text-white shadow-lg hover:shadow-xl transition-all hover:scale-110">
                                         <ExternalLink size={18} />
                                     </button>
                                 )}
