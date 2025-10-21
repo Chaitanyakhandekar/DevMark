@@ -277,7 +277,7 @@ function MainFeed() {
 
 
       {/* Main Content */}
-      <main className='border-1 w-full flex justify-center items-start gap-3 relative'>
+      <main className='border-1 w-full min-h-screen flex justify-center items-start gap-3 relative'>
 
         {/* Section 1 Left Sidebar*/}
         <section className='hidden sm:hidden md:block border-1 border-blue-700 text-black dark:text-white md:flex md:flex-col md:gap-5 md:py-3 sticky top-20'>

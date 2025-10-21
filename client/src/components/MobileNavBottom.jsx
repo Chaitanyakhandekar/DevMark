@@ -17,7 +17,10 @@ function MobileNavBottom({avatarUrl}) {
         <Home
         onClick={()=>{handleNavigate("/user/feed")}}
         size={20} className='cursor-pointer hover:text-white' />
-        <Search size={20} className='cursor-pointer hover:text-white' />
+        <Search
+        onClick={()=>{handleNavigate("/user/search")}}
+        size={20}
+        className='cursor-pointer hover:text-white' />
         <div
         onClick={()=>{handleNavigate("/user/blogs/create")}}
         className="p-1 bg-gradient-to-r from-[#4777f4] to-[#9035ea] rounded-[50%] text-white flex justify-center items-center">
