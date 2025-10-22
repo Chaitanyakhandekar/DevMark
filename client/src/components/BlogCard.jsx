@@ -147,8 +147,8 @@ function BlogCard({
                             {comments}
                         </div>
                         <div className="text-gray-500 flex items-center gap-2">
-                            <Share2 size={19} className='text-gray-500' />
-                            180
+                            <Bookmark size={19} className='text-gray-500' />
+                            
                         </div>
                     </div>
 
