@@ -7,7 +7,7 @@ const commentSchema = new Schema({
     ref: "Blog",
     required: true
   },
-  user: {
+  owner: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true
@@ -21,6 +21,10 @@ const commentSchema = new Schema({
     type: String,
     required: true
   },
+  likes:{
+    type:Number,
+    default:0
+  }
 }, {timestamps: true});
 
 export const Comment = mongoose.model("Comment", commentSchema);
