@@ -763,7 +763,7 @@ function ProfilePage() {
                 {activeTab === "posts" && allBlogs.length > 0 &&
 
 
-                    <div className="w-full flex flex-col gap-3 mt-5">
+                    <div className="w-full flex flex-col gap-3 mt-5 ">
                         {
                             allBlogs.map((blog) => (
                                 <div

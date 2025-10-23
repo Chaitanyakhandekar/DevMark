@@ -19,6 +19,10 @@ import {
   ArrowUpDown
 } from 'lucide-react';
 import MobileNavBottom from '../../../components/MobileNavBottom';
+import { userApi } from '../../../api/user.api';
+import BlogCard from '../../../components/BlogCard';
+import axios from 'axios';
+import ProfileCard from '../../../components/ProfileCard';
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,6 +34,8 @@ const SearchPage = () => {
   const [searchResults, setSearchResults] = useState({ blogs: [], users: [] });
   const [loading, setLoading] = useState(false);
   const searchInputRef = useRef(null);
+  const [followStatus, setFollowStatus] = useState({});
+
 
   const mockBlogs = [
     {
@@ -157,7 +163,7 @@ const SearchPage = () => {
 
     setTimeout(() => {
       const query = searchQuery.toLowerCase();
-      
+
       const filteredBlogs = mockBlogs.filter(blog =>
         blog.title.toLowerCase().includes(query) ||
         blog.content.toLowerCase().includes(query) ||
@@ -181,16 +187,16 @@ const SearchPage = () => {
     setSearchResults({ blogs: [], users: [] });
   };
 
-  useEffect(() => {
-    if (searchQuery) {
-      const timer = setTimeout(() => {
-        performSearch();
-      }, 400);
-      return () => clearTimeout(timer);
-    } else {
-      setSearchResults({ blogs: [], users: [] });
-    }
-  }, [searchQuery]);
+  // useEffect(() => {
+  //   if (searchQuery) {
+  //     const timer = setTimeout(() => {
+  //       performSearch();
+  //     }, 400);
+  //     return () => clearTimeout(timer);
+  //   } else {
+  //     setSearchResults({ blogs: [], users: [] });
+  //   }
+  // }, [searchQuery]);
 
   const getTotalResults = () => {
     return searchResults.blogs.length + searchResults.users.length;
@@ -201,6 +207,48 @@ const SearchPage = () => {
     if (activeTab === 'users') return searchResults.users;
     return [...searchResults.blogs, ...searchResults.users];
   };
+
+  const loadFollowStatus = (blogs) => {
+    blogs.forEach((blog) => {
+      setFollowStatus((prev) => {
+        return {
+          ...prev,
+          [blog.owner._id]: blog.owner.isFollowed,
+        };
+      });
+    });
+
+    console.log("Follow Status = ", followStatus);
+  };
+
+
+  const fetchResult = async () => {
+    try {
+
+      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/search?searchQuery=${searchQuery}`, {
+        withCredentials: true
+      }
+      )
+
+      console.log("Result for Search =========== ", res.data.data.users)
+      console.log("Result for Search =========== ", res.data.data.blogs)
+
+      setSearchResults({
+        blogs: res.data.data.blogs,
+        users: res.data.data.users
+      })
+
+      loadFollowStatus(res.data.data.blogs);
+
+    } catch (error) {
+      console.log("Error While Fetching Results.")
+    }
+  }
+
+
+  useEffect(() => {
+    fetchResult()
+  }, [searchQuery])
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-[#111826]' : 'bg-[#f4f2ee]'}`}>
@@ -215,9 +263,8 @@ const SearchPage = () => {
 
         <div className="flex-1 max-w-2xl">
           <div
-            className={`flex w-full text-gray-400 ${
-              searchFocused ? 'border-2 border-blue-600' : 'border border-gray-600'
-            } px-3 py-2 rounded-lg gap-2 bg-[#111826] transition-all`}
+            className={`flex w-full text-gray-400 ${searchFocused ? 'border-2 border-blue-600' : 'border border-gray-600'
+              } px-3 py-2 rounded-lg gap-2 bg-[#111826] transition-all`}
           >
             <Search size={20} />
             <input
@@ -269,9 +316,8 @@ const SearchPage = () => {
 
           <div
             onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-            className={`flex items-center gap-2 hover:bg-gray-700 ${
-              isProfileMenuOpen ? 'bg-gray-700' : ''
-            } px-2 py-1 rounded-lg cursor-pointer transition-colors`}
+            className={`flex items-center gap-2 hover:bg-gray-700 ${isProfileMenuOpen ? 'bg-gray-700' : ''
+              } px-2 py-1 rounded-lg cursor-pointer transition-colors`}
           >
             <div className="w-9 h-9 rounded-full bg-gradient-to-r from-[#4777f4] to-[#9035ea] flex items-center justify-center text-white font-bold text-sm">
               JD
@@ -312,45 +358,42 @@ const SearchPage = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setActiveTab('all')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      activeTab === 'all'
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === 'all'
                         ? 'bg-blue-500 text-white'
                         : isDark
-                        ? 'text-gray-300 hover:bg-gray-700'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
+                          ? 'text-gray-300 hover:bg-gray-700'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
                   >
                     All ({getTotalResults()})
                   </button>
                   <button
                     onClick={() => setActiveTab('blogs')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                      activeTab === 'blogs'
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === 'blogs'
                         ? 'bg-blue-500 text-white'
                         : isDark
-                        ? 'text-gray-300 hover:bg-gray-700'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
+                          ? 'text-gray-300 hover:bg-gray-700'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
                   >
                     <BookOpen size={16} />
                     Blogs ({searchResults.blogs.length})
                   </button>
                   <button
                     onClick={() => setActiveTab('users')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                      activeTab === 'users'
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === 'users'
                         ? 'bg-blue-500 text-white'
                         : isDark
-                        ? 'text-gray-300 hover:bg-gray-700'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
+                          ? 'text-gray-300 hover:bg-gray-700'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
                   >
                     <Users size={16} />
                     Users ({searchResults.users.length})
                   </button>
                 </div>
 
-              
+
               </div>
             </div>
 
@@ -371,38 +414,16 @@ const SearchPage = () => {
                     )}
                     {searchResults.users.map((user) => (
                       <div
-                        key={user.id}
+                        key={user._id}
                         className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-5 hover:shadow-xl transition-shadow cursor-pointer`}
                       >
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-start gap-4">
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#4777f4] to-[#9035ea] flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-                              {user.avatar}
-                            </div>
-                            <div>
-                              <h3 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'} hover:text-blue-500`}>
-                                {user.name}
-                              </h3>
-                              <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'} mb-2`}>
-                                {user.role}
-                              </p>
-                              <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'} mb-3`}>
-                                {user.bio}
-                              </p>
-                              <div className="flex items-center gap-4 text-sm">
-                                <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>
-                                  {user.followers} followers
-                                </span>
-                                <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>
-                                  {user.blogs} blogs
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          <button className="px-4 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors font-medium">
-                            Follow
-                          </button>
-                        </div>
+                        <ProfileCard
+                          user={user}
+                          isDark={isDark}
+                          followStatus={followStatus}
+                          setFollowStatus={setFollowStatus}
+                          isFollowed1={user.isFollowed}
+                        />
                       </div>
                     ))}
                   </>
@@ -418,66 +439,22 @@ const SearchPage = () => {
                     )}
                     {searchResults.blogs.map((blog) => (
                       <div
-                        key={blog.id}
-                        className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer`}
-                      >
-                        <div className="flex flex-col md:flex-row">
-                          <div className="md:w-72 h-48 md:h-auto flex-shrink-0">
-                            <img
-                              src={blog.image}
-                              alt={blog.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1 p-5">
-                            <div className="flex items-center gap-3 mb-3">
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#4777f4] to-[#9035ea] flex items-center justify-center text-white font-bold text-sm">
-                                {blog.author.avatar}
-                              </div>
-                              <div>
-                                <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                  {blog.author.name}
-                                </p>
-                                <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                                  {blog.author.role}
-                                </p>
-                              </div>
-                              <span className={`ml-auto text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                                {blog.createdAt}
-                              </span>
-                            </div>
-                            <h2 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'} hover:text-blue-500`}>
-                              {blog.title}
-                            </h2>
-                            <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm mb-4 line-clamp-2`}>
-                              {blog.content}
-                            </p>
-                            <div className="flex flex-wrap gap-2 mb-4">
-                              {blog.tags.map((tag, idx) => (
-                                <span
-                                  key={idx}
-                                  className={`px-3 py-1 ${isDark ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'} rounded-full text-xs font-medium`}
-                                >
-                                  #{tag}
-                                </span>
-                              ))}
-                            </div>
-                            <div className="flex items-center gap-5 text-sm">
-                              <div className="flex items-center gap-1.5 hover:text-blue-500 transition-colors">
-                                <Heart size={16} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
-                                <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>{blog.likes}</span>
-                              </div>
-                              <div className="flex items-center gap-1.5 hover:text-blue-500 transition-colors">
-                                <MessageCircle size={16} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
-                                <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>{blog.comments}</span>
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                <Eye size={16} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
-                                <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>{blog.views}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        key={blog._id}
+                        className="w-full">
+                        <BlogCard
+                          key={blog._id}
+                          title={blog.title}
+                          imgUrl={blog.images?.length ? blog.images[0].url : ""}
+                          description={blog.content}
+                          likes={blog.totalLikes}
+                          comments={blog.totalComments}
+                          tags={blog.tags}
+                          views={blog.views}
+                          owner={blog.owner}
+                          followStatus={followStatus}
+                          setFollowStatus={setFollowStatus}
+                          createdAt={blog.createdAt}
+                        />
                       </div>
                     ))}
                   </>
@@ -517,7 +494,7 @@ const SearchPage = () => {
         )}
       </main>
 
-      <MobileNavBottom fixed={true}/>
+      <MobileNavBottom fixed={true} />
     </div>
   );
 };

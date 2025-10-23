@@ -512,6 +512,7 @@ const SearchBlogsAndUsers = asyncHandler(async (req, res) => {
             {
               $project: {
                 username: 1,
+                fullName:1,
                 avatar: 1,
                 totalFollowers: 1,
                 position:1
@@ -565,6 +566,7 @@ const SearchBlogsAndUsers = asyncHandler(async (req, res) => {
           images: 1,
           totalLikes: 1,
           totalComments: 1,
+          views:1,
           status: 1,
           createdAt: 1,
         },
