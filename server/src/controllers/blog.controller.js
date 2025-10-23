@@ -193,7 +193,9 @@ const getAllBlogs = asyncHandler(async (req, res) => {
 
   const userId = new mongoose.Types.ObjectId(req.user._id);
 
-  const totalBlogs = await Blog.countDocuments();
+  const totalBlogs = await Blog.countDocuments({
+    status:"published"
+  });
 
   const blogs = await Blog.aggregate([
     {
@@ -271,6 +273,7 @@ const getAllBlogs = asyncHandler(async (req, res) => {
     },
   ]);
 
+ 
   if (!blogs.length) {
     throw new ApiError(404, "No blogs found");
   }

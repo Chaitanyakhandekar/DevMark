@@ -250,6 +250,8 @@ function ProfilePage() {
             top: 0,
             behavior: "instant"
         })
+
+        document.documentElement.classList.add("dark")
         fetchUserProfile()
         fetchAllBlogs()
 
@@ -780,7 +782,7 @@ function ProfilePage() {
                                         followStatus={{}}
                                         setFollowStatus={() => { }}
                                         createdAt={blog.createdAt}
-                                        bgColor={"#182230"}
+                                        // bgColor={"#182230"}
                                         isOwner={true}
                                     />
                                 </div>

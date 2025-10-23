@@ -18,6 +18,7 @@ import {
   BookOpen,
   ArrowUpDown
 } from 'lucide-react';
+import MobileNavBottom from '../../../components/MobileNavBottom';
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -515,6 +516,8 @@ const SearchPage = () => {
           </div>
         )}
       </main>
+
+      <MobileNavBottom fixed={true}/>
     </div>
   );
 };
