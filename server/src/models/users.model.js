@@ -54,6 +54,9 @@ const userSchema = new Schema({
         default:"",
         maxLength:160
     },
+    position:{
+        type:String
+    },
     skills:[
         String
     ],

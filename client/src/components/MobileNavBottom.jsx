@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-function MobileNavBottom({avatarUrl}) {
+function MobileNavBottom({avatarUrl, fixed=false}) {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -13,11 +13,17 @@ function MobileNavBottom({avatarUrl}) {
   }
 
   return (
-    <div className="md:hidden border-[0.1px] border-t-gray-700 border-r-0 border-l-0 border-b-0 w-full h-16 bg-[#1f2936]/70 backdrop-blur-md sticky bottom-0 left-0 z-50 flex items-center justify-around text-gray-400">
+    <div
+     className={`md:hidden border-[0.1px] border-t-gray-700 border-r-0 border-l-0 border-b-0 w-full h-16 bg-[#1f2936]/70 backdrop-blur-md ${fixed ? "fixed bottom-0" : "sticky bottom-0 left-0"} z-50 flex items-center justify-around text-gray-400`}
+    
+     >
         <Home
         onClick={()=>{handleNavigate("/user/feed")}}
         size={20} className='cursor-pointer hover:text-white' />
-        <Search size={20} className='cursor-pointer hover:text-white' />
+        <Search
+        onClick={()=>{handleNavigate("/user/search")}}
+        size={20}
+        className='cursor-pointer hover:text-white' />
         <div
         onClick={()=>{handleNavigate("/user/blogs/create")}}
         className="p-1 bg-gradient-to-r from-[#4777f4] to-[#9035ea] rounded-[50%] text-white flex justify-center items-center">

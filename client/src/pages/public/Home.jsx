@@ -78,7 +78,7 @@ const Home = () => {
         <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>About</p>
         <div className="w-full flex flex-col items-start  gap-5 px-3">
           <Link to="/login" className="">Sign in</Link>
-          <Link to="#" className="text-center font-bold w-[95%] bg-gradient-to-r mb-2 py-3 from-[#4777f4] to-[#9035ea] text-white rounded-md px-4 py-2">Get Started</Link>
+          <Link to="/user/feed" className="text-center font-bold w-[95%] bg-gradient-to-r mb-2 py-3 from-[#4777f4] to-[#9035ea] text-white rounded-md px-4 py-2">Get Started</Link>
         </div>
       </div>
     }
