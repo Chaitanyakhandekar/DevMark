@@ -7,19 +7,19 @@ import {
     Send,
     X
 } from 'lucide-react';
+import { useEffect } from 'react';
+import axios from 'axios'
+import { commentApi } from '../api/comment.api';
 
 // Mock axios and getTimeAgo for demo
-const axios = {
-    post: async (url, data, config) => {
-        return { data: { success: true } }
-    }
-};
+
 
 const getTimeAgo = (date) => {
     return "2 days ago";
 };
 
 function BlogCard({
+    id,
     title,
     description,
     imgUrl,
@@ -112,6 +112,17 @@ function BlogCard({
             setCommentText('');
         }
     };
+
+    const handleCommentsFetch = async ()=>{
+        setShowComments(!showComments)
+        try {
+            const res = await commentApi.getBlogComments(id)
+        } catch (error) {
+            console.log("Fetch Comments :: ERROR :: ",error.message)
+        }
+    }
+
+   
 
     const shouldShowReadMore = description && description.length > 150;
 
@@ -214,7 +225,9 @@ function BlogCard({
                             <span className="text-sm font-medium">{likes}</span>
                         </button>
                         <button 
-                            onClick={() => setShowComments(!showComments)}
+                            onClick={() => {
+                                handleCommentsFetch()
+                            }}
                             className={`flex items-center gap-1.5 transition-colors ${
                                 showComments 
                                     ? 'text-blue-500 dark:text-blue-400' 

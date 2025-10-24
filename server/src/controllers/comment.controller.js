@@ -52,6 +52,20 @@ const getAllBlogComments = asyncHandler(async (req,res)=>{
         throw new ApiError(400,"Valid Blog Id Required.")
     }
 
+    const totalComments = await Comment.countDocuments(
+        {
+            blog:id
+        }
+    )
+
+    if(totalComments===0){
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200,[],"No Comments On Blog Yet.")
+            )
+    }
+
     const comments = await Comment.aggregate([
         {
             $match:{
