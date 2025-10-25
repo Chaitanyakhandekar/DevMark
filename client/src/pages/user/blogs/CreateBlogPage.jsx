@@ -24,7 +24,8 @@ import {
   X,
   Plus,
   Type,
-  FileText
+  FileText,
+  Loader
 } from 'lucide-react';
 import MDEditor from "@uiw/react-md-editor"
 import rehypeHighlights from "rehype-highlight"
@@ -239,7 +240,7 @@ function CreateBlogPage() {
                         onClick={publishBlog}
                         disabled={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length}
                         title={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length ? "Title and content are required to publish" : "Publish Blog"}
-                        className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-semibold rounded-md px-3 text-lg py-1 transition-all duration-200 hover:shadow-lg">{loading ? <SpinLoader/> : "Publish"}</button>
+                        className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-semibold rounded-md px-3 text-lg py-1 transition-all duration-200 hover:shadow-lg">{loading ? <Loader size={16} className="animate-spin" /> : "Publish"}</button>
                     </div>
                 </div>
             </nav>
