@@ -60,6 +60,32 @@ const toggleBlogLike = asyncHandler(async (req,res)=>{
         )
 })
 
+
+const isLikedToBlog = asyncHandler(async(req,res)=>{
+    const blogId = req.params.id
+
+    if(!blogId || !mongoose.Types.ObjectId.isValid(blogId)){
+        throw new ApiError(400,"Invalid Blog Id.")
+    }
+
+    const like = await Like.findOne({
+        blog:blogId,
+        likedBy:req.user._id,
+        isLiked:true
+    })
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200,{
+                isLiked: like ? true : false
+            },
+            "Is Liked Check Successfully."
+        )
+        )
+})
+
 export {
-    toggleBlogLike
+    toggleBlogLike,
+    isLikedToBlog
 }
