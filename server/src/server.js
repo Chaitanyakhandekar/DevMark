@@ -29,6 +29,7 @@ import userRouter from "./routes/user.route.js";
 import blogRouter from "./routes/blog.route.js";
 import followerRouter from "./routes/follow.route.js";
 import commentRouter from "./routes/comment.route.js"
+import likeRouter from "./routes/like.route.js"
 
 server.use("/api/v1/followers" , followerRouter)
 
@@ -39,5 +40,7 @@ server.use("/api/v1/users" , userRouter)
 server.use("/api/v1/tests" , testRouter)
 
 server.use("/api/v1/comments" , commentRouter)
+
+server.use("/api/v1/likes" , likeRouter)
 
 export default server;

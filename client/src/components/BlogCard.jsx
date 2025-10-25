@@ -5,7 +5,8 @@ import {
     Bookmark,
     Eye,
     Send,
-    X
+    X,
+    Loader
 } from 'lucide-react';
 import { useEffect } from 'react';
 import axios from 'axios'
@@ -38,6 +39,7 @@ function BlogCard({
     const [commentText, setCommentText] = useState('');
     const [commentsList, setCommentsList] = useState([]);
     const [agoTime, setAgoTime] = useState(null)
+    const [loading, setLoading] = useState(false);
 
     const handleFollow = async () => {
         console.log(owner._id);
@@ -63,6 +65,7 @@ function BlogCard({
     };
 
     const handleCommentSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         if (commentText.trim()) {
             const newComment = {
@@ -90,6 +93,7 @@ function BlogCard({
             }
 
             setCommentText('');
+            setLoading(false);
         }
     };
 
@@ -265,7 +269,16 @@ function BlogCard({
                                         disabled={!commentText.trim()}
                                         className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors flex items-center gap-2"
                                     >
-                                        <Send size={16} />
+                                        {
+                                            loading && (
+                                                <Loader size={16} className="animate-spin" />
+                                            )
+                                            || (
+                                                <>
+                                                    <Send size={16} />
+                                                </>
+                                            )
+                                        }
                                     </button>
                                 </div>
                             </div>
@@ -307,7 +320,15 @@ function BlogCard({
                                         disabled={!commentText.trim()}
                                         className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors flex items-center gap-2"
                                     >
-                                        <Send size={16} />
+                                        {
+                                            loading && (
+                                                <Loader size={16} className="animate-spin" />
+                                            ) || (
+                                                <>
+                                                    <Send size={16} />
+                                                </>
+                                            )
+                                        }
                                     </button>
                                 </div>
                             </div>
