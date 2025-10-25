@@ -8,7 +8,9 @@ import { Like } from "../models/likes.model.js";
 
 
 const toggleBlogLike = asyncHandler(async (req,res)=>{
-    const blogId = req.params.id
+    const { blogId } = req.body
+
+    console.log("BLOGID = ",blogId)
 
     if(!blogId || !mongoose.Types.ObjectId.isValid(blogId)){
         throw new ApiError(400,"Invalid Blog ID.")
@@ -24,10 +26,6 @@ const toggleBlogLike = asyncHandler(async (req,res)=>{
             blog:blogId,
             likedBy:req.user._id
         })
-
-        if(!newLike){
-            throw new ApiError(500,"Server Error While Liking Blog.")
-        }
 
         const blog = await Blog.findByIdAndUpdate(
             blogId,
@@ -49,9 +47,27 @@ const toggleBlogLike = asyncHandler(async (req,res)=>{
             )
     }
 
+    
     isLikedBefore.isLiked = !isLikedBefore.isLiked
 
     await isLikedBefore.save({validateBeforeSave:false})
+
+    const blog = await Blog.findByIdAndUpdate(
+            blogId,
+            {
+                $inc:{
+                    totalLikes: isLikedBefore.isLiked ? 1 : -1
+                }
+            },
+            {
+                new:true
+            }
+        )
+
+        if(!blog){
+            throw new ApiError(500,"Server Error While Removing Like.")
+        }
+
 
     return res
         .status(200)

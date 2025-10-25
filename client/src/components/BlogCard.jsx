@@ -13,6 +13,7 @@ import axios from 'axios'
 import { commentApi } from '../api/comment.api';
 import { getTimeAgo } from '../services/timeAgo.service';
 import CommentCard from './CommentCard';
+import { likeApi } from '../api/like.api';
 
 // Mock axios and getTimeAgo for demo
 
@@ -34,12 +35,14 @@ function BlogCard({
     isOwner = false
 }) {
     const [isFollowed, setIsFollowed] = useState(owner.isFollowed);
+    const [isLiked,setIsLiked] = useState(false)
     const [isExpanded, setIsExpanded] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [commentsList, setCommentsList] = useState([]);
     const [agoTime, setAgoTime] = useState(null)
     const [loading, setLoading] = useState(false);
+    const [totalLikes,setTotalLikes] = useState(likes)
 
     const handleFollow = async () => {
         console.log(owner._id);
@@ -107,8 +110,28 @@ function BlogCard({
         }
     }
 
+    const isLikedToBlog = async ()=>{
+        const res=await likeApi.isLikedToBlog(id)
+        if(res.success){
+            setIsLiked(res.data.isLiked)
+            console.log(res.data.isLiked)
+        }
+    }
 
-    
+    const handleBlogLikeToggle = async () => {
+        console.log("blog Id = ",id)
+        const res = await likeApi.toggleBlogLike(id)
+        if(res.success){
+            setIsLiked(!isLiked)
+        }
+    }
+
+
+    useEffect(()=>{
+        isLikedToBlog()
+    },[])
+
+
 
 
 
@@ -207,8 +230,12 @@ function BlogCard({
                 {/* Stats */}
                 <div className="w-full border-t border-gray-200 dark:border-gray-700 pt-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <button className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors group">
-                            <Heart size={18} className='group-hover:fill-current' />
+                        <button className={`flex items-center gap-1.5 text-gray-500 dark:text-gray-400 ${isLiked ? 'text-red-500 border-none outline-none' : ''} transition-colors`}>
+                            <Heart
+                                onClick={handleBlogLikeToggle}
+                                size={18}
+                                className={` ${isLiked ? 'fill-red-500 text-red-500' : ''}`}
+                                />
                             <span className="text-sm font-medium">{likes}</span>
                         </button>
                         <button
