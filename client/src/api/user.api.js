@@ -6,6 +6,21 @@ class UserApi {
         this.baseUrl = import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV;
     }
 
+    
+    async signupUser(user) {
+        try {
+            const res = await axios.post(`${this.baseUrl}/users/register`, user)
+
+            return {
+                success: true,
+                data: res.data
+            };
+        } catch (error) {
+            console.log("Signup User :: Error :: ", error.message)
+            return error
+        }
+    }
+
     async loginUser(user) {
         try {
             const res = await axios
@@ -45,20 +60,6 @@ class UserApi {
             }
         } catch (error) {
             console.log("Logout User :: Error :: ", error.message)
-            return error
-        }
-    }
-
-    async signupUser(user) {
-        try {
-            const res = await axios.post(`${this.baseUrl}/users/register`, user)
-
-            return {
-                success: true,
-                data: res.data
-            };
-        } catch (error) {
-            console.log("Signup User :: Error :: ", error.message)
             return error
         }
     }

@@ -15,8 +15,36 @@ class CommentApi{
                     withCredentials:true
                 }
             )
-            console.log("Comments = ",res.data)
+            console.log("Comments = ",res.data.data)
+            return {
+                success:true,
+                data:res.data.data
+            }
             
+        } catch (error) {
+            return {
+                success:false,
+                message:error.message
+            }
+        }
+    }
+
+    async postComment(commentData){
+        try {
+            const res = await axios.post(
+                `${this.baseUrl}/comments/`,
+                 commentData,
+                 {
+                    withCredentials:true
+                 }
+            )
+
+            console.log(res.data)
+
+            return {
+                success:true,
+                data:res.data.data
+            }
         } catch (error) {
             return {
                 success:false,

@@ -25,7 +25,7 @@ const addComment = asyncHandler(async (req,res)=>{
         throw new ApiError(400,"Content Is Required For Adding Comment.")
     }
 
-    const newComment = await Comment.create({
+    let newComment = await Comment.create({
         blog:blogId,
         owner:req.user._id,
         content:content.trim()
@@ -35,6 +35,11 @@ const addComment = asyncHandler(async (req,res)=>{
         throw new ApiError(500,"Server Error While Adding Comment.")
     }
 
+    newComment = await newComment.populate("owner","username fullName avatar")
+
+    blog.totalComments += 1;
+    await blog.save({validateBeforeSave:false})
+    
     return res
         .status(201)
         .json(
@@ -73,6 +78,15 @@ const getAllBlogComments = asyncHandler(async (req,res)=>{
             }
         },
         {
+            $sort:{createdAt:-1},
+        },
+        {
+            $skip:skip
+        },
+        {
+            $limit:limit
+        },
+        {
             $lookup:{
                 from:"users",
                 localField:"owner",
@@ -98,7 +112,9 @@ const getAllBlogComments = asyncHandler(async (req,res)=>{
                 blogId:"$_blog",
                 owner:"$owner",
                 content:1,
-                likes:1
+                likes:1,
+                createdAt:1,
+                updatedAt:1
             }
         }
     ])
@@ -110,7 +126,15 @@ const getAllBlogComments = asyncHandler(async (req,res)=>{
     return res
         .status(200)
         .json(
-            new ApiResponse(200,comments,"Comments Fetched Successfully.")
+            new ApiResponse(200,{
+                comments,
+                totalComments,
+                totalPages:Math.ceil(totalComments / limit),
+                page,
+                limit,
+                hasNext: page < Math.ceil(totalComments / limit)
+                
+            },"Comments Fetched Successfully.")
         )
 })
 
