@@ -14,9 +14,10 @@ class SaveApi {
                     withCredentials:true
                 }
             )
+            console.log("Save Toggle API Response = ",response.data.data)
             return {
                 success:true,
-                data:response.data
+                data:response.data.data
             }
         } catch (error) {
             return {
@@ -35,9 +36,11 @@ class SaveApi {
                     withCredentials:true
                 }
             )
+
+            console.log("Save API Response = ",response.data.data)
             return {
                 success:true,
-                data:response.data
+                data:response.data.data
             }
         } catch (error) {
             return {

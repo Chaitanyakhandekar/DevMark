@@ -58,17 +58,32 @@ const isSavedToBlog = asyncHandler(async (req,res)=>{
 
     const isSaved = await Save.findOne({
         blog:blogId,
-        user:req.user._id
+        user:req.user._id,
+        isSaved:true
     })
 
     return res
         .status(200)
         .json(
-            new ApiResponse(200,isSaved,`${isSaved.isSaved ? "Blog is Saved." : "Blog is Not Saved."}`)
+            new ApiResponse(200,isSaved,`${isSaved ? "Blog is Saved." : "Blog is Not Saved."}`)
+        )
+})
+
+
+const getAllSavedBlogsOfUser = asyncHandler(async (req,res)=>{
+    const userId = req.user._id
+
+    const savedBlogs = await Save.find({user:userId}).populate("blog")
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200,savedBlogs,"Fetched All Saved Blogs Successfully.")
         )
 })
 
 export {
     toggleBlogSave,
-    isSavedToBlog
+    isSavedToBlog,
+    getAllSavedBlogsOfUser
 }

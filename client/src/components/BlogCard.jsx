@@ -14,6 +14,7 @@ import { commentApi } from '../api/comment.api';
 import { getTimeAgo } from '../services/timeAgo.service';
 import CommentCard from './CommentCard';
 import { likeApi } from '../api/like.api';
+import { saveApi } from '../api/save.api';
 
 // Mock axios and getTimeAgo for demo
 
@@ -43,6 +44,8 @@ function BlogCard({
     const [agoTime, setAgoTime] = useState(null)
     const [loading, setLoading] = useState(false);
     const [totalLikes,setTotalLikes] = useState(likes)
+    const [isSaved,setIsSaved] = useState(false)
+
 
     const handleFollow = async () => {
         console.log(owner._id);
@@ -128,9 +131,31 @@ function BlogCard({
         }
     }
 
+    const isSavedToBlog = async () => {
+        const res = await saveApi.isBlogSaved(id)
+        console.log("isSaved: ",res.data)
+        if (res.success) {
+            setIsSaved(res.data?.isSaved)
+        }
+    }
+
+    const handleToggleSave = async () => {
+        setIsSaved(!isSaved)
+        const res = await saveApi.toggleBlogSave(id)
+
+        if(res.success){
+            console.log("Save Toggle Success.")
+            setIsSaved(res.data.isSaved)
+        }
+        if (!res.success) {
+            console.log("Save Toggle Failed.")
+            setIsSaved(!isSaved)
+        }
+    }
 
     useEffect(()=>{
         isLikedToBlog()
+        isSavedToBlog()
     },[])
 
 
@@ -252,8 +277,10 @@ function BlogCard({
                             <MessageCircle size={18} />
                             <span className="text-sm font-medium">{comments}</span>
                         </button>
-                        <button className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors group">
-                            <Bookmark size={18} className='group-hover:fill-current' />
+                        <button
+                        onClick={handleToggleSave}
+                        className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors group">
+                            <Bookmark size={18} className={`group-hover:fill-current ${isSaved ? "fill-orange-300 text-orange-300" : ""}`} />
                         </button>
                     </div>
 
