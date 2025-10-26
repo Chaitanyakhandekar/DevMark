@@ -120,8 +120,10 @@ function BlogCard({
 
     const handleBlogLikeToggle = async () => {
         console.log("blog Id = ",id)
+        setIsLiked(!isLiked)
         const res = await likeApi.toggleBlogLike(id)
-        if(res.success){
+        if(!res.success){
+            console.log("Like Toggle Failed.")
             setIsLiked(!isLiked)
         }
     }

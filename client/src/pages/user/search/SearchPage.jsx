@@ -442,6 +442,7 @@ const SearchPage = () => {
                         key={blog._id}
                         className="w-full">
                         <BlogCard
+                          id={blog._id}
                           key={blog._id}
                           title={blog.title}
                           imgUrl={blog.images?.length ? blog.images[0].url : ""}
