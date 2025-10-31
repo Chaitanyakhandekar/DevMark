@@ -134,7 +134,7 @@ function BlogCard({
 
     const isSavedToBlog = async () => {
         const res = await saveApi.isBlogSaved(id)
-        console.log("isSaved: ",res.data)
+        console.log("isSaved: ",res)
         if (res.success) {
             setIsSaved(res.data?.isSaved)
         }

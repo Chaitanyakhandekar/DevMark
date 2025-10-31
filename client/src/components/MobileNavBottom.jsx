@@ -29,7 +29,9 @@ function MobileNavBottom({avatarUrl, fixed=false}) {
         className="p-1 bg-gradient-to-r from-[#4777f4] to-[#9035ea] rounded-[50%] text-white flex justify-center items-center">
           <Plus size={18} className='cursor-pointer hover:text-white' />
         </div>
-        <Bookmark size={20} className='cursor-pointer hover:text-white' />
+        <Bookmark
+        onClick={()=>handleNavigate("/user/saved-blogs")}
+        size={20} className='cursor-pointer hover:text-white' />
         <div
           onClick={() => {
             setIsProfileMenuOpen(!isProfileMenuOpen)

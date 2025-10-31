@@ -39,7 +39,7 @@ class SaveApi {
 
             console.log("Save API Response = ",response.data.data)
             return {
-                success:true,
+                success:response.data?.data?.isSaved ? true : false,
                 data:response.data.data
             }
         } catch (error) {
