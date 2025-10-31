@@ -113,7 +113,7 @@ const Home = () => {
         </div>
 
         <Link to="/login" className="hidden md:block rounded-md  text-black dark:text-white text-md md:text-lg lg:text-xl ">Sign in</Link>
-        <Link to="#" className="hidden md:block border-white rounded-md px-4 py-2 bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-sm font-bold  text-md md:text-lg lg:text-lg">Get Started</Link>
+        <Link to="/user/feed" className="hidden md:block border-white rounded-md px-4 py-2 bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-sm font-bold  text-md md:text-lg lg:text-lg">Get Started</Link>
 
         <div
         onClick={()=>{setMobileSidebar(!mobileSidebar)}}

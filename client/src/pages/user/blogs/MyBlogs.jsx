@@ -37,7 +37,7 @@ import {
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
-import {logout} from '../../../services/logout.service'
+import { logout } from '../../../services/logout.service'
 import BlogCard from '../../../components/BlogCard';
 import DefaultProfile from '../../../components/DefaultProfile';
 import ProfileMeta from '../../../components/ProfileMeta';
@@ -46,6 +46,7 @@ import EventMetaCard from '../../../components/feed page/EventMetaCard';
 import { useNavigate } from 'react-router-dom';
 import MobileNavBottom from '../../../components/MobileNavBottom';
 import axios from 'axios';
+import FeedSidebar from '../../../components/FeedSidebar';
 
 function MyBlogs() {
 
@@ -57,9 +58,9 @@ function MyBlogs() {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(4);
-  const [loading,setLoading] = useState(false)
-  const [userAvatar,setUserAvatar] = useState("")
-  const [followStatus,setFollowStatus] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [userAvatar, setUserAvatar] = useState("")
+  const [followStatus, setFollowStatus] = useState({})
   const navigate = useNavigate();
 
   const categories = [
@@ -101,43 +102,43 @@ function MyBlogs() {
 
 
 
-  const loadFollowStatus = (blogs)=>{
+  const loadFollowStatus = (blogs) => {
 
-    blogs.forEach((blog)=>{
+    blogs.forEach((blog) => {
       setFollowStatus(
-        (prev)=>{
+        (prev) => {
           return {
             ...prev,
-            [blog.owner._id]:blog.owner.isFollowed
+            [blog.owner._id]: blog.owner.isFollowed
           }
         }
       )
     })
 
-    console.log("Follow Status = ",followStatus)
+    console.log("Follow Status = ", followStatus)
 
   }
 
-  const fetchAllBlogs = async()=>{
+  const fetchAllBlogs = async () => {
     try {
       setLoading(true)
-      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/user?page=${page}&limit=${limit}`,{
-        withCredentials:true
+      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/user?page=${page}&limit=${limit}`, {
+        withCredentials: true
       })
 
-      console.log("blogs : ",res.data.data.blogs)
-  
+      console.log("blogs : ", res.data.data.blogs)
+
       setAllBlogs(res.data.data.blogs)
-      
+
       loadFollowStatus(res.data.data.blogs)
 
       setLoading(false)
 
-     
+
 
     } catch (error) {
       setLoading(false)
-      console.log("Error :: Fetching All Blogs :: ",error.message)
+      console.log("Error :: Fetching All Blogs :: ", error.message)
     }
   }
 
@@ -155,14 +156,14 @@ function MyBlogs() {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchAllBlogs()
     fetchUserAvatar()
-  },[])
+  }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchAllBlogs()
-  },[limit])
+  }, [limit])
 
   return (
     <div className="main-feed w-screen min-w-screen bg-[#f4f2ee] dark:bg-[#111826]">
@@ -230,10 +231,10 @@ function MyBlogs() {
           </div>
 
           <button
-          onClick = {()=>{
-            navigate("/user/blogs/create")
-          }}
-          className="text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] px-4 py-2 rounded-md">Write Blog</button>
+            onClick={() => {
+              navigate("/user/blogs/create")
+            }}
+            className="text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] px-4 py-2 rounded-md">Write Blog</button>
 
           <div
             onClick={() => {
@@ -243,18 +244,18 @@ function MyBlogs() {
             className={`flex items-center gap-2 hover:bg-gray-700 ${isProfileMenuOpen ? "bg-gray-700" : ""} px-2 py-1 rounded-md cursor-pointer`}>
             <div className=" text-white font-bold rounded-[50%] w-9 h-9 flex justify-center items-center">
               <img
-              className='w-full h-full rounded-[50%] object-cover'
-              src={userAvatar} alt="" />
+                className='w-full h-full rounded-[50%] object-cover'
+                src={userAvatar} alt="" />
             </div>
             <ChevronDown
-            className='arrow-down text-gray-400 cursor-pointer' size={20} />
+              className='arrow-down text-gray-400 cursor-pointer' size={20} />
           </div>
 
           {/* Dropdown Menu */}
           <div className={`${isProfileMenuOpen ? "block" : "hidden"}  bg-[#1f2936] cursor-pointer absolute right-0 bottom-[-8.9rem] text-white w-60 rounded-md flex flex-col gap-3 shadow-lg p-3`}>
             <div
-            onClick={()=>{navigate("/user/profile")}}
-            className='flex items-center gap-2'>
+              onClick={() => { navigate("/user/profile") }}
+              className='flex items-center gap-2'>
               <User size={20} />
               <h1>Profile</h1>
             </div>
@@ -267,8 +268,8 @@ function MyBlogs() {
             <div className='flex items-center gap-2 border-t border-gray-600 pt-2 cursor-pointer'>
               <LogOut className='text-red-500' size={20} />
               <button
-              onClick={()=>{logout(); navigate("/login")}}
-              className='text-red-500'>Logout</button>
+                onClick={() => { logout(); navigate("/login") }}
+                className='text-red-500'>Logout</button>
             </div>
           </div>
         </div>
@@ -285,24 +286,7 @@ function MyBlogs() {
 
           {/*Quick actions */}
 
-          <div className="w-60 border-[0.2px] border-gray-700 dark:bg-[#1f2936] sticky top-0 flex flex-col gap-3 pt-5 pb-7 px-3 rounded-md sticky top-2">
-            <h1 className='font-bold'>Quick Actions</h1>
-
-            <div
-            onClick={()=>{navigate("/user/blogs/create")}}
-            className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
-              <Pen size={19} />
-              <h1 className="">Write Blog</h1>
-            </div>
-            <div className="flex items-center gap-3 px-3 py-2 cursor-pointer bg-gray-700 rounded-md">
-              <BookOpen size={19} />
-              <h1 className="">My Blogs</h1>
-            </div>
-            <div className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
-              <Bookmark size={19} />
-              <h1 className="">Saved Blogs</h1>
-            </div>
-          </div>
+          <FeedSidebar />
 
         </section>
 
@@ -311,35 +295,35 @@ function MyBlogs() {
 
 
           <div className="w-full border-1 border-white text-white flex flex-col items-center gap-5 mt-5">
-            
+
             {
-              allBlogs.length!==0 && allBlogs.map((blog)=>(
-               <div
-                key={blog._id}
-               className="w-full">
-                 <BlogCard
-                 key={blog._id}
-                title={blog.title}
-                imgUrl={blog.images?.length? blog.images[0].url : ""}
-                description={blog.content}
-                likes={blog.totalLikes}
-                comments={blog.totalComments}
-                tags={blog.tags}
-                views={blog.views}
-                owner={blog.owner}
-                followStatus={followStatus}
-                setFollowStatus={setFollowStatus}
-                createdAt={blog.createdAt}
-                isOwner={true}
-                />
-               </div>
-            ))}
+              allBlogs.length !== 0 && allBlogs.map((blog) => (
+                <div
+                  key={blog._id}
+                  className="w-full">
+                  <BlogCard
+                    key={blog._id}
+                    title={blog.title}
+                    imgUrl={blog.images?.length ? blog.images[0].url : ""}
+                    description={blog.content}
+                    likes={blog.totalLikes}
+                    comments={blog.totalComments}
+                    tags={blog.tags}
+                    views={blog.views}
+                    owner={blog.owner}
+                    followStatus={followStatus}
+                    setFollowStatus={setFollowStatus}
+                    createdAt={blog.createdAt}
+                    isOwner={true}
+                  />
+                </div>
+              ))}
 
             <button
-            onClick={()=>{
-              setLimit((prev)=>prev+prev)
-            }}
-            className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">{loading ? "Loading..." : "Load More Posts"}</button>
+              onClick={() => {
+                setLimit((prev) => prev + prev)
+              }}
+              className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">{loading ? "Loading..." : "Load More Posts"}</button>
           </div>
 
         </section>
@@ -347,7 +331,7 @@ function MyBlogs() {
 
         {/* Section 3 Right Sidebar */}
         <section className="hidden sm:hidden lg:block w-[18%] max-w-[350px] border-1 border-blue-700 text-black dark:text-white lg:flex lg:flex-col lg:gap-5 lg:py-3 sticky top-20">
-         
+
 
         </section>
 

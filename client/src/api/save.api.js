@@ -51,6 +51,32 @@ class SaveApi {
         }
     }
 
+    async getUserSavedBlogs(page=1,limit=10){
+        try {
+            const response = await axios.get(
+                `${this.baseUrl}/all-saved/?page=${page}&limit=${limit}`,
+                {
+                    withCredentials:true
+                }
+            )
+
+            console.log("Get User Saved Blogs API Response = ",response.data.data)
+
+            return {
+                success:true,
+                data:response.data,
+            
+            }
+        } catch (error) {
+            console.log("Get User Saved Blogs API Error = ",error)
+            return{
+                success:false,
+                message:error.message,
+                error:error
+            }
+        }
+    }
+
 }
 
 export const saveApi = new SaveApi();

@@ -1,0 +1,344 @@
+    import React, { useEffect, useState } from 'react'
+    import {
+    Search,
+    Bell,
+    BookOpen,
+    Bookmark,
+    User,
+    Settings,
+    LogOut,
+    Home,
+    Edit3,
+    Heart,
+    MessageCircle,
+    Share2,
+    Eye,
+    TrendingUp,
+    Calendar,
+    Filter,
+    Moon,
+    Sun,
+    Menu,
+    X,
+    ChevronDown,
+    Code,
+    Zap,
+    Coffee,
+    Briefcase,
+    Github,
+    ExternalLink,
+    Clock,
+    Users,
+    Tag,
+    Plus,
+    Star,
+    MoveDown,
+    Pen
+    } from 'lucide-react';
+    import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+
+    import { logout } from '../../../services/logout.service'
+    import BlogCard from '../../../components/BlogCard';
+    import DefaultProfile from '../../../components/DefaultProfile';
+    import ProfileMeta from '../../../components/ProfileMeta';
+    import FollowerProfileMeta from '../../../components/feed page/FollowerProfileMeta';
+    import EventMetaCard from '../../../components/feed page/EventMetaCard';
+    import { useNavigate } from 'react-router-dom';
+    import MobileNavBottom from '../../../components/MobileNavBottom';
+    import axios from 'axios';
+    import FeedSidebar from '../../../components/FeedSidebar';
+    import { saveApi } from '../../../api/save.api';
+
+    function SavedBlogs() {
+
+        const [savedBlogs, setSavedBlogs] = useState([])
+        const [searchFocused, setSearchFocused] = React.useState(false);
+        const [isDark, setIsDark] = useState(false);
+        const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+        const [activeCategory, setActiveCategory] = useState("All");
+        const [allBlogs, setAllBlogs] = useState([]);
+        const [isOpen, setIsOpen] = useState(false);
+        const [page, setPage] = useState(1);
+        const [limit, setLimit] = useState(4);
+        const [loading, setLoading] = useState(false)
+        const [userAvatar, setUserAvatar] = useState("")
+        const [followStatus, setFollowStatus] = useState({})
+        const navigate = useNavigate();
+
+        const categories = [
+            { name: "All", icon: <Home size={16} />, totalPosts: 1200 },
+            { name: "Javascript", icon: <Code size={16} />, totalPosts: 800 },
+            { name: "React", icon: <Zap size={16} />, totalPosts: 600 },
+            { name: "Node.js", icon: <Briefcase size={16} />, totalPosts: 400 },
+            { name: "Career", icon: <Coffee size={16} />, totalPosts: 300 },
+            { name: "Open Source", icon: <FaGithub size={16} />, totalPosts: 200 },
+        ]
+
+        const trendingTags = [
+            { name: "#WebDev", totalPosts: 1200 },
+            { name: "MachineLearning", totalPosts: 800 },
+            { name: "#DevOps", totalPosts: 600 },
+            { name: "#CloudComputing", totalPosts: 400 },
+            { name: "#Debugging", totalPosts: 300 },
+            { name: "#Performance", totalPosts: 200 },
+            { name: "#Mobile", totalPosts: 100 },
+        ]
+
+        const toggleDarkMode = () => {
+            setIsDark(!isDark);
+        }
+
+        const handleTheme = () => {
+            const html = document.documentElement
+
+            if (html.classList.contains("dark")) {
+                setIsDark(false)
+                html.classList.remove("dark")
+                html.classList.add("light")
+            } else {
+                setIsDark(true)
+                html.classList.remove("light")
+                html.classList.add("dark")
+            }
+        }
+
+
+
+        const loadFollowStatus = (blogs) => {
+
+            blogs.forEach((blog) => {
+                setFollowStatus(
+                    (prev) => {
+                        return {
+                            ...prev,
+                            [blog.owner._id]: blog.owner.isFollowed
+                        }
+                    }
+                )
+            })
+
+            console.log("Follow Status = ", followStatus)
+
+        }
+
+        const fetchSavedBlogs = async()=>{
+            
+            setLoading(true)
+            const res = await saveApi.getUserSavedBlogs(page,limit)
+
+            if(res.success){
+                setSavedBlogs(res.data.data.blogs)
+                loadFollowStatus(res.data.data.blogs)
+            }
+            
+            else{
+            console.log("Error :: Fetching Saved Blogs :: ",error.message)
+            }
+            setLoading(false)
+            
+        }
+
+        const fetchUserAvatar = async () => {
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/avatar`, {
+                    withCredentials: true
+                })
+
+                // Set the user avatar in the state
+                setUserAvatar(res.data.avatar)
+
+            } catch (error) {
+                console.log("Error :: Fetching User Avatar :: ", error.message)
+            }
+        }
+
+        useEffect(() => {
+            fetchSavedBlogs(page,limit)
+            fetchUserAvatar()
+        }, [])
+
+        useEffect(() => {
+            fetchSavedBlogs()
+        }, [limit])
+
+        return (
+            <div className="main-feed w-screen min-w-screen bg-[#f4f2ee] dark:bg-[#111826]">
+
+                {/* Navbar */}
+                <nav className="hidden md:block w-full h-[4rem] bg-[#1f2936] md:flex md:items-center md:justify-center md:gap-5 md:px-0 md:sticky md:top-0 z-50">
+
+                    <div className="h-full flex justify-center items-center gap-2">
+                        <div className=" h-10 sm:h-10 w-10 sm:w-10 flex justify-center items-center bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-mono font-bold rounded-md">
+                            {'<>'}
+                        </div>
+                        <div className="text-white text-2xl sm:text-2xl font-bold">
+                            DevMark
+                        </div>
+                    </div>
+
+                    <div className={`flex w-[25%] text-gray-400  ${searchFocused ? "border-2 border-blue-600" : "border-[0.2px] border-gray-600 "} px-3 py-2 rounded-md gap-2`}>
+                        <Search />
+                        <input
+                            className='bg-transparent border-none outline-none w-full'
+                            type="text"
+                            onFocus={() => {
+                                setSearchFocused(true);
+                            }}
+                            onBlur={() => {
+                                setSearchFocused(false);
+                            }}
+                            placeholder='search by title,tags,author...' />
+                    </div>
+
+                    <div className=' flex items-center gap-3'>
+                        <div className='flex items-center gap-2 text-white hover:text-blue-500 cursor-pointer'>
+                            <Home className=' cursor-pointer' size={20} />
+                            Home
+                        </div>
+                        <h1 className='text-white hover:text-blue-500 cursor-pointer'>Categories</h1>
+                        <div className="flex items-center gap-2 text-white hover:text-blue-500 cursor-pointer">
+                            <Edit3 className='text-white hover:text-blue-500 cursor-pointer' size={20} />
+                            Write
+                        </div>
+                        <div className="flex items-center gap-2 text-white hover:text-blue-500 cursor-pointer">
+                            <Bookmark className=' cursor-pointer' size={20} />
+                            Bookmarks
+                        </div>
+                    </div>
+
+                    <div
+                        onClick={handleTheme}
+                        className="border-[1.2px] border-gray-500 dark:border-gray-600 w-8 h-8 flex justify-center items-center rounded-md bg-[#182231] dark:bg-[#182231] cursor-pointer">
+                        {
+                            !isDark && <Moon className="text-gray-500 " size={20} />
+                        }
+                        {
+                            isDark && <Sun className="text-yellow-500" size={20} />
+                        }
+                    </div>
+
+
+
+                    <div className="flex items-center gap-5 relative">
+
+                        <div className="w-7 h-7  hover:bg-gray-700 flex justify-center items-center rounded-md relative ">
+                            <Bell className='text-gray-400 cursor-pointer' size={20} />
+                            <div className='w-3 h-3 rounded-[50%] bg-red-500 absolute top-[-0.4rem] right-[-0.5rem]'></div>
+                        </div>
+
+                        <button
+                            onClick={() => {
+                                navigate("/user/blogs/create")
+                            }}
+                            className="text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] px-4 py-2 rounded-md">Write Blog</button>
+
+                        <div
+                            onClick={() => {
+                                setIsProfileMenuOpen(!isProfileMenuOpen)
+                                document.querySelector(".arrow-down").classList.toggle("rotate-180")
+                            }}
+                            className={`flex items-center gap-2 hover:bg-gray-700 ${isProfileMenuOpen ? "bg-gray-700" : ""} px-2 py-1 rounded-md cursor-pointer`}>
+                            <div className=" text-white font-bold rounded-[50%] w-9 h-9 flex justify-center items-center">
+                                <img
+                                    className='w-full h-full rounded-[50%] object-cover'
+                                    src={userAvatar} alt="" />
+                            </div>
+                            <ChevronDown
+                                className='arrow-down text-gray-400 cursor-pointer' size={20} />
+                        </div>
+
+                        {/* Dropdown Menu */}
+                        <div className={`${isProfileMenuOpen ? "block" : "hidden"}  bg-[#1f2936] cursor-pointer absolute right-0 bottom-[-8.9rem] text-white w-60 rounded-md flex flex-col gap-3 shadow-lg p-3`}>
+                            <div
+                                onClick={() => { navigate("/user/profile") }}
+                                className='flex items-center gap-2'>
+                                <User size={20} />
+                                <h1>Profile</h1>
+                            </div>
+
+                            <div className='flex items-center gap-2'>
+                                <Settings size={20} />
+                                <h1>Settings</h1>
+                            </div>
+
+                            <div className='flex items-center gap-2 border-t border-gray-600 pt-2 cursor-pointer'>
+                                <LogOut className='text-red-500' size={20} />
+                                <button
+                                    onClick={() => { logout(); navigate("/login") }}
+                                    className='text-red-500'>Logout</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </nav>
+
+
+                {/* Main Content */}
+                <main className='border-1 w-full min-h-screen flex justify-center items-start gap-3 relative'>
+
+                    {/* Section 1 Left Sidebar*/}
+                    <section className='hidden sm:hidden md:block border-1 border-blue-700 text-black dark:text-white md:flex md:flex-col md:gap-5 md:py-3 sticky top-20'>
+
+
+                        {/*Quick actions */}
+
+                        <FeedSidebar />
+
+                    </section>
+
+                    {/* Section 2 Feed */}
+                    <section className='md:w-[20%] max-w-[700px] min-w-[250px] border-1 border-red-700 flex-1 flex flex-col gap-3 md:px-5 py-3 '>
+
+
+                        <div className="w-full border-1 border-white text-white flex flex-col items-center gap-5 mt-5">
+
+                            {
+                                savedBlogs.length !== 0 && savedBlogs.map((blog) => (
+                                    <div
+                                        key={blog._id}
+                                        className="w-full">
+                                        <BlogCard
+                                            key={blog._id}
+                                            id={blog._id}
+                                            title={blog.title}
+                                            imgUrl={blog.images?.length ? blog.images[0].url : ""}
+                                            description={blog.content}
+                                            likes={blog.totalLikes}
+                                            comments={blog.totalComments}
+                                            tags={blog.tags}
+                                            views={blog.views}
+                                            owner={blog.owner}
+                                            followStatus={followStatus}
+                                            setFollowStatus={setFollowStatus}
+                                            createdAt={blog.createdAt}
+                                            // isSavedBlog={true}
+                                        />
+                                    </div>
+                                ))}
+
+                            <button
+                                onClick={() => {
+                                    setLimit((prev) => prev + prev)
+                                }}
+                                className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">{loading ? "Loading..." : "Load More Posts"}</button>
+                        </div>
+
+                    </section>
+
+
+                    {/* Section 3 Right Sidebar */}
+                    <section className="hidden sm:hidden lg:block w-[18%] max-w-[350px] border-1 border-blue-700 text-black dark:text-white lg:flex lg:flex-col lg:gap-5 lg:py-3 sticky top-20">
+
+
+                    </section>
+
+                </main>
+
+                {/* Mobile Bottom Navigation */}
+                <MobileNavBottom avatarUrl={userAvatar} />
+
+            </div>
+        )
+    }
+
+    export default SavedBlogs

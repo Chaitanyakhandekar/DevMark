@@ -46,6 +46,8 @@ import EventMetaCard from '../../../components/feed page/EventMetaCard';
 import { useNavigate } from 'react-router-dom';
 import MobileNavBottom from '../../../components/MobileNavBottom';
 import axios from 'axios';
+import { saveApi } from '../../../api/save.api';
+import FeedSidebar from '../../../components/FeedSidebar';
 
 function MainFeed() {
 
@@ -55,6 +57,8 @@ function MainFeed() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [allBlogs, setAllBlogs] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
+  const [savedBlogs, setSavedBlogs] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(4);
   const [loading,setLoading] = useState(false)
@@ -62,24 +66,6 @@ function MainFeed() {
   const [followStatus,setFollowStatus] = useState({})
   const navigate = useNavigate();
 
-  const categories = [
-    { name: "All", icon: <Home size={16} />, totalPosts: 1200 },
-    { name: "Javascript", icon: <Code size={16} />, totalPosts: 800 },
-    { name: "React", icon: <Zap size={16} />, totalPosts: 600 },
-    { name: "Node.js", icon: <Briefcase size={16} />, totalPosts: 400 },
-    { name: "Career", icon: <Coffee size={16} />, totalPosts: 300 },
-    { name: "Open Source", icon: <FaGithub size={16} />, totalPosts: 200 },
-  ]
-
-  const trendingTags = [
-    { name: "#WebDev", totalPosts: 1200 },
-    { name: "MachineLearning", totalPosts: 800 },
-    { name: "#DevOps", totalPosts: 600 },
-    { name: "#CloudComputing", totalPosts: 400 },
-    { name: "#Debugging", totalPosts: 300 },
-    { name: "#Performance", totalPosts: 200 },
-    { name: "#Mobile", totalPosts: 100 },
-  ]
 
   const toggleDarkMode = () => {
     setIsDark(!isDark);
@@ -141,6 +127,8 @@ function MainFeed() {
     }
   }
 
+  
+
   const fetchUserAvatar = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/avatar`, {
@@ -154,6 +142,7 @@ function MainFeed() {
       console.log("Error :: Fetching User Avatar :: ", error.message)
     }
   }
+  
 
   useEffect(()=>{
     fetchAllBlogs()
@@ -329,24 +318,7 @@ function MainFeed() {
 
           {/*Quick actions */}
 
-          <div className="w-60 border-[0.2px] border-gray-700 dark:bg-[#1f2936] sticky top-0 flex flex-col gap-3 pt-5 pb-7 px-3 rounded-md sticky top-2">
-            <h1 className='font-bold'>Quick Actions</h1>
-
-            <div
-            onClick={()=>{navigate("/user/blogs/create")}}
-            className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
-              <Pen size={19} />
-              <h1 className="">Write Blog</h1>
-            </div>
-            <div className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
-              <BookOpen size={19} />
-              <h1 className="">My Blogs</h1>
-            </div>
-            <div className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
-              <Bookmark size={19} />
-              <h1 className="">Saved Blogs</h1>
-            </div>
-          </div>
+          <FeedSidebar />
 
         </section>
 

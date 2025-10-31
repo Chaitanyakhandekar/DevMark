@@ -33,7 +33,8 @@ function BlogCard({
     setFollowStatus = () => { },
     createdAt = new Date(),
     bgColor = "1f2936",
-    isOwner = false
+    isOwner = false,
+    isSavedBlog = false
 }) {
     const [isFollowed, setIsFollowed] = useState(owner.isFollowed);
     const [isLiked,setIsLiked] = useState(false)
@@ -44,7 +45,7 @@ function BlogCard({
     const [agoTime, setAgoTime] = useState(null)
     const [loading, setLoading] = useState(false);
     const [totalLikes,setTotalLikes] = useState(likes)
-    const [isSaved,setIsSaved] = useState(false)
+    const [isSaved,setIsSaved] = useState(isSavedBlog)
 
 
     const handleFollow = async () => {
