@@ -12,6 +12,10 @@ const saveSchema = new Schema({
     ref: "User",
     required: true
   },
+  isSaved:{
+    type:Boolean,
+    default:true
+  }
 }, {timestamps: true});
 
 export const Save = mongoose.model("Save", saveSchema);

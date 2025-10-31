@@ -222,7 +222,7 @@ const SearchPage = () => {
   };
 
 
-  const fetchResult = async () => {
+  const fetchAllBlogs = async () => {
     try {
 
       const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/search?searchQuery=${searchQuery}`, {
@@ -233,21 +233,27 @@ const SearchPage = () => {
       console.log("Result for Search =========== ", res.data.data.users)
       console.log("Result for Search =========== ", res.data.data.blogs)
 
-      setSearchResults({
+      if(res.data.data.blogs.length > 0 || res.data.data.users.length > 0){
+        setSearchResults({
         blogs: res.data.data.blogs,
         users: res.data.data.users
       })
 
       loadFollowStatus(res.data.data.blogs);
 
+      }
+      else{
+        setSearchResults({ blogs: [], users: [] })
+      }
     } catch (error) {
       console.log("Error While Fetching Results.")
     }
   }
 
+  
 
   useEffect(() => {
-    fetchResult()
+    fetchAllBlogs()
   }, [searchQuery])
 
   return (
@@ -442,6 +448,7 @@ const SearchPage = () => {
                         key={blog._id}
                         className="w-full">
                         <BlogCard
+                          id={blog._id}
                           key={blog._id}
                           title={blog.title}
                           imgUrl={blog.images?.length ? blog.images[0].url : ""}

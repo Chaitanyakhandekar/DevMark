@@ -17,7 +17,8 @@ const toggleBlogLike = asyncHandler(async (req,res)=>{
     }
 
     const isLikedBefore = await Like.findOne({
-        blog:blogId
+        blog:blogId,
+        likedBy:req.user._id
     })
 
     if(!isLikedBefore){

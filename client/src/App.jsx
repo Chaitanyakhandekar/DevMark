@@ -18,7 +18,8 @@ import MainFeed1 from './pages/user/feed/MainFeed1'
 import ProfilePage1 from './pages/user/profile/Profile'
 import ProfilePage from './pages/user/profile/ProfilePage'
 import SearchPage from './pages/user/search/SearchPage'
-import MyBlogs from './pages/user/feed/MyBlogs'
+import MyBlogs from './pages/user/blogs/MyBlogs'
+import SavedBlogs from './pages/user/blogs/SavedBlogs'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -36,7 +37,7 @@ function App() {
       <Route path="/user/profile/" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>} />
       <Route path="/user/search/" element={<ProtectedRoute><SearchPage/></ProtectedRoute>}/>
       <Route path="/user/blogs" element={<ProtectedRoute><MyBlogs/></ProtectedRoute>}/>
-
+      <Route path="/user/saved-blogs" element={<ProtectedRoute><SavedBlogs/></ProtectedRoute>} />
 
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
