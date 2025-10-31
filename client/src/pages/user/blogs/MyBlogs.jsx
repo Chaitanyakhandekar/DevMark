@@ -286,7 +286,7 @@ function MyBlogs() {
 
           {/*Quick actions */}
 
-          <FeedSidebar />
+          <FeedSidebar activePage='my-blogs'/>
 
         </section>
 

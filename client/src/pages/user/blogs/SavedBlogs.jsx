@@ -282,10 +282,10 @@
 
                         {/*Quick actions */}
 
-                        <FeedSidebar />
+                        <FeedSidebar activePage='saved'/>
 
                     </section>
-
+                            
                     {/* Section 2 Feed */}
                     <section className='md:w-[20%] max-w-[700px] min-w-[250px] border-1 border-red-700 flex-1 flex flex-col gap-3 md:px-5 py-3 '>
 

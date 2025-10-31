@@ -2,7 +2,9 @@ import React from 'react'
 import { BookOpen, Pen, Bookmark } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-function FeedSidebar() {
+function FeedSidebar({
+  activePage = "all"
+}) {
   const navigate = useNavigate();
 
   return (
@@ -11,25 +13,25 @@ function FeedSidebar() {
 
             <div
               onClick={()=>navigate("/user/feed")}
-              className="flex items-center gap-3 px-3 py-2 cursor-pointer bg-gray-700 rounded-md">
+              className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${activePage === "all" ? "bg-gray-700" : ""} rounded-md`}>
               <BookOpen size={19} />
               <h1>All Blogs</h1>
             </div>
             <div
             onClick={()=>{navigate("/user/blogs/create")}}
-            className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
+            className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${activePage === "create" ? "bg-gray-700" : ""} rounded-md`}>
               <Pen size={19} />
               <h1 className="">Write Blog</h1>
             </div>
             <div
             onClick={()=>navigate("/user/blogs")}
-            className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
+            className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${activePage === "my-blogs" ? "bg-gray-700" : ""} rounded-md`}>
               <BookOpen size={19} />
               <h1 className="">My Blogs</h1>
             </div>
             <div
               onClick={()=>{navigate("/user/saved-blogs")}}
-            className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 rounded-md">
+            className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${activePage === "saved" ? "bg-gray-700" : ""} rounded-md`}>
               <Bookmark size={19} />
               <h1 className="">Saved Blogs</h1>
             </div>
