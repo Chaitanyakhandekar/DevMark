@@ -76,20 +76,13 @@ const loginUser = asyncHandler(async (req, res) => {
   const isCorrect = await user.isCorrectPassword(password)
 
   if (!isCorrect) {
-    return res
-      .status(401)
-      .json(
-        new ApiResponse(401, "Incorrect Creadentials!")
-      )
+    throw new ApiError(400, "Invalid Credentials")
   }
 
   if (!user.isVerified) {
-    return res
-      .status(403)
-      .json(
-        new ApiResponse(403, "Email is not verified!")
-      )
-  }
+    throw new ApiError(403, "Email is not verified!")
+  } 
+  
 
   const { accessToken, refreshToken } = generateTokens(user)
 

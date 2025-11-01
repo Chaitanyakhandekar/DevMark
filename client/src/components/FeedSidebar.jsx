@@ -1,5 +1,5 @@
 import React from 'react'
-import { BookOpen, Pen, Bookmark } from 'lucide-react';
+import { BookOpen, Pen, Bookmark , Search, User} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 function FeedSidebar({
@@ -18,6 +18,12 @@ function FeedSidebar({
               <h1>All Blogs</h1>
             </div>
             <div
+              onClick={()=>navigate("/user/search")}
+              className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${activePage === "search" ? "bg-gray-700" : ""} rounded-md`}>
+              <Search size={19} />
+              <h1>Search</h1>
+            </div>
+            <div
             onClick={()=>{navigate("/user/blogs/create")}}
             className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${activePage === "create" ? "bg-gray-700" : ""} rounded-md`}>
               <Pen size={19} />
@@ -34,6 +40,12 @@ function FeedSidebar({
             className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${activePage === "saved" ? "bg-gray-700" : ""} rounded-md`}>
               <Bookmark size={19} />
               <h1 className="">Saved Blogs</h1>
+            </div>
+            <div
+              onClick={()=>{navigate("/user/saved-blogs")}}
+            className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${activePage === "saved" ? "bg-gray-700" : ""} rounded-md`}>
+              <User size={19} />
+              <h1 className="">Profile</h1>
             </div>
           </div>
 
