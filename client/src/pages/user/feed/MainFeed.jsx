@@ -168,7 +168,7 @@ function MainFeed() {
           </div>
         </div>
 
-        <div className={`flex w-[25%] text-gray-400  ${searchFocused ? "border-2 border-blue-600" : "border-[0.2px] border-gray-600 "} px-3 py-2 rounded-md gap-2`}>
+        {/* <div className={`flex w-[25%] text-gray-400  ${searchFocused ? "border-2 border-blue-600" : "border-[0.2px] border-gray-600 "} px-3 py-2 rounded-md gap-2`}>
           <Search />
           <input
             className='bg-transparent border-none outline-none w-full'
@@ -180,7 +180,7 @@ function MainFeed() {
               setSearchFocused(false);
             }}
             placeholder='search by title,tags,author...' />
-        </div>
+        </div> */}
 
         <div className=' flex items-center gap-3'>
           <div className='flex items-center gap-2 text-white hover:text-blue-500 cursor-pointer'>

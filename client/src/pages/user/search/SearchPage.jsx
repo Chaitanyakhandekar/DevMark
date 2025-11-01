@@ -23,6 +23,7 @@ import { userApi } from '../../../api/user.api';
 import BlogCard from '../../../components/BlogCard';
 import axios from 'axios';
 import ProfileCard from '../../../components/ProfileCard';
+import FeedSidebar from '../../../components/FeedSidebar';
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -291,16 +292,7 @@ const SearchPage = () => {
           </div>
         </div>
 
-        <div className="hidden md:flex items-center gap-4">
-          <div className="flex items-center gap-2 text-white hover:text-blue-500 cursor-pointer transition-colors">
-            <Home size={20} />
-            <span>Home</span>
-          </div>
-          <div className="flex items-center gap-2 text-white hover:text-blue-500 cursor-pointer transition-colors">
-            <Bookmark size={20} />
-            <span className="hidden lg:inline">Bookmarks</span>
-          </div>
-        </div>
+        
 
         <div
           onClick={handleTheme}
@@ -311,10 +303,10 @@ const SearchPage = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-4 relative">
-          <div className="w-9 h-9 hover:bg-gray-700 flex justify-center items-center rounded-lg relative transition-colors cursor-pointer">
+          {/* <div className="w-9 h-9 hover:bg-gray-700 flex justify-center items-center rounded-lg relative transition-colors cursor-pointer">
             <Bell className="text-gray-400" size={20} />
             <div className="w-2 h-2 rounded-full bg-red-500 absolute top-1 right-1"></div>
-          </div>
+          </div> */}
 
           <button className="text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] px-4 py-2 rounded-lg hover:shadow-lg transition-all font-medium">
             Write Blog
@@ -355,8 +347,14 @@ const SearchPage = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        {searchQuery && (
+      <main className="max-w-7xl  px-4 py-6 flex gap-5 justify-center md:justify-start md:mx-0 lg:mx-40">
+
+          <div className="text-white hidden md:block">
+        <FeedSidebar activePage="search" />
+          </div>
+
+        <div className="max-w-6xl mx-1 px-4 py-6">
+          {searchQuery && (
           <>
             {/* Tabs and Sort */}
             <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 mb-4`}>
@@ -383,7 +381,7 @@ const SearchPage = () => {
                       }`}
                   >
                     <BookOpen size={16} />
-                    Blogs ({searchResults.blogs.length})
+                    Blogs ({searchResults?.blogs?.length})
                   </button>
                   <button
                     onClick={() => setActiveTab('users')}
@@ -395,7 +393,7 @@ const SearchPage = () => {
                       }`}
                   >
                     <Users size={16} />
-                    Users ({searchResults.users.length})
+                    Users ({searchResults?.users?.length})
                   </button>
                 </div>
 
@@ -411,14 +409,14 @@ const SearchPage = () => {
             ) : getTotalResults() > 0 ? (
               <div className="space-y-4">
                 {/* Users Results */}
-                {(activeTab === 'all' || activeTab === 'users') && searchResults.users.length > 0 && (
+                {(activeTab === 'all' || activeTab === 'users') && searchResults?.users?.length > 0 && (
                   <>
                     {activeTab === 'all' && (
                       <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-3`}>
                         Users
                       </h2>
                     )}
-                    {searchResults.users.map((user) => (
+                    {searchResults?.users?.map((user) => (
                       <div
                         key={user._id}
                         className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-5 hover:shadow-xl transition-shadow cursor-pointer`}
@@ -436,9 +434,9 @@ const SearchPage = () => {
                 )}
 
                 {/* Blogs Results */}
-                {(activeTab === 'all' || activeTab === 'blogs') && searchResults.blogs.length > 0 && (
+                {(activeTab === 'all' || activeTab === 'blogs') && searchResults?.blogs?.length > 0 && (
                   <>
-                    {activeTab === 'all' && searchResults.users.length > 0 && (
+                    {activeTab === 'all' && searchResults?.users?.length > 0 && (
                       <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-3 mt-6`}>
                         Blogs
                       </h2>
@@ -489,7 +487,7 @@ const SearchPage = () => {
 
         {/* Empty State */}
         {!searchQuery && (
-          <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-16 text-center`}>
+          <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border-2 w-[90vw] md:w-[550px] lg:w-[800px]  rounded-lg p-16 text-center`}>
             <Search size={64} className={`mx-auto ${isDark ? 'text-gray-600' : 'text-gray-400'} mb-4`} />
             <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
               Start searching
@@ -499,6 +497,7 @@ const SearchPage = () => {
             </p>
           </div>
         )}
+        </div>
       </main>
 
       <MobileNavBottom fixed={true} />

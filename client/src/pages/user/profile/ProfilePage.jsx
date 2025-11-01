@@ -57,6 +57,7 @@ import BlogCard from '../../../components/BlogCard';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SpinLoader from '../../../components/SpinLoader';
+import { saveApi } from '../../../api/save.api';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState("posts");
@@ -93,6 +94,9 @@ function ProfilePage() {
     const [skills, setSkills] = useState([])
     const [loading,setLoading] = useState(false)
     const [profilePopup, setProfilePopup] = useState(false)
+    const [savedBlogs, setSavedBlogs] = useState([])
+    const [page,setPage] = useState(1)
+    const [limit,setLimit] = useState(10)
     const navigate = useNavigate()
     const fileInputRef = useRef(null);
 
@@ -245,6 +249,23 @@ function ProfilePage() {
         setLoading(false)
     }
 
+     const fetchSavedBlogs = async()=>{
+                
+                setLoading(true)
+                const res = await saveApi.getUserSavedBlogs(page,limit)
+    
+                if(res.success){
+                    setSavedBlogs(res.data.data.blogs)
+                    loadFollowStatus(res.data.data.blogs)
+                }
+                
+                else{
+                console.log("Error :: Fetching Saved Blogs :: ",error.message)
+                }
+                setLoading(false)
+                
+            }
+
     useEffect(() => {
         window.scrollTo({
             top: 0,
@@ -254,6 +275,7 @@ function ProfilePage() {
         document.documentElement.classList.add("dark")
         fetchUserProfile()
         fetchAllBlogs()
+        fetchSavedBlogs(page,limit)
 
     }, [])
     useEffect(() => {
@@ -586,7 +608,7 @@ function ProfilePage() {
                                         {showSettingsMenu && (
                                             <div className="absolute top-full right-0 mt-2 w-64 bg-slate-800 rounded-xl shadow-2xl border border-slate-700 overflow-hidden z-50">
                                                 <div className="p-2">
-                                                    <button className="w-full text-left px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-3 group">
+                                                    {/* <button className="w-full text-left px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-3 group">
                                                         <Settings size={18} className="text-blue-400" />
                                                         <span className="font-medium">Account Settings</span>
                                                     </button>
@@ -597,15 +619,15 @@ function ProfilePage() {
                                                     <button className="w-full text-left px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-3 group">
                                                         <Bell size={18} className="text-green-400" />
                                                         <span className="font-medium">Notifications</span>
-                                                    </button>
+                                                    </button> */}
                                                     <button className="w-full text-left px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-3 group">
                                                         <Palette size={18} className="text-pink-400" />
                                                         <span className="font-medium">Appearance</span>
                                                     </button>
-                                                    <button className="w-full text-left px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-3 group">
+                                                    {/* <button className="w-full text-left px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-3 group">
                                                         <Shield size={18} className="text-yellow-400" />
                                                         <span className="font-medium">Blocked Users</span>
-                                                    </button>
+                                                    </button> */}
                                                     <div className="border-t border-slate-700 my-2"></div>
                                                     <button
                                                         onClick={handleLogout}
@@ -790,20 +812,48 @@ function ProfilePage() {
                             ))
                         }
                     </div>
-
-                    ||
-
-                    <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center py-8">
-                        <BookOpen size={48} className="text-slate-600 mb-2" />
-                        <h1 className="text-md md:text-xl text-gray-400">No posts yet</h1>
-                        <p className="text-sm text-slate-500">Start writing your first blog post!</p>
-                    </div>
-
-
-
                 }
 
-                {activeTab === "saved" && (
+                {activeTab === "saved" && savedBlogs.length > 0 &&
+
+
+                    <div className="w-full flex flex-col gap-3 mt-5 ">
+                        {
+                            savedBlogs.map((blog) => (
+                                <div
+                                    key={blog._id}
+                                    className="w-full">
+                                    <BlogCard
+                                        id={blog._id}
+                                        key={blog._id}
+                                        title={blog.title}
+                                        imgUrl={blog.images?.length ? blog.images[0].url : ""}
+                                        description={blog.content}
+                                        likes={blog.totalLikes}
+                                        comments={blog.totalComments}
+                                        tags={blog.tags}
+                                        views={blog.views}
+                                        owner={blog.owner}
+                                        followStatus={{}}
+                                        setFollowStatus={() => { }}
+                                        createdAt={blog.createdAt}
+                                        // bgColor={"#182230"}
+                                        isOwner={true}
+                                    />
+                                </div>
+                            ))
+                        }
+                    </div>
+                }
+
+                {activeTab === "posts" && allBlogs.length === 0 && (
+                            <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center py-8">
+                                <BookOpen size={48} className="text-slate-600 mb-2" />
+                                <h1 className="text-md md:text-xl text-gray-400">No posts yet</h1>
+                            </div>
+                        )}
+
+                {activeTab === "saved" && savedBlogs.length === 0 && (
                     <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center py-8">
                         <Bookmark size={48} className="text-slate-600 mb-2" />
                         <h1 className="text-md md:text-xl text-gray-400">No saved posts yet</h1>
