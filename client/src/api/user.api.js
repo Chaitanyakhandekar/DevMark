@@ -32,22 +32,14 @@ class UserApi {
                     }
                 )
 
-            console.log("data = ", res.data.success)
-
-            if(!res.data.success){
-                throw new Error(res.data.message || "Login Failure")
-            }
+            console.log("data = ", res.data)
             return {
                 success: true,
                 data: res.data
             }
         } catch (error) {
-            // console.log("Login User :: Error :: ", error.message)
-            return {
-                success: false,
-                error: error.message
-
-            }
+            console.log("Login User :: Error :: ", error.message)
+            return error
         }
     }
 

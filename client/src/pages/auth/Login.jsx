@@ -28,7 +28,7 @@ export default function LoginPage({nextPage="/user/feed"}) {
     console.log(res.data);
     setLoading(false);
 
-    if(res.success){
+    if(res.data.message){
       Swal.fire({
         icon: 'success',
         title: 'Login Successful',
