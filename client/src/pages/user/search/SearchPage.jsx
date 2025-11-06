@@ -260,7 +260,7 @@ const SearchPage = () => {
   return (
     <div className={`min-h-screen ${isDark ? 'bg-[#111826]' : 'bg-[#f4f2ee]'}`}>
       {/* Navigation */}
-      <nav className="w-full h-16 bg-[#1f2936] flex items-center justify-center gap-5 px-4 sticky top-0 z-50 shadow-lg">
+      <nav className="w-full h-16 bg-[#1f2936] flex items-center justify-center gap-10 px-4 sticky top-0 z-50 shadow-lg">
         <div className="hidden md:block h-full md:flex justify-center items-center gap-2">
           <div className="h-10 w-10 flex justify-center items-center bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-mono font-bold rounded-md text-sm">
             {'<>'}
@@ -294,13 +294,7 @@ const SearchPage = () => {
 
         
 
-        <div
-          onClick={handleTheme}
-          className="hidden md:block border border-gray-500 w-9 h-9 md:flex justify-center items-center rounded-lg bg-[#182231] cursor-pointer hover:bg-gray-700 transition-colors"
-        >
-          {!isDark && <Moon className="text-gray-500" size={20} />}
-          {isDark && <Sun className="text-yellow-500" size={20} />}
-        </div>
+       
 
         <div className="hidden md:flex items-center gap-4 relative">
           {/* <div className="w-9 h-9 hover:bg-gray-700 flex justify-center items-center rounded-lg relative transition-colors cursor-pointer">
@@ -308,46 +302,17 @@ const SearchPage = () => {
             <div className="w-2 h-2 rounded-full bg-red-500 absolute top-1 right-1"></div>
           </div> */}
 
-          <button className="text-white bg-gradient-to-r from-[#4777f4] to-[#9035ea] px-4 py-2 rounded-lg hover:shadow-lg transition-all font-medium">
-            Write Blog
-          </button>
+     
 
-          <div
-            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-            className={`flex items-center gap-2 hover:bg-gray-700 ${isProfileMenuOpen ? 'bg-gray-700' : ''
-              } px-2 py-1 rounded-lg cursor-pointer transition-colors`}
-          >
-            <div className="w-9 h-9 rounded-full bg-gradient-to-r from-[#4777f4] to-[#9035ea] flex items-center justify-center text-white font-bold text-sm">
-              JD
-            </div>
-            <ChevronDown
-              className={`text-gray-400 transition-transform ${isProfileMenuOpen ? 'rotate-180' : ''}`}
-              size={20}
-            />
-          </div>
 
-          {isProfileMenuOpen && (
-            <div className="bg-[#1f2936] absolute right-0 top-14 text-white w-56 rounded-lg flex flex-col gap-1 shadow-2xl p-2 border border-gray-700">
-              <div className="flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-md cursor-pointer transition-colors">
-                <User size={18} />
-                <span>Profile</span>
-              </div>
-              <div className="flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-md cursor-pointer transition-colors">
-                <Settings size={18} />
-                <span>Settings</span>
-              </div>
-              <div className="border-t border-gray-700 my-1"></div>
-              <div className="flex items-center gap-3 px-3 py-2 hover:bg-red-500 hover:bg-opacity-10 rounded-md text-red-400 cursor-pointer transition-colors">
-                <LogOut size={18} />
-                <span>Logout</span>
-              </div>
-            </div>
-          )}
+        
+
+          
         </div>
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-7xl  px-4 py-6 flex gap-5 justify-center md:justify-start md:mx-0 lg:mx-40">
+      <main className="w-screen  px-4 py-6 flex gap-5 justify-center md:justify-center">
 
           <div className="text-white hidden md:block">
         <FeedSidebar activePage="search" />

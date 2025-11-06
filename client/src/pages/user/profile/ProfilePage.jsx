@@ -58,6 +58,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SpinLoader from '../../../components/SpinLoader';
 import { saveApi } from '../../../api/save.api';
+import FeedSidebar from '../../../components/FeedSidebar';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState("posts");
@@ -289,6 +290,11 @@ function ProfilePage() {
 
     return (
         <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-0'>
+
+            <div className="text-white hidden md:block mt-4 ml-2">
+                <FeedSidebar activePage="profile" />
+            </div>
+
             {/* Cover Photo */}
             <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4 rounded-md py-3 px-x">
                 <img

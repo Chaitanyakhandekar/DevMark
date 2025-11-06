@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import axios from "axios"
 import { 
   Save, 
@@ -33,16 +33,20 @@ import {
 import MDEditor from "@uiw/react-md-editor"
 import rehypeHighlights from "rehype-highlight"
 import Swal from 'sweetalert2'
+import { blogApi } from '../../../api/blog.api';
+import { useParams } from 'react-router-dom';
+import FeedSidebar from '../../../components/FeedSidebar';
 
-function CreateBlogPage() {
+function UpdateBlogPage() {
     const [tags, setTags] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
     const [userAvatar, setUserAvatar] = useState("https://res.cloudinary.com/dzgtlxfhv/image/upload/v1759152185/dfwvfrdrczaf96nfnar8.png")
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [blogId, setBlogId] = useState(useParams().id)
 
     const [blogData, setBlogData] = useState({
-        content: "",
+        content: "Hey there! Start writing your blog content here...",
         title: "",
         status: "published",
         category: "Full Stack",
@@ -140,6 +144,24 @@ function CreateBlogPage() {
         }
     }
 
+    const fetchBlogData = async ()=>{
+        const res = await blogApi.getBlogById(blogId)
+        if(res.success){
+            const blog = res.data
+            setBlogData({
+                content: blog.content,
+                title: blog.title,
+                status: blog.status,
+                category: blog.category,
+                tags: blog.tags.join("#") || "",
+                words: blog.words || 0,
+                images: blog.images || [],
+                characters: blog.characters || 0,
+                readingTime: blog.readingTime || 0
+            })
+        }
+    }
+
     useEffect(() => {
         let content = blogData.content;
         let words = content.split(" ")
@@ -161,6 +183,7 @@ function CreateBlogPage() {
     }, [blogData.content])
 
     useEffect(() => {
+        fetchBlogData()
         fetchUserAvatar()
         const html = document.documentElement
         html.classList.add("dark")
@@ -202,84 +225,7 @@ function CreateBlogPage() {
     return (
         <div className="min-w-screen min-h-screen dark:bg-[#0f1419] relative">
             {/* Enhanced Sidebar */}
-            <aside className={`
-                fixed top-0 left-0 h-screen w-64 z-50 
-                bg-gradient-to-b from-[#1f2936] to-[#161d28]
-                border-r border-gray-700/50
-                transform transition-transform duration-300 ease-in-out
-                ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-                md:translate-x-0
-                shadow-2xl
-            `}>
-                {/* Sidebar Header */}
-                <div className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 px-5 py-6">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 flex justify-center items-center bg-white/20 backdrop-blur-sm text-white font-mono font-bold rounded-lg shadow-lg">
-                                {'<>'}
-                            </div>
-                            <div>
-                                <h1 className='font-bold text-lg text-white tracking-wide'>DevMark</h1>
-                                <p className='text-xs text-white/80'>Create & Share</p>
-                            </div>
-                        </div>
-                        <button 
-                            onClick={() => setSidebarOpen(false)}
-                            className="md:hidden text-white/80 hover:text-white"
-                        >
-                            <X size={20} />
-                        </button>
-                    </div>
-                    <div className="absolute inset-0 bg-black/10"></div>
-                </div>
-
-                {/* Navigation Menu */}
-                <nav className="flex flex-col gap-1 p-3 mt-2">
-                    {menuItems.map((item) => {
-                        const isActive = "create" === item.id;
-                        return (
-                            <button
-                                key={item.id}
-                                onClick={() => navigate(item.route)}
-                                className={`
-                                    group relative flex items-center gap-3 px-4 py-3 rounded-lg
-                                    transition-all duration-300 ease-out text-left w-full
-                                    ${isActive 
-                                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-[1.02]' 
-                                        : 'hover:bg-gray-800/50 text-gray-300 hover:text-white hover:scale-[1.01]'
-                                    }
-                                    ${item.highlight && !isActive ? 'border border-dashed border-gray-600' : ''}
-                                `}
-                            >
-                                {isActive && (
-                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-r-full"></div>
-                                )}
-                                
-                                <span className="text-xl">{item.icon}</span>
-                                <span className="font-medium text-sm">{item.label}</span>
-
-                                {item.highlight && !isActive && (
-                                    <span className="ml-auto flex h-2 w-2">
-                                        <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-orange-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
-                                    </span>
-                                )}
-                            </button>
-                        );
-                    })}
-                </nav>
-
-                {/* Sidebar Footer */}
-                <div className="absolute bottom-0 w-full p-4">
-                    <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-lg p-3">
-                        <div className="flex items-center gap-2 text-blue-400 mb-1">
-                            <Sparkles size={14} />
-                            <p className="text-xs font-semibold">Pro Tip</p>
-                        </div>
-                        <p className="text-xs text-gray-300">Use markdown for rich formatting!</p>
-                    </div>
-                </div>
-            </aside>
+            <FeedSidebar activePage='update' />
 
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
@@ -531,4 +477,4 @@ function CreateBlogPage() {
     )
 }
 
-export default CreateBlogPage
+export default UpdateBlogPage;
