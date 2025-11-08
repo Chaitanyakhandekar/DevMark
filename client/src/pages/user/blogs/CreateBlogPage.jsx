@@ -33,6 +33,7 @@ import {
 import MDEditor from "@uiw/react-md-editor"
 import rehypeHighlights from "rehype-highlight"
 import Swal from 'sweetalert2'
+import MobileNavBottom from '../../../components/MobileNavBottom';
 
 function CreateBlogPage() {
     const [tags, setTags] = useState([])
@@ -203,11 +204,11 @@ function CreateBlogPage() {
         <div className="min-w-screen min-h-screen dark:bg-[#0f1419] relative">
             {/* Enhanced Sidebar */}
             <aside className={`
+                hidden md:block
                 fixed top-0 left-0 h-screen w-64 z-50 
                 bg-gradient-to-b from-[#1f2936] to-[#161d28]
                 border-r border-gray-700/50
                 transform transition-transform duration-300 ease-in-out
-                ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
                 md:translate-x-0
                 shadow-2xl
             `}>
@@ -282,12 +283,7 @@ function CreateBlogPage() {
             </aside>
 
             {/* Mobile Sidebar Overlay */}
-            {sidebarOpen && (
-                <div 
-                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
-                    onClick={() => setSidebarOpen(false)}
-                ></div>
-            )}
+         
 
             {/* Main Content */}
             <div className="md:ml-64 min-h-screen">
@@ -296,14 +292,14 @@ function CreateBlogPage() {
                     <div className='h-16 px-4 md:px-8 flex justify-between items-center'>
                         {/* Left Section */}
                         <div className="flex items-center gap-4">
-                            <button 
+                            {/* <button 
                                 onClick={() => setSidebarOpen(true)}
                                 className="md:hidden text-white hover:bg-gray-700 p-2 rounded-lg transition-colors"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                                 </svg>
-                            </button>
+                            </button> */}
                             
                             <div className="hidden md:flex items-center gap-2 text-gray-400 bg-gray-800/50 px-3 py-2 rounded-lg">
                                 <Clock size={16} />
@@ -312,11 +308,11 @@ function CreateBlogPage() {
                         </div>
 
                         {/* Right Section */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex justify-around md:justify-around w-full md:w-auto items-center gap-3">
                             <button 
                                 disabled={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length}
                                 title={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length ? "Cannot Save Empty Blog" : "Save Blog as Draft"}
-                                className='hidden md:flex items-center gap-2 text-sm px-4 py-2 bg-gray-700/50 hover:bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200'
+                                className=' flex items-center gap-2 text-sm px-4 py-2 bg-gray-700/50 hover:bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200'
                             >
                                 <Save size={16} />
                                 Save Draft
@@ -333,7 +329,7 @@ function CreateBlogPage() {
                                 ) : (
                                     <>
                                         <TrendingUp size={16} />
-                                        <span className="hidden sm:inline">Publish</span>
+                                        <span className=" sm:inline">Publish</span>
                                     </>
                                 )}
                             </button>
@@ -527,6 +523,9 @@ function CreateBlogPage() {
                     </aside>
                 </div>
             </div>
+
+                <MobileNavBottom avatarUrl={userAvatar} />
+
         </div>
     )
 }

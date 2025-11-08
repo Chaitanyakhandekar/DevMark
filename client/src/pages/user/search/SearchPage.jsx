@@ -36,6 +36,7 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const searchInputRef = useRef(null);
   const [followStatus, setFollowStatus] = useState({});
+  const [userAvatar, setUserAvatar] = useState("")
 
 
   const mockBlogs = [
@@ -188,19 +189,11 @@ const SearchPage = () => {
     setSearchResults({ blogs: [], users: [] });
   };
 
-  // useEffect(() => {
-  //   if (searchQuery) {
-  //     const timer = setTimeout(() => {
-  //       performSearch();
-  //     }, 400);
-  //     return () => clearTimeout(timer);
-  //   } else {
-  //     setSearchResults({ blogs: [], users: [] });
-  //   }
-  // }, [searchQuery]);
-
   const getTotalResults = () => {
-    return searchResults.blogs.length + searchResults.users.length;
+    let total = 0;
+    total += searchResults?.blogs?.length || 0;
+    total += searchResults?.users?.length || 0;
+    return total;
   };
 
   const getFilteredResults = () => {
@@ -231,30 +224,39 @@ const SearchPage = () => {
       }
       )
 
-      console.log("Result for Search =========== ", res.data.data.users)
-      console.log("Result for Search =========== ", res.data.data.blogs)
+      console.log("Result for Search =========== ", res?.data?.data?.users)
+      console.log("Result for Search =========== ", res?.data?.data?.blogs)
 
-      if(res.data.data.blogs.length > 0 || res.data.data.users.length > 0){
+      if(res?.data?.data?.blogs && res?.data?.data?.blogs?.length > 0 || res?.data?.data?.users && res?.data?.data?.users?.length > 0){
         setSearchResults({
-        blogs: res.data.data.blogs,
-        users: res.data.data.users
+        blogs: res?.data?.data?.blogs,
+        users: res?.data?.data?.users
       })
 
-      loadFollowStatus(res.data.data.blogs);
+      loadFollowStatus(res?.data?.data?.blogs);
 
       }
       else{
         setSearchResults({ blogs: [], users: [] })
       }
     } catch (error) {
-      console.log("Error While Fetching Results.")
+      console.log("Error While Fetching Results. :: ",error)
     }
   }
 
+  const fetchUserAvatar = async () => {
+    const res = await userApi.fetchUserAvatar();
+    console.log("User Avatar :: ", res.data.avatar)
+    if(res.success){
+      setUserAvatar(res.data.avatar)
+    }
+  }
   
 
   useEffect(() => {
     fetchAllBlogs()
+    fetchUserAvatar()
+
   }, [searchQuery])
 
   return (
@@ -318,7 +320,7 @@ const SearchPage = () => {
         <FeedSidebar activePage="search" />
           </div>
 
-        <div className="max-w-6xl mx-1 px-4 py-6">
+        <div className="max-w-6xl mx-1 px-0 py-6">
           {searchQuery && (
           <>
             {/* Tabs and Sort */}
@@ -384,7 +386,7 @@ const SearchPage = () => {
                     {searchResults?.users?.map((user) => (
                       <div
                         key={user._id}
-                        className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-5 hover:shadow-xl transition-shadow cursor-pointer`}
+                        className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 hover:shadow-xl transition-shadow cursor-pointer`}
                       >
                         <ProfileCard
                           user={user}
@@ -431,7 +433,7 @@ const SearchPage = () => {
                 )}
               </div>
             ) : (
-              <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-12 text-center`}>
+              <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-16 text-center`}>
                 <Search size={48} className={`mx-auto ${isDark ? 'text-gray-600' : 'text-gray-400'} mb-4`} />
                 <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
                   No results found
@@ -465,7 +467,7 @@ const SearchPage = () => {
         </div>
       </main>
 
-      <MobileNavBottom fixed={true} />
+      <MobileNavBottom fixed={true} avatarUrl={userAvatar}/>
     </div>
   );
 };

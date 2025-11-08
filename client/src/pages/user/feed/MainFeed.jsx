@@ -257,6 +257,7 @@ function MainFeed() {
                 tags={blog.tags}
                 views={blog.views}
                 owner={blog.owner}
+                isOwner={blog.owner.isOwner}
                 followStatus={followStatus}
                 setFollowStatus={setFollowStatus}
                 createdAt={blog.createdAt}

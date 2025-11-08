@@ -141,7 +141,7 @@ function BlogCard({
 
     const isSavedToBlog = async () => {
         const res = await saveApi.isBlogSaved(id)
-        console.log("isSaved: ",res)
+        // console.log("isSaved: ",res)
         if (res.success) {
             setIsSaved(res.data?.isSaved)
         }
@@ -300,7 +300,9 @@ function BlogCard({
                         </button>
                     </div>
 
-                    <div className="flex text-gray-500 dark:text-gray-400 items-center gap-1.5 mr-2 cursor-pointer relative">
+                   {
+                    owner.isOwner && (
+                         <div className="flex text-gray-500 dark:text-gray-400 items-center gap-1.5 mr-2 cursor-pointer relative">
                         <MoreHorizontal
                         className='hover:text-gray-700 dark:hover:text-gray-200 transition-colors'
                         onClick={()=>{setIsOwnerOnlyMenuOpen(true)}}
@@ -327,6 +329,8 @@ function BlogCard({
                             )
                         }
                     </div>
+                    )
+                   }
                 </div>
 
                 {/* Comments Section */}

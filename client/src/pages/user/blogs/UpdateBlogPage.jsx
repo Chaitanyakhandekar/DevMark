@@ -259,13 +259,12 @@ function UpdateBlogPage() {
 
                         {/* Right Section */}
                         <div className="flex items-center gap-3">
-                            <button 
-                                disabled={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length}
-                                title={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length ? "Cannot Save Empty Blog" : "Save Blog as Draft"}
+                            <button
+                                onClick={()=>navigate("/user/feed")} 
+                                title="Discard Changes"
                                 className='hidden md:flex items-center gap-2 text-sm px-4 py-2 bg-gray-700/50 hover:bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200'
                             >
-                                <Save size={16} />
-                                Save Draft
+                                Cancel
                             </button>
                             
                             <button
@@ -279,7 +278,7 @@ function UpdateBlogPage() {
                                 ) : (
                                     <>
                                         <TrendingUp size={16} />
-                                        <span className="hidden sm:inline">Publish</span>
+                                        <span className="hidden sm:inline">Update</span>
                                     </>
                                 )}
                             </button>

@@ -14,7 +14,7 @@ class SaveApi {
                     withCredentials:true
                 }
             )
-            console.log("Save Toggle API Response = ",response.data.data)
+            // console.log("Save Toggle API Response = ",response.data.data)
             return {
                 success:true,
                 data:response.data.data
@@ -37,7 +37,7 @@ class SaveApi {
                 }
             )
 
-            console.log("Save API Response = ",response.data.data)
+            // console.log("Save API Response = ",response.data.data)
             return {
                 success:response.data?.data?.isSaved ? true : false,
                 data:response.data.data
