@@ -1,0 +1,71 @@
+import mongoose from "mongoose";
+import { Blog } from "../models/blogs.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js"
+import { ApiError, ApiResponse } from "../utils/apiUtils.js"
+import { uploadFileOnCloudinary, deleteFileFromCloudinary } from "../services/cloudinary.service.js";
+import { User } from "../models/users.model.js";
+import { Draft } from "../models/draft.model.js";
+
+const createDraft = asyncHandler(async (req, res) => {
+
+  const {
+    title,
+    content,
+    category,
+    tags,
+  } = req.body
+
+ if([title,content,category].every(field => !field || field.trim() === "") && (!tags || !Array.isArray(tags) || tags.length === 0) && (!req.files || req.files.length === 0)){
+    throw new ApiError(400,"At least one field (title, content, category, tags, images) must be provided to create a draft")
+  }
+ 
+  let imgs = new Array();
+
+  if (req.files && req.files.length > 0) {
+      imgs = images ? await Promise.all(
+    images.map(async (image) => {
+      const res = await uploadFileOnCloudinary(image.path)
+      return {
+        url: res.secure_url,
+        public_id: res.public_id
+      }
+    })
+  ) : [].then(() => {
+    console.log("Uploaded Images", imgs)
+  }).catch((err) => {
+    throw new ApiError(500, "Image Upload Failed: " + err.message)
+  })
+  }
+
+  let draft = {}
+
+  if(title && title.trim() !== ""){
+    draft.title = title.trim();
+  }
+    if(content && content.trim() !== ""){
+    draft.content = content.trim();
+  }
+    if(category && category.trim() !== ""){
+    draft.category = category.trim();
+  }
+    if(tags && Array.isArray(tags) && tags.length > 0){
+    draft.tags = tags;
+  }
+   
+
+  const newDraft = await Draft.create(draft)
+
+  if (!newDraft) {
+    throw new ApiError(500, "Draft Creation Failed")
+  }
+
+  return res
+    .status(201)
+    .json(
+      new ApiResponse(201, newDraft, "Draft Created Successfully")
+    )
+
+})
+
+
+export { createDraft };

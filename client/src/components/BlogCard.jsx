@@ -6,7 +6,11 @@ import {
     Eye,
     Send,
     X,
-    Loader
+    Loader,
+    MoreHorizontal,
+    Edit,
+    Edit2,
+    Trash2
 } from 'lucide-react';
 import { useEffect } from 'react';
 import axios from 'axios'
@@ -15,6 +19,7 @@ import { getTimeAgo } from '../services/timeAgo.service';
 import CommentCard from './CommentCard';
 import { likeApi } from '../api/like.api';
 import { saveApi } from '../api/save.api';
+import { useNavigate } from 'react-router-dom';
 
 // Mock axios and getTimeAgo for demo
 
@@ -46,6 +51,8 @@ function BlogCard({
     const [loading, setLoading] = useState(false);
     const [totalLikes,setTotalLikes] = useState(likes)
     const [isSaved,setIsSaved] = useState(isSavedBlog)
+    const [isOwnerOnlyMenuOpen,setIsOwnerOnlyMenuOpen] = useState(false)
+    const navigate = useNavigate();
 
 
     const handleFollow = async () => {
@@ -134,7 +141,7 @@ function BlogCard({
 
     const isSavedToBlog = async () => {
         const res = await saveApi.isBlogSaved(id)
-        console.log("isSaved: ",res)
+        // console.log("isSaved: ",res)
         if (res.success) {
             setIsSaved(res.data?.isSaved)
         }
@@ -159,6 +166,12 @@ function BlogCard({
         isSavedToBlog()
     },[])
 
+    const handleUniversal = () => {
+       if(isOwnerOnlyMenuOpen){
+        setIsOwnerOnlyMenuOpen(false)
+       }
+    }
+
 
 
 
@@ -166,7 +179,9 @@ function BlogCard({
     const shouldShowReadMore = description && description.length > 150;
 
     return (
-        <div className={`w-full md:w-full bg-white dark:bg-[#${bgColor}] md:rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 md:dark:border dark:border-gray-700 overflow-hidden mt-3`}>
+        <div
+        onClick={handleUniversal}
+        className={`w-full md:w-full bg-white dark:bg-[#${bgColor}] md:rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 md:dark:border dark:border-gray-700 overflow-hidden mt-3`}>
             {/* Image Section */}
             <div className="w-full relative group rounded-md">
                 <div className="w-full flex justify-center overflow-hidden rounded-md">
@@ -285,10 +300,37 @@ function BlogCard({
                         </button>
                     </div>
 
-                    <div className="flex text-gray-500 dark:text-gray-400 items-center gap-1.5">
-                        <Eye size={18} />
-                        <span className="text-sm font-medium">{views}</span>
+                   {
+                    owner.isOwner && (
+                         <div className="flex text-gray-500 dark:text-gray-400 items-center gap-1.5 mr-2 cursor-pointer relative">
+                        <MoreHorizontal
+                        className='hover:text-gray-700 dark:hover:text-gray-200 transition-colors'
+                        onClick={()=>{setIsOwnerOnlyMenuOpen(true)}}
+                        size={18} />
+                        
+                        {
+                            isOwnerOnlyMenuOpen && (
+                                  <div className="absolute right-0 bottom-6 w-20 bg-gray-200 dark:bg-gray-700 rounded-tl-md rounded-bl-md rounded-tr-md">
+                            <div className="flex flex-col gap-1 w-full">
+                              
+                                    <button
+                                    onClick={()=>{navigate("/user/blogs/update/"+id)}}
+                                    className="w-full flex items-center gap-1 px-3 py-2 hover:bg-gray-300 dark:hover:bg-gray-600 w-full text-left">
+                                        <Edit2 size={16} className='text-blue-500'/>
+                                        <span className="text-sm font-medium">Edit</span>
+                                    </button>
+                                    
+                                    <button className="w-full flex items-center gap-1 px-3 py-2 hover:bg-gray-300 dark:hover:bg-gray-600 w-full text-left">
+                                        <Trash2 size={16} className='text-red-500' />
+                                        <span className="text-sm font-medium">Delete</span>
+                                    </button>
+                            </div>
+                        </div>
+                            )
+                        }
                     </div>
+                    )
+                   }
                 </div>
 
                 {/* Comments Section */}

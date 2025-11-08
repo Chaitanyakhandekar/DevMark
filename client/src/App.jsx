@@ -20,6 +20,7 @@ import ProfilePage from './pages/user/profile/ProfilePage'
 import SearchPage from './pages/user/search/SearchPage'
 import MyBlogs from './pages/user/blogs/MyBlogs'
 import SavedBlogs from './pages/user/blogs/SavedBlogs'
+import UpdateBlogPage from './pages/user/blogs/UpdateBlogPage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -38,6 +39,7 @@ function App() {
       <Route path="/user/search/" element={<ProtectedRoute><SearchPage/></ProtectedRoute>}/>
       <Route path="/user/blogs" element={<ProtectedRoute><MyBlogs/></ProtectedRoute>}/>
       <Route path="/user/saved-blogs" element={<ProtectedRoute><SavedBlogs/></ProtectedRoute>} />
+      <Route path="/user/blogs/update/:id" element={<ProtectedRoute><UpdateBlogPage/></ProtectedRoute>} />
 
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />

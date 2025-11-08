@@ -19,6 +19,16 @@ export default function LoginPage({nextPage="/user/feed"}) {
     
   }
 
+  const isLoggedInUser = async ()=>{
+      const res = await userApi.isLoggedInUser();
+
+      if(res.data.isLoggedIn){
+        navigate(nextPage);
+      }else{
+        isLoggedInUser();
+      }
+  }
+
   const handleLogin = async(e) => { 
     e.preventDefault();
     setLoading(true);
@@ -35,6 +45,9 @@ export default function LoginPage({nextPage="/user/feed"}) {
         text: 'Welcome back!',
         timer:900
       });
+      // localStorage.setItem("isLoggedInUser","yesLoggedIn")
+     await isLoggedInUser();
+      // console.log("wswwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww  ;; ",res.data.isLoggedIn )
       navigate(nextPage);
     }else{
       Swal.fire({

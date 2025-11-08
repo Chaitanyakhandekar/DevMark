@@ -126,11 +126,19 @@ const getAllSavedBlogsOfUser = asyncHandler(async (req, res) => {
                             as: "owner",
                             pipeline: [
                                 {
+                                    $addFields:{
+                                        isOwner:{
+                                            $eq:["$_id",new mongoose.Types.ObjectId(userId)]
+                                        }
+                                    }
+                                },
+                                {
                                     $project: {
                                         username: 1,
                                         fullName: 1,
                                         avatar: 1,
-                                        totalFollowers: 1
+                                        totalFollowers: 1,
+                                        isOwner:1
                                     }
                                 }
                             ]

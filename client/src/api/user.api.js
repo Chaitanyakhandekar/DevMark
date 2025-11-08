@@ -149,6 +149,73 @@ class UserApi {
         }
     }
 
+    async fetchUserAvatar(){
+        try {
+            const response = await axios.get(
+                `${this.baseUrl}/users/avatar`,
+                {
+                    withCredentials:true
+                }
+            )
+
+            return {
+                success:true,
+                data:response.data
+            }
+
+        } catch (error) {
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
+        }
+    }
+
+    async isLoggedInUser(){
+        try {
+            const response = await axios.get(
+                `${this.baseUrl}/users/is-logged-in`,
+                {
+                    withCredentials:true
+                }
+            )
+            console.log("Is Logged In User API Response = ",response.data)
+            return {
+                success:true,
+                data:response.data.data
+            }
+        } catch (error) {
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
+        }
+    }
+
+    async deleteUserAvatar(){
+        try {
+            const response = await axios.delete(
+                `${this.baseUrl}/users/avatar`,
+                {
+                    withCredentials:true,
+                    headers:{
+                        "x-delete-only":"true"
+                    }
+                }
+            )
+
+            console.log("Delete User Avatar API Response = ",response.data)
+        } catch (error) {
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
+        }
+    }
+
 }
 
 export const userApi = new UserApi();

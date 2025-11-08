@@ -8,7 +8,7 @@ import AuthLoader from "./AuthLoader"
 
 function ProtectedRoute({children}) {
   const [isLoggedIn , setIsLoggedIn] = useState(false)
-  const [loading , setLoading] = useState(false)
+  const [loading , setLoading] = useState(true)
 
   const checkAuth = async ()=>{
       setLoading(true)
@@ -34,12 +34,12 @@ function ProtectedRoute({children}) {
 
  useEffect(()=>{
 
-    checkAuth();
-
+    const timer = setTimeout(()=>{checkAuth()},2000)
+  return ()=> clearTimeout(timer)
  },[])
 
  
- return isLoggedIn && children ||  loading && <AuthLoader/> || <LoginPage/>
+ return loading && !isLoggedIn && <AuthLoader/> ||  !loading && !isLoggedIn && <LoginPage/> || !loading && isLoggedIn && children;
 
 
 }

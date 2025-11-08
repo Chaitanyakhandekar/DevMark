@@ -58,6 +58,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SpinLoader from '../../../components/SpinLoader';
 import { saveApi } from '../../../api/save.api';
+import FeedSidebar from '../../../components/FeedSidebar';
+import Swal from 'sweetalert2';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState("posts");
@@ -227,6 +229,37 @@ function ProfilePage() {
         fileInputRef.current.click(); // triggers file picker
     };
 
+    const handleDeleteClick = async () =>{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                document.querySelector(".user-avatar").firstElementChild.setAttribute("src", "https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg")
+                const res = await userApi.deleteUserAvatar()
+                if (res.success) {
+                    Swal.fire(
+                        'Deleted!',
+                        'Your avatar has been deleted.',
+                        'success'
+                    )
+                }
+                else {
+                    Swal.fire(
+                        'Error!',
+                        'There was an error deleting your avatar.',
+                        'error'
+                    )
+                }
+            }
+        })
+    }
+
     const handleFileChange = (event) => {
         setFile(event.target.files[0])
         const file1 = event.target.files[0];
@@ -289,6 +322,11 @@ function ProfilePage() {
 
     return (
         <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-0'>
+
+            <div className="text-white hidden md:block mt-4 ml-2">
+                <FeedSidebar activePage="profile" />
+            </div>
+
             {/* Cover Photo */}
             <section className="w-[95%] md:w-[70%] lg:w-[60%] xl:w-[65%] mx-auto mt-4 rounded-md py-3 px-x">
                 <img
@@ -305,7 +343,7 @@ function ProfilePage() {
                     <div className="w-[95%] md:w-[30%] h-[45%] bg-gray-900 rounded-xl shadow-lg flex flex-col justify-center items-center gap-4 relative">
 
                         {/* Profile Picture */}
-                        <div className="border-2 border-gray-700 w-[8rem] h-[8rem] bg-gray-800 rounded-full flex justify-center items-center overflow-hidden">
+                        <div className="border-2 border-gray-700 w-[8rem] h-[8rem] bg-gray-800 rounded-full flex justify-center items-center overflow-hidden user-avatar">
                             <img
                                 className="w-full h-full object-cover rounded-full"
                                 src={profileData.avatar || "https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg"}
@@ -320,7 +358,9 @@ function ProfilePage() {
                                 className="px-5 py-2 bg-gray-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
                                 <Camera size={20} />
                             </button>
-                            <button className="px-5 py-2 bg-gray-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
+                            <button
+                            onClick={handleDeleteClick}
+                            className="px-5 py-2 bg-gray-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-md transition-all duration-200">
                                 <Trash2 size={20} />
                             </button>
 
