@@ -31,6 +31,9 @@ import followerRouter from "./routes/follow.route.js";
 import commentRouter from "./routes/comment.route.js"
 import likeRouter from "./routes/like.route.js"
 import saveRouter from "./routes/save.route.js"
+import draftRouter from "./routes/draft.route.js"
+
+server.use("/api/v1/drafts" , draftRouter)
 
 
 server.use("/api/v1/followers" , followerRouter)

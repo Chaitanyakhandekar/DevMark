@@ -53,7 +53,7 @@ const createDraft = asyncHandler(async (req, res) => {
   }
    
 
-  const newDraft = await Draft.create(draft)
+  const newDraft = await Draft.create({...draft,owner:req.user._id})
 
   if (!newDraft) {
     throw new ApiError(500, "Draft Creation Failed")
@@ -68,4 +68,12 @@ const createDraft = asyncHandler(async (req, res) => {
 })
 
 
-export { createDraft };
+const getAllUserDrafts = asyncHandler(async (req,res)=>{
+
+})
+
+
+export {
+   createDraft,
+   getAllUserDrafts,
+  };

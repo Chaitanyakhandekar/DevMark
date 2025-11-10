@@ -1,39 +1,40 @@
 import React, { useEffect, useState } from 'react'
 import axios from "axios"
-import { 
-  Save, 
-  Eye, 
-  EyeOff, 
-  Bold, 
-  Italic, 
-  Code, 
-  Link2, 
-  List, 
-  ListOrdered, 
-  Quote, 
-  Image, 
-  Heading1, 
-  Heading2, 
-  Heading3,
-  ArrowLeft,
-  Settings,
-  Tag,
-  Globe,
-  Lock,
-  Clock,
-  X,
-  Plus,
-  Type,
-  FileText,
-  Loader,
-  Sparkles,
-  TrendingUp,
-  CheckCircle2
+import {
+    Save,
+    Eye,
+    EyeOff,
+    Bold,
+    Italic,
+    Code,
+    Link2,
+    List,
+    ListOrdered,
+    Quote,
+    Image,
+    Heading1,
+    Heading2,
+    Heading3,
+    ArrowLeft,
+    Settings,
+    Tag,
+    Globe,
+    Lock,
+    Clock,
+    X,
+    Plus,
+    Type,
+    FileText,
+    Loader,
+    Sparkles,
+    TrendingUp,
+    CheckCircle2
 } from 'lucide-react';
 import MDEditor from "@uiw/react-md-editor"
 import rehypeHighlights from "rehype-highlight"
 import Swal from 'sweetalert2'
 import MobileNavBottom from '../../../components/MobileNavBottom';
+import { draftApi } from '../../../api/draft.api';
 
 function CreateBlogPage() {
     const [tags, setTags] = useState([])
@@ -200,6 +201,34 @@ function CreateBlogPage() {
         window.location.href = route;
     };
 
+    const handleDraft = async () => {
+        setLoading(true)
+        const res = await draftApi.createDraft(blogData, blogData.images)
+
+        if (res.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Blog Saved As Draft',
+                text: 'Your blog has been saved as a draft successfully!',
+                background: '#1f2936',
+                color: '#c9d1d9',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Draft Not Saved',
+                text: 'There was an error saving your draft.',
+                background: '#1f2936',
+                color: '#c9d1d9'
+            });
+        }
+        clearData();
+        setLoading(false)
+    }
+
     return (
         <div className="min-w-screen min-h-screen dark:bg-[#0f1419] relative">
             {/* Enhanced Sidebar */}
@@ -224,7 +253,7 @@ function CreateBlogPage() {
                                 <p className='text-xs text-white/80'>Create & Share</p>
                             </div>
                         </div>
-                        <button 
+                        <button
                             onClick={() => setSidebarOpen(false)}
                             className="md:hidden text-white/80 hover:text-white"
                         >
@@ -245,8 +274,8 @@ function CreateBlogPage() {
                                 className={`
                                     group relative flex items-center gap-3 px-4 py-3 rounded-lg
                                     transition-all duration-300 ease-out text-left w-full
-                                    ${isActive 
-                                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-[1.02]' 
+                                    ${isActive
+                                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-[1.02]'
                                         : 'hover:bg-gray-800/50 text-gray-300 hover:text-white hover:scale-[1.01]'
                                     }
                                     ${item.highlight && !isActive ? 'border border-dashed border-gray-600' : ''}
@@ -255,7 +284,7 @@ function CreateBlogPage() {
                                 {isActive && (
                                     <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-r-full"></div>
                                 )}
-                                
+
                                 <span className="text-xl">{item.icon}</span>
                                 <span className="font-medium text-sm">{item.label}</span>
 
@@ -283,7 +312,7 @@ function CreateBlogPage() {
             </aside>
 
             {/* Mobile Sidebar Overlay */}
-         
+
 
             {/* Main Content */}
             <div className="md:ml-64 min-h-screen">
@@ -300,7 +329,7 @@ function CreateBlogPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                                 </svg>
                             </button> */}
-                            
+
                             <div className="hidden md:flex items-center gap-2 text-gray-400 bg-gray-800/50 px-3 py-2 rounded-lg">
                                 <Clock size={16} />
                                 <p className="text-sm">{blogData.words} words · {blogData.readingTime} min read</p>
@@ -309,15 +338,25 @@ function CreateBlogPage() {
 
                         {/* Right Section */}
                         <div className="flex justify-around md:justify-around w-full md:w-auto items-center gap-3">
-                            <button 
-                                disabled={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length}
-                                title={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length ? "Cannot Save Empty Blog" : "Save Blog as Draft"}
+
+                            <button
+                                onClick={handleDraft}
+                                disabled={blogData.content.trim().length === 0 && blogData.title.trim().length === 0 && !blogData.images.length}
+                                title={blogData.content.trim().length === 0 && blogData.title.trim().length === 0 && !blogData.images.length ? "Cannot Save Empty Blog As A Draft." : "Save Blog as Draft"}
                                 className=' flex items-center gap-2 text-sm px-4 py-2 bg-gray-700/50 hover:bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200'
                             >
-                                <Save size={16} />
-                                Save Draft
+
+                                {loading ? (
+                                    <Loader size={16} className="animate-spin" />
+                                ) : (
+                                    <>
+                                        <Save size={16} />
+                                        Save Draft
+                                    </>
+                                )}
+
                             </button>
-                            
+
                             <button
                                 onClick={publishBlog}
                                 disabled={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length || loading}
@@ -402,16 +441,16 @@ function CreateBlogPage() {
                                 </div>
                                 <h2 className="text-white font-bold">Publish Settings</h2>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 <div>
                                     <label className="text-sm font-medium text-gray-300 flex items-center gap-2 mb-2">
                                         <Globe size={14} />
                                         Status
                                     </label>
-                                    <select 
-                                        value={blogData.status} 
-                                        onChange={(e) => setBlogData({ ...blogData, status: e.target.value })} 
+                                    <select
+                                        value={blogData.status}
+                                        onChange={(e) => setBlogData({ ...blogData, status: e.target.value })}
                                         className='w-full bg-gray-800/50 border border-gray-600 text-white outline-none p-3 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all'
                                     >
                                         <option value="draft">📝 Draft</option>
@@ -426,7 +465,7 @@ function CreateBlogPage() {
                                         Category
                                     </label>
                                     <select
-                                        value={blogData.category} 
+                                        value={blogData.category}
                                         onChange={(e) => setBlogData({ ...blogData, category: e.target.value })}
                                         className='w-full bg-gray-800/50 border border-gray-600 text-white outline-none p-3 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all'
                                     >
@@ -446,7 +485,7 @@ function CreateBlogPage() {
                                 </div>
                                 <h2 className="text-white font-bold">Tags & Media</h2>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 <div>
                                     <label className="text-sm font-medium text-gray-300 mb-2 block">Tags</label>
@@ -459,15 +498,15 @@ function CreateBlogPage() {
                                         rows={3}
                                     />
                                 </div>
-                                
+
                                 <div>
                                     <label className="text-sm font-medium text-gray-300 flex items-center gap-2 mb-2">
                                         <Image size={14} />
                                         Upload Images
                                     </label>
                                     <div className="relative">
-                                        <input 
-                                            type="file" 
+                                        <input
+                                            type="file"
                                             accept="image/*"
                                             multiple
                                             onChange={(e) => {
@@ -497,18 +536,18 @@ function CreateBlogPage() {
                                 </div>
                                 <h2 className="text-white font-bold">Statistics</h2>
                             </div>
-                            
+
                             <div className="grid grid-cols-2 gap-3">
                                 <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 p-3 rounded-lg">
                                     <p className='text-xs text-gray-400 mb-1'>Words</p>
                                     <p className='text-xl font-bold text-white'>{blogData.words}</p>
                                 </div>
-                                
+
                                 <div className="bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 p-3 rounded-lg">
                                     <p className='text-xs text-gray-400 mb-1'>Characters</p>
                                     <p className='text-xl font-bold text-white'>{blogData.characters}</p>
                                 </div>
-                                
+
                                 <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 p-3 rounded-lg">
                                     <p className='text-xs text-gray-400 mb-1'>Read Time</p>
                                     <p className='text-xl font-bold text-white'>{blogData.readingTime} min</p>
@@ -524,7 +563,7 @@ function CreateBlogPage() {
                 </div>
             </div>
 
-                <MobileNavBottom avatarUrl={userAvatar} />
+            <MobileNavBottom avatarUrl={userAvatar} />
 
         </div>
     )

@@ -21,6 +21,7 @@ import SearchPage from './pages/user/search/SearchPage'
 import MyBlogs from './pages/user/blogs/MyBlogs'
 import SavedBlogs from './pages/user/blogs/SavedBlogs'
 import UpdateBlogPage from './pages/user/blogs/UpdateBlogPage'
+import DraftBlogCard from './components/DraftBlogCard'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -30,6 +31,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/loader" element={<AuthLoaderDemo />} />
+      <Route path="/draft-blog" element={<DraftBlogCard />} />
 
       <Route path="/user/blogs/create" element={<ProtectedRoute><CreateBlogPage/></ProtectedRoute>} />
       <Route path="/user/feed1" element={<ProtectedRoute><MainFeed1/></ProtectedRoute>} />
