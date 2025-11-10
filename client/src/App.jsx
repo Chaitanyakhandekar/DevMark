@@ -21,6 +21,8 @@ import SearchPage from './pages/user/search/SearchPage'
 import MyBlogs from './pages/user/blogs/MyBlogs'
 import SavedBlogs from './pages/user/blogs/SavedBlogs'
 import UpdateBlogPage from './pages/user/blogs/UpdateBlogPage'
+import DraftBlogCard from './components/DraftBlogCard'
+import EditDraft from './pages/user/blogs/EditDraft'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -30,6 +32,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/loader" element={<AuthLoaderDemo />} />
+      <Route path="/draft-blog" element={<DraftBlogCard />} />
 
       <Route path="/user/blogs/create" element={<ProtectedRoute><CreateBlogPage/></ProtectedRoute>} />
       <Route path="/user/feed1" element={<ProtectedRoute><MainFeed1/></ProtectedRoute>} />
@@ -40,6 +43,7 @@ function App() {
       <Route path="/user/blogs" element={<ProtectedRoute><MyBlogs/></ProtectedRoute>}/>
       <Route path="/user/saved-blogs" element={<ProtectedRoute><SavedBlogs/></ProtectedRoute>} />
       <Route path="/user/blogs/update/:id" element={<ProtectedRoute><UpdateBlogPage/></ProtectedRoute>} />
+      <Route path="/user/drafts/edit/:id" element={<ProtectedRoute><EditDraft/></ProtectedRoute>} />
 
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
