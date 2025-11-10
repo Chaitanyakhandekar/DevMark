@@ -42,6 +42,55 @@ class DraftApi{
             }
         }
     }
+
+    async getAllUserDrafts(){
+        try {
+            const response = await axios.get(
+                `${this.baseUrl}/user-drafts`,
+                {
+                    withCredentials:true
+                }
+            )
+
+            console.log("Get All User Drafts API Response = ",response.data)
+
+            return {
+                success:true,
+                data:response.data.data
+            }
+        } catch (error) {
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
+        }
+    }
+
+    async getDraftById(id){
+        try {
+            const response = await axios.get(
+                `${this.baseUrl}/${id}`,
+                {
+                    withCredentials:true
+                }
+            )
+            console.log("Get Draft Data............................ ",response.data)
+
+            return {
+                success:true,
+                data:response.data.data
+            }
+        } catch (error) {
+
+            console.log("Publish Draft Blopg :: Error :: ",error)
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
+        }
+    }
 }
 
 export const draftApi = new DraftApi();

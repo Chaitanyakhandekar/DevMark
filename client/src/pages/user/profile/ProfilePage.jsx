@@ -60,6 +60,8 @@ import SpinLoader from '../../../components/SpinLoader';
 import { saveApi } from '../../../api/save.api';
 import FeedSidebar from '../../../components/FeedSidebar';
 import Swal from 'sweetalert2';
+import { draftApi } from '../../../api/draft.api';
+import BlogDraftCard from '../../../components/DraftBlogCard';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState("posts");
@@ -97,6 +99,7 @@ function ProfilePage() {
     const [loading,setLoading] = useState(false)
     const [profilePopup, setProfilePopup] = useState(false)
     const [savedBlogs, setSavedBlogs] = useState([])
+    const [drafts,setDrafts] = useState([])
     const [page,setPage] = useState(1)
     const [limit,setLimit] = useState(10)
     const navigate = useNavigate()
@@ -121,6 +124,13 @@ function ProfilePage() {
 
         } catch (error) {
             console.log("Error :: Fetching All Blogs :: ", error.message)
+        }
+    }
+
+    const fetchDrafts = async () =>{
+        const res = await draftApi.getAllUserDrafts()
+        if(res.success){
+            setDrafts(res.data)
         }
     }
 
@@ -309,6 +319,7 @@ function ProfilePage() {
         fetchUserProfile()
         fetchAllBlogs()
         fetchSavedBlogs(page,limit)
+        fetchDrafts()
 
     }, [])
     useEffect(() => {
@@ -886,6 +897,34 @@ function ProfilePage() {
                     </div>
                 }
 
+
+                   {activeTab === "drafts" && drafts.length > 0 &&
+
+
+                    <div className="w-full flex flex-col gap-3 mt-5 ">
+                        {
+                            drafts.map((blog) => (
+                                <div
+                                    key={blog._id}
+                                    className="w-full">
+                                    <BlogDraftCard
+                                        id={blog._id}
+                                        key={blog._id}
+                                        title={blog.title}
+                                        imgUrl={blog.images?.length ? blog.images[0].url : ""}
+                                        description={blog.content}                         
+                                        tags={blog.tags} 
+                                        createdAt={blog.createdAt}
+                                        updatedAt={blog.updatedAt}
+                                        isOwner={true}
+                                    />
+                                </div>
+                            ))
+                        }
+                    </div>
+                }
+
+
                 {activeTab === "posts" && allBlogs.length === 0 && (
                             <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center py-8">
                                 <BookOpen size={48} className="text-slate-600 mb-2" />
@@ -900,7 +939,7 @@ function ProfilePage() {
                     </div>
                 )}
 
-                {activeTab === "drafts" && (
+                {activeTab === "drafts" && drafts.length === 0 && (
                     <div className="w-full flex flex-col gap-3 mt-5 justify-center items-center py-8">
                         <Edit size={48} className="text-slate-600 mb-2" />
                         <h1 className="text-md md:text-xl text-gray-400">No drafts yet</h1>

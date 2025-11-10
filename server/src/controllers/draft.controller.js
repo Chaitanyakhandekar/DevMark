@@ -18,6 +18,10 @@ const createDraft = asyncHandler(async (req, res) => {
  if([title,content,category].every(field => !field || field.trim() === "") && (!tags || !Array.isArray(tags) || tags.length === 0) && (!req.files || req.files.length === 0)){
     throw new ApiError(400,"At least one field (title, content, category, tags, images) must be provided to create a draft")
   }
+
+  console.log("Image Files ::::::::::::::::::: ",req.files)
+
+  let images = req.files
  
   let imgs = new Array();
 
@@ -25,6 +29,10 @@ const createDraft = asyncHandler(async (req, res) => {
       imgs = images ? await Promise.all(
     images.map(async (image) => {
       const res = await uploadFileOnCloudinary(image.path)
+      imgs.push({
+        url: res.secure_url,
+        public_id: res.public_id
+      })
       return {
         url: res.secure_url,
         public_id: res.public_id
@@ -53,7 +61,7 @@ const createDraft = asyncHandler(async (req, res) => {
   }
    
 
-  const newDraft = await Draft.create({...draft,owner:req.user._id})
+  const newDraft = await Draft.create({...draft,owner:req.user._id,images:imgs})
 
   if (!newDraft) {
     throw new ApiError(500, "Draft Creation Failed")
@@ -88,6 +96,9 @@ const getAllUserDrafts = asyncHandler(async (req,res)=>{
       }
     },
     {
+      $sort:{createdAt:-1}
+    },
+    {
       $project:{
         __v:0,
         owner:0
@@ -107,7 +118,28 @@ const getAllUserDrafts = asyncHandler(async (req,res)=>{
 })
 
 
+const getDraftById = asyncHandler(async (req,res)=>{
+  const draftId = req.draft._id
+
+  if(!draftId || !mongoose.Types.ObjectId.isValid(draftId)){
+    throw new ApiError(400,"Invalid Draft Id.")
+  }
+
+  const draft = await Draft.findById(draftId)
+
+  if(!draft){
+    throw new ApiError(500,"Server Error While Fetching Draft.")
+  }
+
+  return res
+      .status(200)
+      .json(
+        new ApiResponse(200,draft,"Draft Fetched Successfully.")
+      )
+})
+
 export {
    createDraft,
    getAllUserDrafts,
+   getDraftById
   };

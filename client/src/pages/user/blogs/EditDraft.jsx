@@ -35,13 +35,15 @@ import rehypeHighlights from "rehype-highlight"
 import Swal from 'sweetalert2'
 import MobileNavBottom from '../../../components/MobileNavBottom';
 import { draftApi } from '../../../api/draft.api';
+import { useParams } from 'react-router-dom';
 
-function CreateBlogPage() {
+function EditDraft() {
     const [tags, setTags] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false)
     const [userAvatar, setUserAvatar] = useState("https://res.cloudinary.com/dzgtlxfhv/image/upload/v1759152185/dfwvfrdrczaf96nfnar8.png")
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const draftId = useParams().id
 
     const [blogData, setBlogData] = useState({
         content: "",
@@ -90,21 +92,30 @@ function CreateBlogPage() {
     const publishBlog = async () => {
         setLoading(true)
         try {
-            const tagsArray = blogData.tags
-                ? blogData.tags.split("#").map(tag => tag.trim()).filter(Boolean)
+            let tagsArray = []
+            if(Array.isArray(blogData.tags && blogData.tags?.length !== 0)){
+                 tagsArray = blogData.tags
+                ? blogData.tags?.split("#").map(tag => tag.trim()).filter(Boolean)
                 : [];
+            }
 
             let imgs = new Array();
             imgs = blogData.images
 
             const formData = new FormData();
 
-            formData.append("title", blogData.title || "Untitled Blog Post");
-            formData.append("content", blogData.content);
-            formData.append("category", blogData.category);
-            formData.append("status", blogData.status);
-            tagsArray.forEach(tag => formData.append("tags[]", tag));
-            imgs.forEach(img => formData.append("images", img));
+            formData.append("title", blogData.title );
+            formData.append("content", blogData.content || "");
+            formData.append("category", blogData.category || "");
+            formData.append("status", blogData.status || "");
+            if(tagsArray.length){
+                 tagsArray.forEach(tag => formData.append("tags[]", tag));
+            }
+            if(imgs.length){
+                imgs.forEach(img => formData.append("images", img));
+            }
+
+            console.log("Form Data :: ",formData)
 
             const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/create`, formData, {
                 withCredentials: true,
@@ -133,12 +144,21 @@ function CreateBlogPage() {
                     background: '#1f2936',
                     color: '#c9d1d9'
                 });
+                console.log("Error :: Publish Draft Blog :: ",res.message)
             }
         } catch (error) {
             setError(error.message)
             console.log("PublishedBlog :: Error :: ", error)
         } finally {
             setLoading(false)
+        }
+    }
+
+    const fetchDraftData = async () =>{
+        const res = await draftApi.getDraftById(draftId)
+        if(res.success){
+            setBlogData(res.data)
+            
         }
     }
 
@@ -164,6 +184,7 @@ function CreateBlogPage() {
 
     useEffect(() => {
         fetchUserAvatar()
+        fetchDraftData()
         const html = document.documentElement
         html.classList.add("dark")
 
@@ -172,6 +193,12 @@ function CreateBlogPage() {
             behavior: 'smooth'
         })
     }, [])
+
+    // useEffect(()=>{
+    //     if(!blogData.tags?.length){
+    //         setBlogData((prev=>prev.tags=""))
+    //     }
+    // },[blogData])
 
     const categories = [
         'Frontend Development',
@@ -203,7 +230,6 @@ function CreateBlogPage() {
 
     const handleDraft = async () => {
         setLoading(true)
-        console.log("Client Images ::::::::::::::::::::::::::::: ",blogData.images )
         const res = await draftApi.createDraft(blogData, blogData.images)
 
         if (res.success) {
@@ -570,4 +596,4 @@ function CreateBlogPage() {
     )
 }
 
-export default CreateBlogPage
+export default EditDraft
