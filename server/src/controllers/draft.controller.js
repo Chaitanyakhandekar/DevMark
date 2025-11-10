@@ -69,7 +69,41 @@ const createDraft = asyncHandler(async (req, res) => {
 
 
 const getAllUserDrafts = asyncHandler(async (req,res)=>{
+   const userId = new mongoose.Types.ObjectId(req.user._id);
 
+   const totalDrafts = await Draft.countDocuments({owner:req.user._id})
+
+   if(totalDrafts===0){
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200,[], "No Drafts Found for the User")
+      )
+   }
+
+   const drafts = await Draft.aggregate([
+    {
+      $match:{
+        owner:userId
+      }
+    },
+    {
+      $project:{
+        __v:0,
+        owner:0
+      }
+    }
+   ])
+
+   if(!drafts){
+    throw new ApiError(500,"Failed to Fetch User Drafts")
+   }
+
+   return res
+    .status(200)
+    .json(
+      new ApiResponse(200,drafts, "User Drafts Fetched Successfully")
+    )
 })
 
 
