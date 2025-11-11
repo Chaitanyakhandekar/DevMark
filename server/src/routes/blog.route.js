@@ -15,6 +15,7 @@ import
  from "../controllers/blog.controller.js"
 import { userAuth } from '../middlewares/userAuth.middleware.js';
 import { blogOwner } from '../middlewares/blogOwner.middleware.js';
+import { publicProfile } from '../middlewares/publicProfile.middleware.js';
 
 const router = Router();
 
@@ -23,6 +24,7 @@ router.route("/all").get(userAuth,getAllBlogs)
 router.route("/user").get(userAuth,getUserBlogs)
 router.route("/user/drafts").get(userAuth,getUserDrafts)
 router.route("/search/").get(userAuth,SearchBlogsAndUsers)
+router.route("/user/:id").get(publicProfile,getUserBlogs)
 router.route("/:id").delete(userAuth,blogOwner,deleteBlog)
 router.route("/:id").patch(userAuth,blogOwner,updateBlog)
 router.route("/:id").get(userAuth,getBlog)
