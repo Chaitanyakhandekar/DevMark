@@ -36,6 +36,7 @@ import Swal from 'sweetalert2'
 import MobileNavBottom from '../../../components/MobileNavBottom';
 import { draftApi } from '../../../api/draft.api';
 import { useParams } from 'react-router-dom';
+import { blogApi } from '../../../api/blog.api';
 
 function EditDraft() {
     const [tags, setTags] = useState([])
@@ -43,7 +44,7 @@ function EditDraft() {
     const [loading, setLoading] = useState(false)
     const [userAvatar, setUserAvatar] = useState("https://res.cloudinary.com/dzgtlxfhv/image/upload/v1759152185/dfwvfrdrczaf96nfnar8.png")
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const draftId = useParams().id
+    const [draftId, setDraftId] = useState(useParams().id)
 
     const [blogData, setBlogData] = useState({
         content: "",
@@ -91,12 +92,14 @@ function EditDraft() {
 
     const publishBlog = async () => {
         setLoading(true)
+
+        console.log("Blog Data for creating blog from Draft :::: ", blogData)
         try {
             let tagsArray = []
-            if(Array.isArray(blogData.tags && blogData.tags?.length !== 0)){
-                 tagsArray = blogData.tags
-                ? blogData.tags?.split("#").map(tag => tag.trim()).filter(Boolean)
-                : [];
+            if (Array.isArray(blogData.tags && blogData.tags?.length !== 0)) {
+                tagsArray = blogData.tags
+                    ? blogData.tags?.split("#").map(tag => tag.trim()).filter(Boolean)
+                    : [];
             }
 
             let imgs = new Array();
@@ -104,27 +107,27 @@ function EditDraft() {
 
             const formData = new FormData();
 
-            formData.append("title", blogData.title );
+            formData.append("title", blogData.title);
             formData.append("content", blogData.content || "");
             formData.append("category", blogData.category || "");
-            formData.append("status", blogData.status || "");
-            if(tagsArray.length){
-                 tagsArray.forEach(tag => formData.append("tags[]", tag));
+            formData.append("status", blogData.status || "published");
+            if (tagsArray.length) {
+                tagsArray.forEach(tag => formData.append("tags[]", tag));
             }
-            if(imgs.length){
+            if (imgs.length) {
                 imgs.forEach(img => formData.append("images", img));
             }
 
-            console.log("Form Data :: ",formData)
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
 
-            const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/create`, formData, {
-                withCredentials: true,
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            });
 
-            if (res.data.success) {
+            const res = await blogApi.createBlog(formData)                  // API Call For Publish Blog
+
+            console.log("Response for Creating Blog ::::::::::::::::::: ", res)
+
+            if (res.success) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Blog Published',
@@ -136,6 +139,7 @@ function EditDraft() {
                     showConfirmButton: false
                 });
                 clearData();
+                draftApi.deleteDraft(draftId)
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -144,7 +148,7 @@ function EditDraft() {
                     background: '#1f2936',
                     color: '#c9d1d9'
                 });
-                console.log("Error :: Publish Draft Blog :: ",res.message)
+                console.log("Error :: Publish Draft Blog :: ", res.message)
             }
         } catch (error) {
             setError(error.message)
@@ -154,37 +158,37 @@ function EditDraft() {
         }
     }
 
-    const fetchDraftData = async () =>{
+    const fetchDraftData = async () => {
         const res = await draftApi.getDraftById(draftId)
-        if(res.success){
+        if (res.success) {
             setBlogData(res.data)
-            
+
         }
     }
 
     useEffect(() => {
         let content = blogData.content;
-        let words = content.split(" ")
+        let words = content?.split(" ")
         let characters = 0;
 
-        words = words.filter((word) => word.trim() !== "")
-        words.forEach((word) => {
-            characters += word.length
+        words = words?.filter((word) => word?.trim() !== "")
+        words?.forEach((word) => {
+            characters += word?.length
         })
 
-        const readingTimeCalc = Math.ceil(words.length / 200);
+        const readingTimeCalc = Math.ceil(words?.length / 200);
 
         setBlogData({
             ...blogData,
-            words: words.length,
-            characters: characters,
+            words: words?.length || 0,
+            characters: characters || 0,
             readingTime: readingTimeCalc > 0 ? readingTimeCalc : 1
         })
     }, [blogData.content])
 
     useEffect(() => {
         fetchUserAvatar()
-        fetchDraftData()
+        fetchDraftData(draftId)
         const html = document.documentElement
         html.classList.add("dark")
 
@@ -368,8 +372,8 @@ function EditDraft() {
 
                             <button
                                 onClick={handleDraft}
-                                disabled={blogData.content.trim().length === 0 && blogData.title.trim().length === 0 && !blogData.images.length}
-                                title={blogData.content.trim().length === 0 && blogData.title.trim().length === 0 && !blogData.images.length ? "Cannot Save Empty Blog As A Draft." : "Save Blog as Draft"}
+                                disabled={blogData.content?.trim().length === 0 && blogData.title?.trim().length === 0 && !blogData.images?.length}
+                                title={blogData.content?.trim().length === 0 && blogData.title?.trim().length === 0 && !blogData.images?.length ? "Cannot Save Empty Blog As A Draft." : "Save Blog as Draft"}
                                 className=' flex items-center gap-2 text-sm px-4 py-2 bg-gray-700/50 hover:bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200'
                             >
 
@@ -386,8 +390,8 @@ function EditDraft() {
 
                             <button
                                 onClick={publishBlog}
-                                disabled={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length || loading}
-                                title={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length ? "Title, content and image required" : "Publish Blog"}
+                                disabled={blogData.content?.trim().length === 0 || blogData.title?.trim().length === 0 || !blogData.images?.length || loading}
+                                title={blogData.content?.trim().length === 0 || blogData.title?.trim().length === 0 || !blogData.images?.length ? "Title, content and image required" : "Publish Blog"}
                                 className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg px-4 py-2 transition-all duration-200 shadow-lg hover:shadow-xl"
                             >
                                 {loading ? (

@@ -20,6 +20,8 @@ import CommentCard from './CommentCard';
 import { likeApi } from '../api/like.api';
 import { saveApi } from '../api/save.api';
 import { useNavigate } from 'react-router-dom';
+import { blogApi } from '../api/blog.api';
+import Swal from 'sweetalert2';
 
 // Mock axios and getTimeAgo for demo
 
@@ -42,16 +44,17 @@ function BlogCard({
     isSavedBlog = false
 }) {
     const [isFollowed, setIsFollowed] = useState(owner.isFollowed);
-    const [isLiked,setIsLiked] = useState(false)
+    const [isLiked, setIsLiked] = useState(false)
     const [isExpanded, setIsExpanded] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [commentsList, setCommentsList] = useState([]);
     const [agoTime, setAgoTime] = useState(null)
     const [loading, setLoading] = useState(false);
-    const [totalLikes,setTotalLikes] = useState(likes)
-    const [isSaved,setIsSaved] = useState(isSavedBlog)
-    const [isOwnerOnlyMenuOpen,setIsOwnerOnlyMenuOpen] = useState(false)
+    const [totalLikes, setTotalLikes] = useState(likes)
+    const [isSaved, setIsSaved] = useState(isSavedBlog)
+    const [isOwnerOnlyMenuOpen, setIsOwnerOnlyMenuOpen] = useState(false)
+    const [isDeleted, setIsDeleted] = useState(false)
     const navigate = useNavigate();
 
 
@@ -121,19 +124,19 @@ function BlogCard({
         }
     }
 
-    const isLikedToBlog = async ()=>{
-        const res=await likeApi.isLikedToBlog(id)
-        if(res.success){
+    const isLikedToBlog = async () => {
+        const res = await likeApi.isLikedToBlog(id)
+        if (res.success) {
             setIsLiked(res.data.isLiked)
             console.log(res.data.isLiked)
         }
     }
 
     const handleBlogLikeToggle = async () => {
-        console.log("blog Id = ",id)
+        console.log("blog Id = ", id)
         setIsLiked(!isLiked)
         const res = await likeApi.toggleBlogLike(id)
-        if(!res.success){
+        if (!res.success) {
             console.log("Like Toggle Failed.")
             setIsLiked(!isLiked)
         }
@@ -151,7 +154,7 @@ function BlogCard({
         setIsSaved(!isSaved)
         const res = await saveApi.toggleBlogSave(id)
 
-        if(res.success){
+        if (res.success) {
             console.log("Save Toggle Success.")
             setIsSaved(res.data.isSaved)
         }
@@ -161,15 +164,56 @@ function BlogCard({
         }
     }
 
-    useEffect(()=>{
+    const handleDeleteBlog = async () => {
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action will permanently delete your blog. You won't be able to recover it!",
+            icon: 'warning',
+            background: '#1f2936',
+            color: '#c9d1d9',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+        }).then(async(result) => {
+            if (result.isConfirmed) {
+               
+                 const res = await blogApi.deleteBlog(id)
+
+        if (res.success) {
+            setIsDeleted(true)
+
+              Swal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: 'Your blog has been deleted successfully.',
+                    background: '#1f2936',
+                    color: '#c9d1d9',
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+        }
+
+              
+            }
+        });
+
+
+       
+    }
+
+    useEffect(() => {
         isLikedToBlog()
         isSavedToBlog()
-    },[])
+    }, [])
 
     const handleUniversal = () => {
-       if(isOwnerOnlyMenuOpen){
-        setIsOwnerOnlyMenuOpen(false)
-       }
+        if (isOwnerOnlyMenuOpen) {
+            setIsOwnerOnlyMenuOpen(false)
+        }
     }
 
 
@@ -180,8 +224,8 @@ function BlogCard({
 
     return (
         <div
-        onClick={handleUniversal}
-        className={`w-full md:w-full bg-white dark:bg-[#${bgColor}] md:rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 md:dark:border dark:border-gray-700 overflow-hidden mt-3`}>
+            onClick={handleUniversal}
+            className={`${isDeleted ? "hidden" : ""} w-full md:w-full bg-white dark:bg-[#${bgColor}] md:rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 md:dark:border dark:border-gray-700 overflow-hidden mt-3`}>
             {/* Image Section */}
             <div className="w-full relative group rounded-md">
                 <div className="w-full flex justify-center overflow-hidden rounded-md">
@@ -229,8 +273,8 @@ function BlogCard({
                             disabled={followStatus[owner._id]}
                             onClick={handleFollow}
                             className={`text-sm font-medium cursor-pointer px-4 py-1.5 rounded-md transition-all duration-200 ${followStatus[owner._id]
-                                    ? "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-default"
-                                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow"
+                                ? "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-default"
+                                : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow"
                                 }`}
                         >
                             {followStatus[owner._id] ? "Following" : "Follow"}
@@ -278,7 +322,7 @@ function BlogCard({
                                 onClick={handleBlogLikeToggle}
                                 size={18}
                                 className={` ${isLiked ? 'fill-red-500 text-red-500' : ''}`}
-                                />
+                            />
                             <span className="text-sm font-medium">{likes}</span>
                         </button>
                         <button
@@ -286,51 +330,53 @@ function BlogCard({
                                 handleCommentsFetch()
                             }}
                             className={`flex items-center gap-1.5 transition-colors ${showComments
-                                    ? 'text-blue-500 dark:text-blue-400'
-                                    : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400'
+                                ? 'text-blue-500 dark:text-blue-400'
+                                : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400'
                                 }`}
                         >
                             <MessageCircle size={18} />
                             <span className="text-sm font-medium">{comments}</span>
                         </button>
                         <button
-                        onClick={handleToggleSave}
-                        className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors group">
+                            onClick={handleToggleSave}
+                            className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors group">
                             <Bookmark size={18} className={`group-hover:fill-current ${isSaved ? "fill-orange-300 text-orange-300" : ""}`} />
                         </button>
                     </div>
 
-                   {
-                    owner.isOwner && (
-                         <div className="flex text-gray-500 dark:text-gray-400 items-center gap-1.5 mr-2 cursor-pointer relative">
-                        <MoreHorizontal
-                        className='hover:text-gray-700 dark:hover:text-gray-200 transition-colors'
-                        onClick={()=>{setIsOwnerOnlyMenuOpen(true)}}
-                        size={18} />
-                        
-                        {
-                            isOwnerOnlyMenuOpen && (
-                                  <div className="absolute right-0 bottom-6 w-20 bg-gray-200 dark:bg-gray-700 rounded-tl-md rounded-bl-md rounded-tr-md">
-                            <div className="flex flex-col gap-1 w-full">
-                              
-                                    <button
-                                    onClick={()=>{navigate("/user/blogs/update/"+id)}}
-                                    className="w-full flex items-center gap-1 px-3 py-2 hover:bg-gray-300 dark:hover:bg-gray-600 w-full text-left">
-                                        <Edit2 size={16} className='text-blue-500'/>
-                                        <span className="text-sm font-medium">Edit</span>
-                                    </button>
-                                    
-                                    <button className="w-full flex items-center gap-1 px-3 py-2 hover:bg-gray-300 dark:hover:bg-gray-600 w-full text-left">
-                                        <Trash2 size={16} className='text-red-500' />
-                                        <span className="text-sm font-medium">Delete</span>
-                                    </button>
+                    {
+                        owner.isOwner && (
+                            <div className="flex text-gray-500 dark:text-gray-400 items-center gap-1.5 mr-2 cursor-pointer relative">
+                                <MoreHorizontal
+                                    className='hover:text-gray-700 dark:hover:text-gray-200 transition-colors'
+                                    onClick={() => { setIsOwnerOnlyMenuOpen(true) }}
+                                    size={18} />
+
+                                {
+                                    isOwnerOnlyMenuOpen && (
+                                        <div className="absolute right-0 bottom-6 w-20 bg-gray-200 dark:bg-gray-700 rounded-tl-md rounded-bl-md rounded-tr-md">
+                                            <div className="flex flex-col gap-1 w-full">
+
+                                                <button
+                                                    onClick={() => { navigate("/user/blogs/update/" + id) }}
+                                                    className="w-full flex items-center gap-1 px-3 py-2 hover:bg-gray-300 dark:hover:bg-gray-600 w-full text-left">
+                                                    <Edit2 size={16} className='text-blue-500' />
+                                                    <span className="text-sm font-medium">Edit</span>
+                                                </button>
+
+                                                <button
+                                                    onClick={handleDeleteBlog}
+                                                    className="w-full flex items-center gap-1 px-3 py-2 hover:bg-gray-300 dark:hover:bg-gray-600 w-full text-left">
+                                                    <Trash2 size={16} className='text-red-500' />
+                                                    <span className="text-sm font-medium">Delete</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )
+                                }
                             </div>
-                        </div>
-                            )
-                        }
-                    </div>
-                    )
-                   }
+                        )
+                    }
                 </div>
 
                 {/* Comments Section */}
@@ -388,8 +434,8 @@ function BlogCard({
                         {/* Comments List */}
                         <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                             {commentsList.map((comment) => (
-                                <CommentCard key={comment._id} comment={comment}/>
-))}
+                                <CommentCard key={comment._id} comment={comment} />
+                            ))}
                         </div>
                     </div>
                 )}

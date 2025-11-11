@@ -138,8 +138,44 @@ const getDraftById = asyncHandler(async (req,res)=>{
       )
 })
 
+
+const deleteDraft = asyncHandler(async (req,res)=>{
+  const draftId = req.params.id
+
+  if(!draftId || !mongoose.Types.ObjectId.isValid(draftId)){
+    throw new ApiError(400,"Valid Draft Id Required.")
+  }
+
+  const draft = await Draft.findById(draftId)
+
+  if(!draft){
+    throw new ApiError(400,"Draft With Given Id Doesnt Exists.")
+  }
+
+  if(draft.images.length){
+    await Promise.all(
+      draft.images.map(async(image)=>{
+        await deleteFileFromCloudinary(image.public_id)
+      })
+    )
+  }
+
+  const deletedDraft = await Draft.findByIdAndDelete(draftId)
+
+  if(!deletedDraft){
+    throw new ApiError(500,"Server Error While Deleting Draft.")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200,[],"Draft Deleted Successfully.")
+    )
+})
+
 export {
    createDraft,
    getAllUserDrafts,
-   getDraftById
+   getDraftById,
+   deleteDraft
   };

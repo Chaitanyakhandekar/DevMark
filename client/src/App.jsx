@@ -32,7 +32,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/loader" element={<AuthLoaderDemo />} />
-      <Route path="/draft-blog" element={<DraftBlogCard />} />
+      <Route path="/draft-blog/:id" element={<EditDraft />} />
 
       <Route path="/user/blogs/create" element={<ProtectedRoute><CreateBlogPage/></ProtectedRoute>} />
       <Route path="/user/feed1" element={<ProtectedRoute><MainFeed1/></ProtectedRoute>} />

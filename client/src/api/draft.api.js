@@ -69,6 +69,7 @@ class DraftApi{
 
     async getDraftById(id){
         try {
+            console.log("Draft ID : ",id)
             const response = await axios.get(
                 `${this.baseUrl}/${id}`,
                 {
@@ -84,6 +85,29 @@ class DraftApi{
         } catch (error) {
 
             console.log("Publish Draft Blopg :: Error :: ",error)
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
+        }
+    }
+
+    async deleteDraft(id){
+        try {
+            const response = await axios.delete(
+                `${this.baseUrl}/${id}`,
+                {
+                    withCredentials:true
+                }
+            )
+            console.log("Delete Draft Response :: ",response)
+
+            return {
+                success:true,
+                data:response.data
+            }
+        } catch (error) {
             return {
                 success:false,
                 message:error.message,
