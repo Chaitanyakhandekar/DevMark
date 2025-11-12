@@ -81,8 +81,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!user.isVerified) {
     throw new ApiError(403, "Email is not verified!")
-  } 
-  
+  }
+
 
   const { accessToken, refreshToken } = generateTokens(user)
 
@@ -380,10 +380,10 @@ const uploadAvatar = asyncHandler(async (req, res) => {
 
 })
 
-const deleteUserAvatar = asyncHandler(async (req,res)=>{   // Header x-delete-only:"true"  if only deletion operation
+const deleteUserAvatar = asyncHandler(async (req, res) => {   // Header x-delete-only:"true"  if only deletion operation
 
-  if(!req.user.avatar || !req.user.avatarPublicId){
-    throw new ApiError(400,"No Avatar To Delete.")
+  if (!req.user.avatar || !req.user.avatarPublicId) {
+    throw new ApiError(400, "No Avatar To Delete.")
   }
 
   await deleteFileFromCloudinary(req.user.avatarPublicId)
@@ -391,32 +391,32 @@ const deleteUserAvatar = asyncHandler(async (req,res)=>{   // Header x-delete-on
   const avatarDeleted = await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set:{
-        avatar:"",
-        avatarPublicId:""
+      $set: {
+        avatar: "",
+        avatarPublicId: ""
       }
     },
     {
-      new:true
+      new: true
     }
   ).select("-password -refreshToken")
 
-  if(!avatarDeleted){
-    throw new ApiError(500,"Server Error While Deleting Avatar.")
+  if (!avatarDeleted) {
+    throw new ApiError(500, "Server Error While Deleting Avatar.")
   }
 
-  if(req.headers["x-delete-only"] && req.headers["x-delete-only"]==="true"){
+  if (req.headers["x-delete-only"] && req.headers["x-delete-only"] === "true") {
     return res
-        .status(200)
-        .json(
-          new ApiResponse(200,null,"Avatar Deleted Successfully.")
-        )
+      .status(200)
+      .json(
+        new ApiResponse(200, null, "Avatar Deleted Successfully.")
+      )
   }
 
-  return  {
-      success:true,
-      message:"Avatar Deleted Successfully."
-    }
+  return {
+    success: true,
+    message: "Avatar Deleted Successfully."
+  }
 
 
 })
@@ -433,47 +433,47 @@ const getUserAvatar = asyncHandler(async (req, res) => {
   })
 })
 
-const updateUserAvatar = asyncHandler(async (req,res)=>{
-  console.log("Avatar :",req.file)
-  if(!req.file){
-    throw new ApiError(400,"Avatar Image is Required for Updating Avatar.")
+const updateUserAvatar = asyncHandler(async (req, res) => {
+  console.log("Avatar :", req.file)
+  if (!req.file) {
+    throw new ApiError(400, "Avatar Image is Required for Updating Avatar.")
   }
 
   const newAvatar = req.file.path
 
-  await deleteUserAvatar(req,res)
+  await deleteUserAvatar(req, res)
 
-    const uploadData = await uploadFileOnCloudinary(newAvatar)
+  const uploadData = await uploadFileOnCloudinary(newAvatar)
 
-    if(uploadData.success===false){
-      throw new ApiError(500,uploadData.message)
-    }
+  if (uploadData.success === false) {
+    throw new ApiError(500, uploadData.message)
+  }
 
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
-      {
-        $set:{
-          avatar: uploadData.secure_url,
-          avatarPublicId: uploadData.public_id
-        }
-      },
-      {
-        new:true
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        avatar: uploadData.secure_url,
+        avatarPublicId: uploadData.public_id
       }
-    ).select("-password -refreshToken")
-
-    if(!user){
-      throw new ApiError(500,"Server Error While Updating Avatar.")
+    },
+    {
+      new: true
     }
+  ).select("-password -refreshToken")
 
-    return res
-        .status(200)
-        .json(
-          new ApiResponse(200,{
-            _id:user._id,
-            avatar:uploadData.secure_url
-          })
-        )
+  if (!user) {
+    throw new ApiError(500, "Server Error While Updating Avatar.")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, {
+        _id: user._id,
+        avatar: uploadData.secure_url
+      })
+    )
 
 })
 
@@ -494,6 +494,95 @@ const getUserProfile = asyncHandler(async (req, res) => {
         totalFollowing: 1,
         totalBlogs: 1,
         totalSavedBlogs: 1,
+        bio: 1,
+        skills: 1,
+        location: 1,
+        website: 1,
+        githubUrl: 1,
+        linkedinUrl: 1,
+        twitterUrl: 1,
+        createdAt: 1,
+        joinedDate: {
+          $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+        }
+
+      }
+    }
+  ])
+
+  if (!user.length) {
+    throw new ApiError(500, "Server Error While Fetching User Profile.")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, user[0], "User Profile Fetched Successfully.")
+    )
+
+})
+
+const getPublicUserProfile = asyncHandler(async (req, res) => {
+
+  const userId = req.params.id
+
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    throw new ApiError(400, "Valid User Id Is Required.")
+  }
+
+  const user = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(userId)
+      }
+    },
+    {
+      $lookup: {
+        from: "follows",
+        let: { userId: userId },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: ["$followedBy", new mongoose.Types.ObjectId(userId)]
+                  },
+                  {
+                    $eq: ["$followTo", new mongoose.Types.ObjectId(req.user._id)]
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        as: "follows",
+
+      }
+    },
+    {
+      $addFields: {
+        isFollowed: {
+          $cond: {
+            if: { $gt: [{ $size: "$follows" }, 0] },
+            then: true,
+            else: false
+          }
+        }
+      }
+    }
+    ,
+    {
+      $project: {
+        fullName: 1,
+        username: 1,
+        avatar: 1,
+        totalFollowers: 1,
+        totalFollowing: 1,
+        totalBlogs: 1,
+        // "follows": 1,
+        isFollowed: 1,
+        // totalSavedBlogs: 1,
         bio: 1,
         skills: 1,
         location: 1,
@@ -566,7 +655,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Atleast One Field is Required for Profile Update.")
   }
 
-  fields.forEach((field,index) => {
+  fields.forEach((field, index) => {
     if (field && field.trim() !== "") {
       updateFields = { ...updateFields, [fieldsName[index]]: field }
     }
@@ -581,15 +670,15 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   const updatedProfile = await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set:updateFields
+      $set: updateFields
     },
     {
-      new:true
+      new: true
     }
   ).select("-password -refreshToken -verificationToken -verificationTokenExpiry -email")
 
-  if(!updatedProfile){
-    throw new ApiError(500,"Server Error While Updating Profile Details.")
+  if (!updatedProfile) {
+    throw new ApiError(500, "Server Error While Updating Profile Details.")
   }
 
   return res
@@ -614,5 +703,6 @@ export {
   getUserProfile,
   updateUserProfile,
   deleteUserAvatar,
-  updateUserAvatar
+  updateUserAvatar,
+  getPublicUserProfile
 }

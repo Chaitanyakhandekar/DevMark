@@ -19,6 +19,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import SpinLoader from '../../../components/SpinLoader';
 import FeedSidebar from '../../../components/FeedSidebar';
+import { followApi } from '../../../api/follow.api';
 
 function PublicProfilePage() {
     const [allBlogs, setAllBlogs] = useState([]);
@@ -36,14 +37,17 @@ function PublicProfilePage() {
         totalFollowing: 0,
         totalBlogs: 0,
         skills: [],
-        avatar: ""
+        avatar: "",
+        isFollowed : false
     });
-    const [isFollowing, setIsFollowing] = useState(false);
     const [loading, setLoading] = useState(true);
     const [followLoading, setFollowLoading] = useState(false);
     const [currentUserAvatar, setCurrentUserAvatar] = useState("");
+            const [followStatus, setFollowStatus] = useState({})
     
-    const { id } = useParams();
+    
+    const userId = useParams().id;
+    const [isFollowing, setIsFollowing] = useState(useParams().isFollowed);
     const navigate = useNavigate();
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -53,7 +57,9 @@ function PublicProfilePage() {
                 `${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/user/${userId}?page=1&limit=10`,
                 { withCredentials: true }
             );
+            console.log("Blogs for followStatus :::::::::::::::::::::::::::::::::::::::::::::::::: ",res.data.data.blogs)
             setAllBlogs(res.data.data.blogs);
+            loadFollowStatus(res.data.data.blogs)
         } catch (error) {
             console.log("Error :: Fetching User Blogs :: ", error.message);
         }
@@ -64,9 +70,11 @@ function PublicProfilePage() {
             setLoading(true);
             // Replace with your actual API call to fetch public profile by username
             const res = await axios.get(
-                `${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/profile/${username}`,
+                `${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/profile/${userId}`,
                 { withCredentials: true }
             );
+
+            console.log("Public Profile Data ::: ",res.data)
             
             const userData = res.data.data;
             setProfileData({
@@ -83,7 +91,8 @@ function PublicProfilePage() {
                 totalFollowing: userData.totalFollowing || 0,
                 totalBlogs: userData.totalBlogs || 0,
                 skills: userData.skills || [],
-                avatar: userData.avatar || ""
+                avatar: userData.avatar || "",
+                isFollowed: userData.isFollowed || false
             });
             
             setIsFollowing(userData.isFollowing || false);
@@ -99,11 +108,7 @@ function PublicProfilePage() {
         try {
             setFollowLoading(true);
             // Replace with your actual follow/unfollow API call
-            const res = await axios.post(
-                `${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/${isFollowing ? 'unfollow' : 'follow'}/${username}`,
-                {},
-                { withCredentials: true }
-            );
+            const res = await followApi.followUser(userId)
             
             if (res.data.success) {
                 setIsFollowing(!isFollowing);
@@ -128,6 +133,24 @@ function PublicProfilePage() {
         }
     };
 
+    
+    const loadFollowStatus = (blogs) => {
+
+            blogs.forEach((blog) => {
+                setFollowStatus(
+                    (prev) => {
+                        return {
+                            ...prev,
+                            [blog.owner._id]: blog.owner.isFollowed
+                        }
+                    }
+                )
+            })
+
+            console.log("Follow Status = ", followStatus)
+
+        }
+
     useEffect(() => {
         window.scrollTo({
             top: 0,
@@ -136,7 +159,8 @@ function PublicProfilePage() {
         document.documentElement.classList.add("dark");
         fetchPublicProfile();
         fetchCurrentUserAvatar();
-    }, [username]);
+        console.log("ISFOLLOWED ::: ",Boolean(isFollowing))
+    }, [userId]);
 
     if (loading) {
         return (
@@ -270,7 +294,7 @@ function PublicProfilePage() {
                                 onClick={handleFollowToggle}
                                 disabled={followLoading}
                                 className={`${
-                                    isFollowing
+                                    profileData.isFollowed
                                         ? 'bg-slate-700 hover:bg-slate-600'
                                         : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:shadow-xl'
                                 } text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -279,7 +303,7 @@ function PublicProfilePage() {
                                     <SpinLoader />
                                 ) : (
                                     <>
-                                        {isFollowing ? (
+                                        {profileData.isFollowed===true ? (
                                             <>
                                                 <UserMinus size={20} />
                                                 Unfollow
@@ -372,8 +396,8 @@ function PublicProfilePage() {
                                     tags={blog.tags}
                                     views={blog.views}
                                     owner={blog.owner}
-                                    followStatus={{}}
-                                    setFollowStatus={() => {}}
+                                    followStatus={followStatus}
+                                    setFollowStatus={setFollowStatus}
                                     createdAt={blog.createdAt}
                                     isOwner={false}
                                 />
