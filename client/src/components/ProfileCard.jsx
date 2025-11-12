@@ -1,8 +1,10 @@
 import React,{useState} from 'react'
+import { useNavigate } from 'react-router-dom';
 
 function ProfileCard({user,isDark,followStatus,setFollowStatus,isFollowed1=false , isOwner=false}) {
 
      const [isFollowed, setIsFollowed] = useState(isFollowed1);
+     const navigate = useNavigate()
 
      const handleFollow = async () => {
         console.log(user._id);
@@ -29,7 +31,9 @@ function ProfileCard({user,isDark,followStatus,setFollowStatus,isFollowed1=false
 
 
   return (
-    <div className="flex items-start justify-between">
+    <div
+    onClick={()=>navigate(`/user/search/${user._id}/${followStatus[user._id]}`)}
+    className="flex items-start justify-between">
                           <div className="flex items-start gap-4">
                             <div className="w-16 h-16 rounded-full  flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
                               <img

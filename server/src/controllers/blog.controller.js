@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import { Blog } from "../models/blogs.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError, ApiResponse } from "../utils/apiUtils.js"
@@ -301,6 +301,128 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   );
 });
 
+const getPublicUserBlogs = asyncHandler(async (req, res) => {
+
+   const userId = req.params.id
+
+  if(!userId || !mongoose.Types.ObjectId.isValid(userId)){
+    throw new ApiError(400,"Valid UserId Required.")
+  }
+
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  // const userId = new mongoose.Types.ObjectId(req.user._id);
+
+  const totalBlogs = await Blog.countDocuments({
+    status:"published"
+  });
+
+  const blogs = await Blog.aggregate([
+    {
+      $match: {owner:new mongoose.Types.ObjectId(userId)},
+    },
+    { $sort: { createdAt: -1 } },
+    { $skip: skip },
+    { $limit: limit },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $addFields:{
+              isOwner:{
+                $eq:["$_id", userId]
+              }
+            }
+          },
+          {
+            $project: {
+              username: 1,
+              avatar: 1,
+              totalFollowers: 1,
+              isOwner: 1
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$owner" },
+
+    // 👇 Add lookup to check follow status
+    {
+      $lookup: {
+        from: "follows",
+        let: { ownerId: "$owner._id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$followedBy", userId] },
+                  { $eq: ["$followTo", "$$ownerId"] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "isFollowedDocs",
+      },
+    },
+
+    // 👇 Convert the result into a boolean
+    {
+      $addFields: {
+        "owner.isFollowed": {
+          $cond: {
+            if: { $gt: [{ $size: "$isFollowedDocs" }, 0] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        // isFollowedDocs: 0, // remove temp field
+        title: 1,
+        content: 1,
+        category: 1,
+        owner: 1,
+        tags: 1,
+        images: 1,
+        totalLikes: 1,
+        totalComments: 1,
+        status: 1,
+        createdAt: 1,
+      },
+    },
+  ]);
+
+ 
+  if (!blogs.length) {
+    throw new ApiError(404, "No blogs found");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        blogs,
+        totalBlogs,
+        totalPages: Math.ceil(totalBlogs / limit),
+        currentPage: page,
+        hasNextPage: limit * page < totalBlogs,
+      },
+      "Blogs fetched successfully."
+    )
+  );
+});
+
 const getUserBlogs = asyncHandler(async (req, res) => {
 
   const page = Number(req.query.page) || 1;
@@ -364,6 +486,9 @@ const getUserBlogs = asyncHandler(async (req, res) => {
     )
 
 })
+
+
+
 
 const getUserDrafts = asyncHandler(async (req, res) => {
   const drafts = await Blog.find({
@@ -741,6 +866,7 @@ export {
   getBlog,
   getUserBlogs,
   getUserDrafts,
-  SearchBlogsAndUsers
+  SearchBlogsAndUsers,
+  getPublicUserBlogs
 };
 

@@ -39,7 +39,7 @@ const userAuth = asyncHandler(async (req,res,next)=>{
 
     const user = await User.findById(decodedToken.id).select("-password")
 
-    req.user =user
+    req.user = user
 
     next();
 })

@@ -9,7 +9,8 @@ import
     getBlog,
     getUserBlogs,
     getUserDrafts,
-    SearchBlogsAndUsers
+    SearchBlogsAndUsers,
+    getPublicUserBlogs
 
 }
  from "../controllers/blog.controller.js"
@@ -24,7 +25,7 @@ router.route("/all").get(userAuth,getAllBlogs)
 router.route("/user").get(userAuth,getUserBlogs)
 router.route("/user/drafts").get(userAuth,getUserDrafts)
 router.route("/search/").get(userAuth,SearchBlogsAndUsers)
-router.route("/user/:id").get(publicProfile,getUserBlogs)
+router.route("/user/:id").get(publicProfile,getPublicUserBlogs)
 router.route("/:id").delete(userAuth,blogOwner,deleteBlog)
 router.route("/:id").patch(userAuth,blogOwner,updateBlog)
 router.route("/:id").get(userAuth,getBlog)
