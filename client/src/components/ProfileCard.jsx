@@ -1,5 +1,6 @@
 import React,{useState} from 'react'
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function ProfileCard({user,isDark,followStatus,setFollowStatus,isFollowed1=false , isOwner=false}) {
 
@@ -32,7 +33,7 @@ function ProfileCard({user,isDark,followStatus,setFollowStatus,isFollowed1=false
 
   return (
     <div
-    onClick={()=>navigate(`/user/search/${user._id}/${followStatus[user._id]}`)}
+    onClick={()=>navigate(`/user/search/${user._id}`)}
     className="flex items-start justify-between">
                           <div className="flex items-start gap-4">
                             <div className="w-16 h-16 rounded-full  flex items-center justify-center text-white font-bold text-lg flex-shrink-0">

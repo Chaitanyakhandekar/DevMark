@@ -104,6 +104,16 @@ function PublicProfilePage() {
         }
     };
 
+    const getFollowStatus = async ()=>{
+        const res = await followApi.getFollowStatus(userId)
+
+        console.log("Follow Status ::::: ",res.data)
+
+        if(res.success){
+            setIsFollowing(res.data.isFollowed)
+        }
+    }
+
     const handleFollowToggle = async () => {
         try {
             setFollowLoading(true);
@@ -111,7 +121,7 @@ function PublicProfilePage() {
             const res = await followApi.followUser(userId)
             
             if (res.data.success) {
-                setIsFollowing(!isFollowing);
+                setIsFollowing(true);
                 setProfileData(prev => ({
                     ...prev,
                     totalFollowers: isFollowing ? prev.totalFollowers - 1 : prev.totalFollowers + 1
@@ -159,6 +169,7 @@ function PublicProfilePage() {
         document.documentElement.classList.add("dark");
         fetchPublicProfile();
         fetchCurrentUserAvatar();
+        getFollowStatus()
         console.log("ISFOLLOWED ::: ",Boolean(isFollowing))
     }, [userId]);
 
@@ -294,7 +305,7 @@ function PublicProfilePage() {
                                 onClick={handleFollowToggle}
                                 disabled={followLoading}
                                 className={`${
-                                    profileData.isFollowed
+                                    isFollowing
                                         ? 'bg-slate-700 hover:bg-slate-600'
                                         : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:shadow-xl'
                                 } text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
@@ -303,7 +314,7 @@ function PublicProfilePage() {
                                     <SpinLoader />
                                 ) : (
                                     <>
-                                        {profileData.isFollowed===true ? (
+                                        {isFollowing===true ? (
                                             <>
                                                 <UserMinus size={20} />
                                                 Unfollow

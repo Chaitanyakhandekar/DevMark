@@ -29,6 +29,29 @@ class FollowApi {
             }
         }
     }
+
+
+    async getFollowStatus(id){
+        try {
+            const response = await axios.get(
+                `${this.baseUrl}/is-followed/${id}`,
+                {
+                    withCredentials:true
+                }
+            )
+
+            return {
+                success:true,
+                data:response.data.data
+            }
+        } catch (error) {
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
+        }
+    }
 }
 
 export const followApi = new FollowApi()
