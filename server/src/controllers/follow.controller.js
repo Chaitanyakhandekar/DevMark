@@ -64,8 +64,30 @@ const followUser = asyncHandler(async(req,res)=>{
 
 const unfollowUser = asyncHandler(async(req,res)=>{})
 
+const getFollowStatus = asyncHandler(async (req,res)=>{
+    const {id} = req.params
+
+    if(!id || !mongoose.Types.ObjectId.isValid(id)){
+        throw new ApiError(400,"Valid User Id Is Required.")
+    }
+
+    const isFollowed = await Follow.findOne({
+        followTo:id,
+        followedBy:req.user._id
+    })
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200,{
+                isFollowed:isFollowed ? true : false
+            },"Follow Status Fetched Successfully.")
+        )
+})
+
 
 export {
     followUser,
-    unfollowUser
+    unfollowUser,
+    getFollowStatus
 }
