@@ -1,17 +1,20 @@
-import React from 'react'
+import React, { use, useContext } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import LoginPage from '../pages/auth/Login'
 import { useState } from 'react'
 import AuthLoader from "./AuthLoader"
+import { authContext } from '../context/authContex'
 
 function ProtectedRoute({children}) {
   const [isLoggedIn , setIsLoggedIn] = useState(false)
   const [loading , setLoading] = useState(true)
+  const data = useContext(authContext)
 
   const checkAuth = async ()=>{
       setLoading(true)
+      console.log("Context API AuthConetxt = ",data)
         const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/is-logged-in`,
       {
         withCredentials:true,
@@ -24,10 +27,10 @@ function ProtectedRoute({children}) {
     setLoading(false)
 
     if(res?.data?.data?.isLoggedIn === true){
-      setIsLoggedIn(true)
+      data.setIsLoggedIn(true)
     }
     else{
-      setIsLoggedIn(false)
+      data.setIsLoggedIn(false)
     }
 
     }
@@ -38,9 +41,12 @@ function ProtectedRoute({children}) {
   return ()=> clearTimeout(timer)
  },[])
 
- 
- return loading && !isLoggedIn && <AuthLoader/> ||  !loading && !isLoggedIn && <LoginPage/> || !loading && isLoggedIn && children;
+ useEffect(()=>{
+    
+ },[data.isLoggedIn])
 
+ 
+ return loading && !data.isLoggedIn && <AuthLoader/> ||  !loading && !data.isLoggedIn && <LoginPage/> || !loading && data.isLoggedIn && children;
 
 }
   

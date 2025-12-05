@@ -31,8 +31,8 @@ const AuthLoader = ({
         
         {/* Spinner */}
         <div className="relative w-16 h-16">
-          <div className="absolute inset-0 border-4 border-slate-700 rounded-full"></div>
-          <div className="absolute inset-0 border-4 border-transparent border-t-blue-500 rounded-full animate-spin"></div>
+          <div className="absolute inset-0 border-4 border-transparent rounded-full"></div>
+          <div className="absolute inset-0 border-4 border-transparent border-t-blue-500 border-r-blue-500 rounded-full animate-spin"></div>
         </div>
 
         {/* Content */}
@@ -46,17 +46,17 @@ const AuthLoader = ({
         </div>
 
         {/* Progress Bar */}
-        <div className="w-64 bg-slate-800 rounded-full h-1 overflow-hidden">
+        {/* <div className="w-64 bg-slate-800 rounded-full h-1 overflow-hidden">
           <div className="h-full bg-blue-500 rounded-full animate-progress"></div>
-        </div>
+        </div> */}
 
         {/* DevMark Branding */}
-        <div className="flex items-center gap-2 text-slate-500 text-sm pt-4">
+        {/* <div className="flex items-center gap-2 text-slate-500 text-sm pt-4">
           <div className="w-5 h-5 bg-gradient-to-r from-[#4777f4] to-[#5b8def] rounded flex items-center justify-center text-[10px] font-bold text-white">
             {'<>'}
           </div>
           <span>DevMark</span>
-        </div>
+        </div> */}
       </div>
 
       <style>{`
