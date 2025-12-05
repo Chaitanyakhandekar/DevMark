@@ -164,21 +164,23 @@ function SavedBlogs() {
     return (
         <div className="main-feed w-screen min-w-screen max-w-screen bg-[#f4f2ee] dark:bg-[#111826] box-border border-1">
 
+
             {/* Navbar */}
 
-            <section className='hidden sm:hidden md:block border-1 border-blue-700 text-black dark:text-white md:flex md:flex-col md:gap-5 md:py-3 sticky top-20'>
+            <section className='hidden sm:hidden md:block border-1 border-blue-700 text-black dark:text-white md:flex md:flex-col md:gap-5 md:py-3 md:sticky top-20'>
 
 
                 {/*Quick actions */}
 
-                <FeedSidebar activePage={"saved"} />
+                <FeedSidebar activePage="saved" /> 
 
 
             </section>
 
 
             {/* Main Content */}
-            <main className='border-1 w-full min-h-screen flex justify-center items-start gap-3 relative'>
+            <main className='border-1 w-full min-h-screen flex justify-center items-start gap-3 rel
+            ative'>
 
 
 
@@ -214,6 +216,7 @@ function SavedBlogs() {
 
                         <button
                             onClick={() => {
+                                
                                 setLimit((prev) => prev + prev)
                             }}
                             className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">{loading ? "Loading..." : "Load More Posts"}</button>

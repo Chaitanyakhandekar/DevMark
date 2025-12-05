@@ -1,16 +1,17 @@
-import React from "react";
+import React,{useContext} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2';
 import TestLoader from "../../test/TestLoader";
 import { userApi } from "../../api/user.api";
-
+import { authContext } from "../../context/authContex";
 
 export default function LoginPage({nextPage="/user/feed"}) {
 
   const navigate = useNavigate();
   const [user,setUser] = React.useState({ email: "", password: "" });
   const [loading, setLoading] = React.useState(false);
+  const authData = useContext(authContext)
 
   const handleChange = (e)=>{
     setUser((prev)=>(
@@ -39,6 +40,7 @@ export default function LoginPage({nextPage="/user/feed"}) {
     setLoading(false);
 
     if(res.data.message){
+      authData.setIsLoggedIn(true);
       Swal.fire({
         icon: 'success',
         title: 'Login Successful',

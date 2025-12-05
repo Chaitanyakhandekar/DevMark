@@ -301,7 +301,7 @@ function CreateBlogPage() {
                 </nav>
 
                 {/* Sidebar Footer */}
-                <div className="absolute bottom-0 w-full p-4">
+                {/* <div className="absolute bottom-0 w-full p-4">
                     <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-lg p-3">
                         <div className="flex items-center gap-2 text-blue-400 mb-1">
                             <Sparkles size={14} />
@@ -309,7 +309,7 @@ function CreateBlogPage() {
                         </div>
                         <p className="text-xs text-gray-300">Use markdown for rich formatting!</p>
                     </div>
-                </div>
+                </div> */}
             </aside>
 
             {/* Mobile Sidebar Overlay */}
