@@ -7,6 +7,8 @@ import dotenv from "dotenv";
 import { sendVerificationToken } from "../services/sendVerificationToken.js";
 import { generateTokens } from "../services/generateTokens.js";
 import { deleteFileFromCloudinary, uploadFileOnCloudinary } from "../services/cloudinary.service.js";
+import { generateOTP } from "../services/generateOTP.js";
+import { sendEmail } from "../services/brevoMail.service.js";
 
 dotenv.config({ path: "./.env" })
 
@@ -146,6 +148,57 @@ const logoutUser = asyncHandler(async (req, res) => {
     )
 
 })
+
+const sendOTP = asyncHandler(async (req,res)=>{
+  const {email} = req.body;
+
+  if(!email || (email && email.trim() === "")){
+    throw new ApiError(400,"Email is required to send OTP")
+  }
+
+  const otp = generateOTP();
+
+  if(!otp){
+    throw new ApiError(500,"OTP Generation Failed")
+  }
+
+  const user = await User.updateOne(
+    { email },
+    {
+      $set:{
+        resetPasswordOTP: otp,
+        resetPasswordOTPExpiry: Date.now() + 10*60*1000 //10 minutes
+      }
+    },
+    {
+      new:true
+    }
+  )
+
+  if(!user){
+    throw new ApiError(500,"MongoDB Server Error While Saving OTP")
+  }
+
+  const emailResponse = await sendEmail(
+    email,
+    "Your Password Reset OTP",
+    `Your OTP for password reset is: <b>${otp}</b>. It is valid for 10 minutes.`
+  );
+
+  console.log("Email service response:", emailResponse);
+
+  // if(!emailResponse.success){
+  //     throw new ApiError(500,"Email Sending Failed"); 
+  // }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200,"OTP Sent Successfully to Email")
+    )
+
+  
+  })
 
 const verifyUser = asyncHandler(async (req, res) => {
   const { token } = req.params;
@@ -704,5 +757,6 @@ export {
   updateUserProfile,
   deleteUserAvatar,
   updateUserAvatar,
-  getPublicUserProfile
+  getPublicUserProfile,
+  sendOTP
 }
