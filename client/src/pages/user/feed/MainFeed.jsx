@@ -317,7 +317,7 @@ function MainFeed() {
 
 
           {/* Suggested Developers */}
-          <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md dark:bg-[#1f2936]">
+          {/* <div className="w-full border-[0.4px] border-gray-700 flex flex-col items-start gap-7 pl-5 pt-7 pb-10 rounded-md dark:bg-[#1f2936]">
             <div className="flex items-center gap-3 font-bold">
               <Users className='font-bold' size={19} />
               Suggested Developers
@@ -344,7 +344,7 @@ function MainFeed() {
 
             
 
-          </div>
+          </div> */}
 
           {/* Upcoming Events */}
 
