@@ -93,6 +93,12 @@ const userSchema = new Schema({
     verificationTokenExpiry:{
         type:String
     },
+    resetPasswordOTP:{
+        type:String
+    },
+    resetPasswordOTPExpiry:{
+        type:Date
+    },
     isVerified:{
         type:Boolean,
         default:false

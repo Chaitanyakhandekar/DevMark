@@ -24,6 +24,7 @@ import UpdateBlogPage from './pages/user/blogs/UpdateBlogPage'
 import DraftBlogCard from './components/DraftBlogCard'
 import EditDraft from './pages/user/blogs/EditDraft'
 import PublicProfilePage from './pages/user/profile/PublicProfilePage'
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -50,6 +51,7 @@ function App() {
 
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/verify/:id" element={<Verify />} />
       <Route path="/home1" element={<Home />} />
       <Route path="/verify-confirm" element={<VerifyConfirm />} />
