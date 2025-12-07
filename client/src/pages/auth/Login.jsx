@@ -111,7 +111,7 @@ export default function LoginPage({nextPage="/user/feed"}) {
             Sign up
           </a>
         </p>
-        //forget password
+      
         <p className="text-center text-gray-400 mt-2">
           <a href="/forgot-password" className="text-[#00D8FF] hover:underline">
             Forgot Password?

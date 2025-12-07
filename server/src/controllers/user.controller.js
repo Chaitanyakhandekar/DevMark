@@ -800,18 +800,7 @@ const resetPassword = asyncHandler(async (req,res)=>{
       .json(
         new ApiResponse(200,"Password Reset Successful")
       )
-      .cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge : 24 * 60 * 60 * 1000 // 1 day
-      })
-      .cookie("refreshToken", refreshToken, {
-        httpOnly :true,
-        secure : process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge:  24 * 60 * 60 * 1000 // 1 day
-      })
+     
   }
 
 })

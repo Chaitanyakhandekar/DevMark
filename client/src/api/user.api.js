@@ -64,6 +64,28 @@ class UserApi {
             }
         }
     }
+
+    async resetPassword(data){
+        try {
+            const response = await axios.post(
+                `${this.baseUrl}/users/password/reset`,
+                data
+            )
+
+            console.log("Reset Password API Response = ",response.data)
+
+            return {
+                success:true,
+                data:response.data
+            }
+        } catch (error) {
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
+        }
+    }
     
 
     async logoutUser() {
