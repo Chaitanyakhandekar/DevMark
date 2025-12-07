@@ -182,7 +182,7 @@ const sendOTP = asyncHandler(async (req,res)=>{
   const emailResponse = await sendEmail(
     email,
     "Your Password Reset OTP",
-    `Your OTP for password reset is: <b>${otp}</b>. It is valid for 10 minutes.`
+    `Your OTP for password reset is: <h1><b>${otp}</b></h1>. It is valid for 10 minutes.`
   );
 
   console.log("Email service response:", emailResponse);
@@ -742,6 +742,80 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
 })
 
+const resetPassword = asyncHandler(async (req,res)=>{
+  const {email,otp,newPassword} = req.body;
+
+  console.log("Reset Password Request Body =",req.body);
+
+  if(!email || (email && email.trim() === "")){
+    throw new ApiError(400,"Email is required")
+  }
+
+  if(!otp || (otp && otp.trim()=== "") || (otp && otp.trim().length !== 6)){
+    throw new ApiError(400,"Valid OTP is required")
+  }
+
+  if(!newPassword || (newPassword && newPassword.trim() === "")){
+    throw new ApiError(400,"New Password is required")
+  }
+
+  const user = await User.findOne({
+    email
+  })
+
+  console.log("User for Password Reset = ",user)
+  
+  if(!user){
+    throw new ApiError(404,"User with given email not found")
+  }
+
+  if(!user.resetPasswordOTP || !user.resetPasswordOTPExpiry){
+    throw new ApiError(400,"Please request for OTP to reset password")
+  }
+
+   if(Date.now() > user.resetPasswordOTPExpiry){
+      throw new ApiError(400,"OTP Expired. Please request for new OTP")
+    }
+
+  if(otp.trim() !== user.resetPasswordOTP.trim()){
+    throw new ApiError(400,"Invalid OTP")
+  }
+
+  if(otp.trim() === user.resetPasswordOTP.trim()){
+    if(Date.now() > user.resetPasswordOTPExpiry){
+      throw new ApiError(400,"OTP Expired. Please request for new OTP")
+    }
+
+    const { accessToken, refreshToken } = generateTokens(user);
+
+    user.password = newPassword;
+    user.resetPasswordOTP = undefined;
+    user.resetPasswordOTPExpiry = undefined;
+    user.refreshToken = refreshToken;
+
+    await user.save({validateBeforeSave:false})
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200,"Password Reset Successful")
+      )
+      .cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge : 24 * 60 * 60 * 1000 // 1 day
+      })
+      .cookie("refreshToken", refreshToken, {
+        httpOnly :true,
+        secure : process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge:  24 * 60 * 60 * 1000 // 1 day
+      })
+  }
+
+})
+
 
 
 export {
@@ -758,5 +832,6 @@ export {
   deleteUserAvatar,
   updateUserAvatar,
   getPublicUserProfile,
-  sendOTP
+  sendOTP,
+  resetPassword
 }

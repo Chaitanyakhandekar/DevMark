@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
       // Replace with your actual API call
       const res = await userApi.sendPasswordResetOTP({ email });
       
-      if (res.data.success) {
+      if (res.success) {
         Swal.fire({
           icon: 'success',
           title: 'OTP Sent',
