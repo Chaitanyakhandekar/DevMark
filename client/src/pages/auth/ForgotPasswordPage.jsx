@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
       // Replace with your actual API call
       const res = await userApi.sendPasswordResetOTP({ email });
       
-      if (res.data.success) {
+      if (res.success) {
         Swal.fire({
           icon: 'success',
           title: 'OTP Sent',
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
       // Replace with your actual API call
       const res = await userApi.resetPassword({ email, otp, newPassword });
       
-      if (res.data.success) {
+      if (res.success) {
         Swal.fire({
           icon: 'success',
           title: 'Password Reset',
@@ -76,14 +76,14 @@ export default function ForgotPasswordPage() {
         Swal.fire({
           icon: 'error',
           title: 'Failed',
-          text: res.data.message || 'Could not reset password',
+          text: res.message || 'Could not reset password',
         });
       }
     } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Something went wrong. Please try again.',
+        text: `Something went wrong. Please try again.`,
       });
     }
     
