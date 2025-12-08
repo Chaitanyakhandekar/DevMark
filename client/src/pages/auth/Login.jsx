@@ -41,16 +41,21 @@ export default function LoginPage({nextPage="/user/feed"}) {
 
     if(res.data.message){
       authData.setIsLoggedIn(true);
-      Swal.fire({
-        icon: 'success',
-        title: 'Login Successful',
-        text: 'Welcome back!',
-        timer:900
-      });
+    //  await Swal.fire({
+    //     icon: 'success',
+    //     title: 'Login Successful',
+    //     text: 'Welcome back!',
+    //     timer:900
+    //   });
+
+    //   Swal.close();
       // localStorage.setItem("isLoggedInUser","yesLoggedIn")
-     await isLoggedInUser();
+    //  await isLoggedInUser();
+      const logged = await isLoggedInUser();
+      if(logged) navigate(nextPage);
+      else navigate(nextPage); // fallback
       // console.log("wswwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww  ;; ",res.data.isLoggedIn )
-      navigate(nextPage);
+      // navigate(nextPage);
     }else{
       Swal.fire({
         icon: 'error',

@@ -102,6 +102,7 @@ function ProfilePage() {
     const [drafts,setDrafts] = useState([])
     const [page,setPage] = useState(1)
     const [limit,setLimit] = useState(10)
+    const [followStatus,setFollowStatus] = useState({})
     const navigate = useNavigate()
     const fileInputRef = useRef(null);
 
@@ -127,6 +128,23 @@ function ProfilePage() {
         }
     }
 
+     const loadFollowStatus = (blogs)=>{
+
+    blogs.forEach((blog)=>{
+      setFollowStatus(
+        (prev)=>{
+          return {
+            ...prev,
+            [blog.owner._id]:blog.owner.isFollowed
+          }
+        }
+      )
+    })
+
+    console.log("Follow Status = ",followStatus)
+
+  }
+
     const fetchDrafts = async () =>{
         const res = await draftApi.getAllUserDrafts()
         if(res.success){
@@ -138,6 +156,7 @@ function ProfilePage() {
         const res = await userApi.fetchUserProfile()
         console.log(res.data)
         setProfileData({
+            id: res.data._id,
             fullName: res.data.fullName || "",
             username: res.data.username || "",
             location: res.data.location || "",
@@ -885,11 +904,11 @@ function ProfilePage() {
                                         tags={blog.tags}
                                         views={blog.views}
                                         owner={blog.owner}
-                                        followStatus={{}}
-                                        setFollowStatus={() => { }}
+                                        followStatus={followStatus || {}}
+                                        setFollowStatus={setFollowStatus}
                                         createdAt={blog.createdAt}
                                         // bgColor={"#182230"}
-                                        isOwner={true}
+                                        isOwner={blog.owner._id === profileData.id}
                                     />
                                 </div>
                             ))
