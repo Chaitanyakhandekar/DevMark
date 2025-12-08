@@ -1,101 +1,255 @@
-🚀 DevMark — Full-Stack Developer Blogging & Networking Platform
+# 🚀 DevMark — Full-Stack Developer Blogging & Networking Platform
 
-A production-grade full-stack blogging and developer-networking platform built from scratch using React + Vite, Node.js, Express, and MongoDB.
+DevMark is a full-stack blogging and developer-networking platform built completely from scratch using **React + Vite**, **Node.js**, **Express**, and **MongoDB**.
 
-DevMark enables developers to publish blogs, follow other developers, engage through likes/comments, manage drafts, and personalize their profiles — similar to Medium, Hashnode, or Dev.to.
+It allows developers to publish blogs, save drafts, follow others, like/comment on posts, update their profile, upload avatars, and explore a personalized feed — similar to Medium, Hashnode, and Dev.to.
 
-⭐ Features
-🔐 Authentication
+---
 
-Signup & Login
+## ⭐ Features
 
-Email verification (OTP)
+### 🔐 Authentication
+- Signup & Login  
+- Email verification (OTP based)  
+- Forgot password  
+- JWT access + refresh tokens  
+- Protected routes (frontend + backend)
 
-Forgot password
+### 🧑‍💻 User Profiles
+- View & edit profile  
+- Avatar upload (Cloudinary)  
+- Skills, bio, and social links  
+- Public developer profile  
+- Stats: followers, blogs, likes, saves
 
-JWT-based Access & Refresh tokens
+### ✍️ Blog System
+- Create, edit, delete blogs  
+- Upload images  
+- Draft support  
+- My Blogs page  
+- Bookmark/save blogs  
+- Optimized feed and blog querying
 
-Protected Routes (frontend + backend)
+### 🧾 Drafts System
+- Auto-save drafts  
+- Edit drafts anytime  
+- Convert drafts to published blogs
 
-🧑‍💻 User Profiles
+### 📰 Feed & Explore
+- Infinite scrolling feed  
+- Trending tags  
+- Suggested developers  
+- Personalized recommendations
 
-View & Edit profile
+### 💬 Social Features
+- Like / Unlike blogs  
+- Comment on blogs  
+- Follow / Unfollow users  
+- Save blogs (bookmarks)
 
-Upload avatar (Cloudinary)
+---
 
-Skills, bio, social links
+## 🏗️ Tech Stack
 
-Public developer profile page
+### Frontend
+- React + Vite  
+- React Router  
+- Context API  
+- Axios  
+- Custom reusable UI components  
+- Cloudinary upload support
 
-Profile statistics (followers, blogs, likes)
+### Backend
+- Node.js  
+- Express.js  
+- MongoDB + Mongoose  
+- JWT authentication  
+- Brevo for email/OTP  
+- Cloudinary for file uploads  
+- Multer for parsing form-data
 
-✍️ Blog System
+---
 
-Create, edit, delete blogs
+## 📁 Project Structure
 
-Add images to blogs
+### Frontend
+```
+client/
+ ├── src/
+ │   ├── api/               # API wrappers
+ │   ├── components/        # Reusable UI components
+ │   ├── context/           # Auth context provider
+ │   ├── pages/             # Route pages (feed, blogs, auth, profile)
+ │   ├── App.jsx            # Main routing file
+ │   └── main.jsx           # React root
+ └── package.json
+```
 
-Publish or save as draft
+### Backend
+```
+server/
+ ├── src/
+ │   ├── controllers/       # Business logic
+ │   ├── routes/            # Express routes
+ │   ├── models/            # Mongoose schemas
+ │   ├── services/          # Cloudinary, mail, OTP, tokens
+ │   ├── middlewares/       # Auth, multer, role checks
+ │   ├── index.js
+ │   └── server.js
+ └── package.json
+```
 
-User’s own blogs page
+---
 
-Saved posts/bookmarks
+## 🔌 API Overview
 
-Markdown-like formatting support (if added)
+### User
+```
+POST   /users/register
+POST   /users/login
+GET    /users/is-logged-in
+POST   /users/avatar
+PUT    /users/update
+```
 
-🧾 Drafts System
+### Blogs
+```
+POST   /blogs/create
+PUT    /blogs/update/:id
+DELETE /blogs/delete/:id
+GET    /blogs/user/:id
+GET    /blogs/feed
+```
 
-Auto-save drafts
+### Drafts
+```
+POST   /drafts
+PUT    /drafts/:id
+DELETE /drafts/:id
+GET    /drafts/user
+```
 
-Edit drafts later
+### Social
+```
+POST   /follow/:id
+POST   /like/:blogId
+POST   /comment/:blogId
+GET    /save/:blogId
+```
 
-Convert drafts into published blogs
+---
 
-📰 Feed & Explore
+## ⚙️ Setup Instructions
 
-Infinite scrolling feed
+### Backend
+```
+cd server
+npm install
+cp .env.example .env
+npm run dev
+```
 
-Trending tags
+Example `.env`:
+```
+MONGO_URI=
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+CLOUDINARY_NAME=
+CLOUDINARY_KEY=
+CLOUDINARY_SECRET=
+BREVO_API_KEY=
+```
 
-Suggested developers
+### Frontend
+```
+cd client
+npm install
+npm run dev
+```
 
-Global feed + personalized sections
+---
 
-💬 Social Features
+# 🧩 Architecture Diagram
 
-Like & Unlike posts
+## ASCII Architecture Diagram
 
-Comment on posts
+```
+                    ┌─────────────────────────────────────┐
+                    │              FRONTEND                │
+                    │        React + Vite + Context        │
+                    └─────────────────────────────────────┘
+                                   │
+                                   ▼
+                    ┌─────────────────────────────────────┐
+                    │        API Layer (Axios)            │
+                    │ user.api.js / blog.api.js / ...     │
+                    └─────────────────────────────────────┘
+                                   │
+                        HTTP (JSON + FormData)
+                                   │
+                                   ▼
+          ┌────────────────────────────────────────────────────────┐
+          │                        BACKEND                         │
+          │               Node.js + Express Server                 │
+          ├────────────────────────────────────────────────────────┤
+          │ Routes → Controllers → Services → Models               │
+          │   user.route.js → user.controller.js                   │
+          │   blog.route.js → blog.controller.js                   │
+          │   draft.route.js → draft.controller.js                 │
+          │   social routes: follow / like / comment / save        │
+          └────────────────────────────────────────────────────────┘
+                                   │
+                                   ▼
+          ┌────────────────────────────────────────────────────────┐
+          │                         SERVICES                      │
+          │ Cloudinary (Images)    │    Brevo (Email/OTP)         │
+          │ Token generation       │    Multer (File parsing)     │
+          └────────────────────────────────────────────────────────┘
+                                   │
+                                   ▼
+          ┌────────────────────────────────────────────────────────┐
+          │                       DATABASE                         │
+          │                     MongoDB (Atlas)                    │
+          │ Users / Blogs / Drafts / Likes / Comments / Saves     │
+          └────────────────────────────────────────────────────────┘
+```
 
-Follow/Unfollow users
+---
 
-Save posts for later
+## Mermaid Diagram (paste into README for visual diagram on GitHub)
 
-🏗️ Tech Stack
-Frontend
+```mermaid
+flowchart TD
 
-React + Vite
+A[Frontend - React + Vite<br>Pages, Components, Context API] 
+--> B[API Layer - Axios<br>user.api.js, blog.api.js, ...];
 
-React Router
+B --> C[Backend - Express Server];
 
-Context API
+C --> D[Routes<br>user.route.js, blog.route.js, draft.route.js];
 
-Axios
+D --> E[Controllers<br>Business Logic];
 
-Cloudinary Upload
+E --> F[Services<br>Cloudinary, Tokens, OTP, Multer];
 
-Custom UI components (BlogCard, Sidebar, etc.)
+E --> G[MongoDB<br>Mongoose Models];
 
-Backend
+F --> X[(Cloudinary)];
+F --> Y[(Brevo Email/OTP)];
+```
 
-Node.js
+---
 
-Express.js
+## 🏁 Conclusion
 
-MongoDB (Mongoose ORM)
+DevMark is a feature-rich, production-grade MERN application with clean architecture, modular separation, scalable backend logic, and deeply functional frontend.
 
-Cloudinary SDK
+If you want:
+- Badges (React, Node, MongoDB, etc.)  
+- Demo screenshots section  
+- API documentation table  
+- ER diagram  
+- Contribution & license section  
 
-Brevo (email/OTP)
+Just tell me — I can extend the README further.
 
-JWT authentication
