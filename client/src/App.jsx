@@ -25,9 +25,17 @@ import DraftBlogCard from './components/DraftBlogCard'
 import EditDraft from './pages/user/blogs/EditDraft'
 import PublicProfilePage from './pages/user/profile/PublicProfilePage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+
+
+   const location = useLocation();
+  useEffect(() => {
+    document.body.style.overflow = "";
+  }, [location.pathname]);
+
 
   return (
     <Routes>
