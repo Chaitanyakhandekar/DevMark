@@ -5,12 +5,14 @@ import Swal from 'sweetalert2';
 import TestLoader from "../../test/TestLoader";
 import { userApi } from "../../api/user.api";
 import { authContext } from "../../context/authContex";
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage({nextPage="/user/feed"}) {
 
   const navigate = useNavigate();
   const [user,setUser] = React.useState({ email: "", password: "" });
   const [loading, setLoading] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
   const authData = useContext(authContext)
 
   const handleChange = (e)=>{
@@ -91,14 +93,23 @@ export default function LoginPage({nextPage="/user/feed"}) {
           </div>
           <div>
             <label className="text-gray-300 block mb-2">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={user.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="w-full px-4 py-2 bg-transparent border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-[#00D8FF]"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={user.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                className="w-full px-4 py-2 pr-12 bg-transparent border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-[#00D8FF]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-[#00D8FF] transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
           </div>
           <button
             type="submit"

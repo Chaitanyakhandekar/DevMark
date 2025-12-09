@@ -43,7 +43,7 @@ function PublicProfilePage() {
     const [loading, setLoading] = useState(true);
     const [followLoading, setFollowLoading] = useState(false);
     const [currentUserAvatar, setCurrentUserAvatar] = useState("");
-            const [followStatus, setFollowStatus] = useState({})
+    const [followStatus, setFollowStatus] = useState({})
     
     
     const userId = useParams().id;
@@ -60,6 +60,8 @@ function PublicProfilePage() {
             console.log("Blogs for followStatus :::::::::::::::::::::::::::::::::::::::::::::::::: ",res.data.data.blogs)
             setAllBlogs(res.data.data.blogs);
             loadFollowStatus(res.data.data.blogs)
+
+
         } catch (error) {
             console.log("Error :: Fetching User Blogs :: ", error.message);
         }
@@ -115,22 +117,44 @@ function PublicProfilePage() {
     }
 
     const handleFollowToggle = async () => {
-        try {
+        if(profileData.isFollowed){
+            try {
             setFollowLoading(true);
             // Replace with your actual follow/unfollow API call
-            const res = await followApi.followUser(userId)
+            const res = await followApi.unfollowUser(userId)
             
             if (res.data.success) {
                 setIsFollowing(true);
                 setProfileData(prev => ({
                     ...prev,
-                    totalFollowers: isFollowing ? prev.totalFollowers - 1 : prev.totalFollowers + 1
+                    totalFollowers: prev.isFollowed ? prev.totalFollowers - 1 : prev.totalFollowers + 1
                 }));
             }
         } catch (error) {
             console.error('Error toggling follow:', error);
         } finally {
             setFollowLoading(false);
+        }
+        }
+
+         if(profileData.isFollowed){
+            try {
+            setFollowLoading(true);
+            // Replace with your actual follow/unfollow API call
+            const res = await followApi.unfollowUser(userId)
+            
+            if (res.data.success) {
+                setIsFollowing(true);
+                setProfileData(prev => ({
+                    ...prev,
+                    totalFollowers: prev.isFollowed ? prev.totalFollowers - 1 : prev.totalFollowers + 1
+                }));
+            }
+        } catch (error) {
+            console.error('Error toggling follow:', error);
+        } finally {
+            setFollowLoading(false);
+        }
         }
     };
 
@@ -305,7 +329,7 @@ function PublicProfilePage() {
                                 onClick={handleFollowToggle}
                                 disabled={followLoading}
                                 className={`${
-                                    isFollowing
+                                    profileData.isFollowed
                                         ? 'bg-slate-700 hover:bg-slate-600'
                                         : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:shadow-xl'
                                 } text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}

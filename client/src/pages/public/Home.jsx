@@ -8,19 +8,17 @@ import {
   Users, 
   MessageCircle, 
   Heart, 
-  Search, 
-  Zap, 
   Shield, 
   Edit3, 
-  TrendingUp,
   Star,
   ArrowRight,
   Play,
-  CheckCircle,
   BookOpen,
   UserPlus,
   Menu,
-  X
+  Bookmark,
+  Image,
+  Lock
 } from 'lucide-react';
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
@@ -74,7 +72,6 @@ const Home = () => {
       <div className="block md:hidden fixed top-20 bg-white dark:bg-[#111826] text-gray-800 dark:text-white w-full  backdrop-blur-md flex flex-col gap-5 items-start transition-all duration-[300ms] z-[60] border-b-[0.2px] border-b-gray-800 pb-3 text-gray-800 dark:text-gray-300 ">
         <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>Features</p>
         <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>Community</p>
-        <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>Pricing</p>
         <p className='border-[0.2px] border-b-gray-300 dark:border-b-gray-600 border-t-0 border-l-0 border-r-0 w-full px-3 py-2'>About</p>
         <div className="w-full flex flex-col items-start  gap-5 px-3">
           <Link to="/login" className="">Sign in</Link>
@@ -96,7 +93,6 @@ const Home = () => {
         <div className="hidden sm:hidden md:block text-gray-600 dark:text-white md:flex gap-4 text-lg sm:text-lg">
           <Link to="#">Features</Link>
           <Link to="#">Community</Link>
-          <Link to="#">Pricing</Link>
           <Link to="#">About</Link>
         </div>
 
@@ -125,14 +121,14 @@ const Home = () => {
     </nav>
 
     <div className="w-full flex flex-col justify-center items-center gap-10 dark:bg-[#111827] pt-10 pb-20 ">
-          <div className=" text-sm w-[80%] sm:w-[50%] md:w-[40%] lg:w-[30%] xl:w-[20%] xl:max-w-[300px] flex border-[1.2px] dark:border-[0.3px] dark:border-gray-600 border-gray-300 justify-center items-center  py-1 px-1 text-white mt-4 md:mt-10 rounded-xl dark:bg-[#18212f] text-black dark:text-white"><Star className="text-yellow-500 text-sm mx-1" size={15}/> <p className="text-black dark:text-white">Trusted by 50,000+ developers worldwide</p></div>
+          <div className=" text-sm w-[80%] sm:w-[50%] md:w-[40%] lg:w-[30%] xl:w-[20%] xl:max-w-[300px] flex border-[1.2px] dark:border-[0.3px] dark:border-gray-600 border-gray-300 justify-center items-center  py-1 px-1 text-white mt-4 md:mt-10 rounded-xl dark:bg-[#18212f] text-black dark:text-white"><Star className="text-yellow-500 text-sm mx-1" size={15}/> <p className="text-black dark:text-white">Built for developers, by developers</p></div>
 
           <div className=" text-black dark:text-white text-4xl sm:text-7xl lg:text-7xl text-center font-bold  p-2 lg:max-w-[900px] ">
-            Where Developers <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">Share</span> & Grow
+            Where Developers <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">Write</span> & Connect
           </div>
 
           <div className="dark:text-white text-black text-xl lg:text-2xl text-center xl:max-w-[900px] text-[rgb(173 213 219)] px-3">
-            The modern publishing platform built for developers. Write, share, and discover technical content with a community that understands your passion for code.
+            A social platform designed for developers to publish technical content, connect with peers, and build a professional profile.
           </div>
 
           <div className="w-full flex flex-col md:flex-row gap-5 justify-center items-center">
@@ -140,17 +136,17 @@ const Home = () => {
               Start Writing Today <ArrowRight className="inline-block" />
             </button>
 
-            <button className=" rounded-xl px-6 py-5 text-black dark:text-white border-[1.2px] dark:border-[1.8px] border-gray-500 dark:border-gray-600 ml-5 font-bold ">
-                <Play className="inline-block" /> Watch Demo
+            <button onClick={()=> { navigate("/user/feed")}} className=" rounded-xl px-6 py-5 text-black dark:text-white border-[1.2px] dark:border-[1.8px] border-gray-500 dark:border-gray-600 ml-5 font-bold ">
+                <BookOpen className="inline-block" /> Explore Blogs
               </button>
           </div>
 
           <div className="flex flex-wrap  items-center justify-center gap-8">
 
-            <HomePageBox number="50K+" label="Active Writers" />
-            <HomePageBox number="2M+" label="Articles Published" />
-            <HomePageBox number="10M+" label="Monthly Readers" />
-            <HomePageBox number="99.9%" label="Uptime" />
+            <HomePageBox number="Write" label="Share Your Expertise" />
+            <HomePageBox number="Connect" label="Follow Developers" />
+            <HomePageBox number="Engage" label="Like & Comment" />
+            <HomePageBox number="Save" label="Bookmark Posts" />
 
           </div>
     </div>
@@ -158,54 +154,54 @@ const Home = () => {
     <div className=" dark:bg-[#1f2937] py-20">
 
           <div className="text-white flex flex-col items-center gap-5 px-3">
-              <p className='dark:text-white text-black text-4xl md:text-6xl font-bold text-center max-w-[400px] md:max-w-[600px]'>Everything You Need to <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">Succeed</span></p>
+              <p className='dark:text-white text-black text-4xl md:text-6xl font-bold text-center max-w-[400px] md:max-w-[600px]'>Everything You Need to <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">Publish</span></p>
 
-              <p className='dark:text-white text-black text-lg text-center max-w-[400px] md:max-w-[770px]'>Powerful features designed to help developers create, share, and grow their influence in the tech community.</p>
+              <p className='dark:text-white text-black text-lg text-center max-w-[400px] md:max-w-[770px]'>Simple, robust features to help developers publish technical content and grow their work publicly.</p>
           </div>
 
           <div className="w-full h-auto flex flex-col md:flex-row flex-wrap justify-center items-center gap-10 mt-10  dark:text-white text-black ">
-            <HomePageBox2 number="Advanced Authentication" label="Secure login with social OAuth, JWT tokens, and role-based access control"  icon={<Shield className='text-white' size={24}/>}/>
+            <HomePageBox2 number="Email Verification" label="Account activation via secure email verification link (no OTP required)"  icon={<Shield className='text-white' size={24}/>}/>
 
-            <HomePageBox2 number="Rich Content Creation" label="Powerful WYSIWYG editor with Markdown support, drafts, and instant publishing"  icon={<Edit3 className='text-white' size={24}/>}/>
+            <HomePageBox2 number="Blog Publishing" label="Create and manage blog posts with image uploads, draft saving, and instant publishing"  icon={<Edit3 className='text-white' size={24}/>}/>
 
-            <HomePageBox2 number="Smart Discovery" label="AI-powered recommendations, advanced search, and intelligent content filtering"   icon={<Search className='text-white' size={24}/>}/>
+            <HomePageBox2 number="Dynamic Feed" label="Discover trending content, explore posts by tags, and find suggested developers to follow"  icon={<BookOpen className='text-white' size={24}/>}/>
 
-            <HomePageBox2 number="Engaging Community" label="Nested comments, real-time notifications, and social sharing capabilities"  icon={<MessageCircle className='text-white' size={24}/>}/>
+            <HomePageBox2 number="Social Features" label="Like posts, comment on articles, follow developers, and engage with the community"  icon={<MessageCircle className='text-white' size={24}/>}/>
 
-            <HomePageBox2 number="Professional Profiles" label="Custom bios, portfolios, follower system, and comprehensive analytics"  icon={<Users className='text-white' size={24}/>}/>
+            <HomePageBox2 number="Custom Profiles" label="Showcase your skills, add social links, upload avatars (Cloudinary), and view basic stats"  icon={<Users className='text-white' size={24}/>}/>
 
-            <HomePageBox2 number="Content Analytics" label="Track engagement, monitor growth, and optimize your content strategy"  icon={<TrendingUp className='text-white' size={24}/>}/>
+            <HomePageBox2 number="Bookmarks" label="Save your favorite posts for later reading and organize your content library"  icon={<Bookmark className='text-white' size={24}/>}/>
           </div>
 
     </div>
 
     <div className="dark:bg-[#111827] w-full pt-20 pb-10">
           <div className="flex flex-col items-center gap-5 px-2">
-            <p className='dark:text-white text-black text-center text-4xl lg:text-5xl font-bold'>Loved by Developers <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Worldwide</span></p>
-            <p className='text-black dark:text-white text-center text-md lg:text-xl'>See what industry leaders are saying about DevMark</p>
+            <p className='dark:text-white text-black text-center text-4xl lg:text-5xl font-bold'>How It <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Works</span></p>
+            <p className='text-black dark:text-white text-center text-md lg:text-xl'>Get started in three easy steps</p>
           </div>
 
           <div className='w-full h-auto flex flex-col flex-wrap gap-7 md:flex-row  items-center justify-center py-10'>
 
             <TestimonialCard testimonial={{
-              avatar: "SC",
-              name: "Sarah Chen",
-              role: "Senior Developer at Google",
-              content: "DevMark has become my go-to platform for sharing technical insights. The community engagement is incredible."
+              avatar: "1",
+              name: "1. Create your profile",
+              role: "Sign up & verify",
+              content: "Register with your email and activate your account through the verification link sent to your inbox. Then add a display name, avatar and social links."
             }} />
 
             <TestimonialCard testimonial={{
-              avatar: "JD",
-              name: "John Doe",
-              role: "Lead Engineer at Microsoft",
-              content: "DevMark has streamlined our content creation process. The tools are intuitive and powerful."
+              avatar: "2",
+              name: "2. Write & save drafts",
+              role: "Compose articles",
+              content: "Use the editor to write posts, include code blocks and images, and save drafts to polish later before publishing."
             }} />
 
             <TestimonialCard testimonial={{
-              avatar: "MR",
-              name: "Marcus Rodriguez",
-              role: "Tech Lead @ Stripe",
-              content: "The rich editor and seamless publishing experience make writing a joy. Highly recommend!"
+              avatar: "3",
+              name: "3. Publish & engage",
+              role: "Publish and interact",
+              content: "Publish your post to the community. Read, like, comment, follow other authors, and bookmark posts you want to revisit."
             }} />
 
           </div>
@@ -213,8 +209,8 @@ const Home = () => {
 
     <div className='dark:bg-gradient-to-r from-[#212e41] to-[#1f2938] pt-10 md:pt-20 pb-10 flex flex-col items-center gap-10'>
             <div className='flex flex-col items-center gap-5 xl:max-w-[800px] px-3'>
-                <p className='text-gray-800 dark:text-white font-bold text-4xl lg:text-5xl text-center'>Ready to Share Your <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Developer Journey?</span></p>
-                <p className='text-gray-700 dark:text-gray-300 text-center text-xl max-w-[85%]'>Join thousands of developers who are already building their reputation and growing their network on DevMark.</p>
+                <p className='text-gray-800 dark:text-white font-bold text-4xl lg:text-5xl text-center'>Ready to Join the <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Developer Community?</span></p>
+                <p className='text-gray-700 dark:text-gray-300 text-center text-xl max-w-[85%]'>Start writing, publishing, and connecting with developers who share your passion for technology.</p>
             </div>
 
             <div className="flex flex-col md:flex-row gap-4">
@@ -224,9 +220,9 @@ const Home = () => {
                 Create Your Account
               </button>
 
-              <button className='text-gray-800  dark:text-white'>
+              <button onClick={() => {navigate("/user/feed")}} className='text-gray-800  dark:text-white'>
                 <BookOpen className='inline-block text-gray-800 dark:text-white mr-2' size={20} />
-                Explore Articles
+                Explore Blogs
               </button>
 
             </div>
@@ -250,33 +246,31 @@ const Home = () => {
                 </div>
                 <h1 className="text-xl font-bold">DevMark</h1>
               </div>
-                <p className="text-gray-500 dark:text-gray-300 max-w-[300px]">The modern publishing platform for developers to share knowledge and grow together.</p>
+                <p className="text-gray-500 dark:text-gray-300 max-w-[300px]">A social platform for developers to write blogs, share knowledge, and build connections.</p>
               </div>
               <div className="l2 flex flex-col justify-center items-start gap-5">
                 <h1 className='text-gray-900 dark:text-white font-bold'>Product</h1>
                 <ul>
-                  <li>Pricing</li>
-                <li>API</li>
-                <li>Documentation</li>
+                  <li>Features</li>
+                  <li>Blog</li>
+                  <li>Community</li>
                 </ul>
               </div>
               <div className="l2 flex flex-col justify-center items-start gap-5">
-                <h1 className='text-gray-900 dark:text-white font-bold'>Community</h1>
+                <h1 className='text-gray-900 dark:text-white font-bold'>Resources</h1>
                 <ul>
-                  <li>Blog</li>
-                  <li>Discord</li>
-                  <li>Twitter</li>
-                  <li>Github</li>
+                  <li>Documentation</li>
+                  <li>Support</li>
+                  <li>Guidelines</li>
                 </ul>
               </div>
               <div className="l2 flex flex-col justify-center items-start gap-5">
                 <h1 className='text-gray-900 dark:text-white font-bold'>Company</h1>
                 <ul>
                   <li>About Us</li>
-                  <li>Careers</li>
                   <li>Contact</li>
                   <li>Privacy Policy</li>
-                  <li>Terms</li>
+                  <li>Terms of Service</li>
                 </ul>
               </div>
             </div>
@@ -287,8 +281,6 @@ const Home = () => {
             </div>
 
     </div>
-
-           
 
    </div>
   );

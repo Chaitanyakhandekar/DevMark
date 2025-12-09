@@ -14,7 +14,9 @@ import {
   ArrowRight,
   Github,
   Chrome,
-  Loader
+  Loader,
+  CheckCircle2,
+  Shield
 } from 'lucide-react';
 
 function Signup() {
@@ -27,9 +29,12 @@ function Signup() {
         email: "",
         password: ""
     });
+    const [confirmPassword, setConfirmPassword] = React.useState("");
     const [loading, setLoading] = React.useState(false);
     const [emailSent, setEmailSent] = React.useState(false);
     const [error, setError] = React.useState("");
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
 
     const clearForm = () => {
         setUser({
@@ -38,6 +43,7 @@ function Signup() {
             email: "",
             password: ""
         });
+        setConfirmPassword("");
     }
 
     const onChangeHandler = (e) => {
@@ -46,7 +52,7 @@ function Signup() {
 
     React.useEffect(() => {
         if (emailSent) {
-           navigate("/verify-confirm"); // Redirect to VerifyConfirm page after email is sent
+           navigate("/verify-confirm");
         }
     }, [emailSent]);
 
@@ -79,138 +85,241 @@ function Signup() {
 
     if(loading){
         return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-100 font-inter">
-      <div className=" p-8 rounded-xl max-w-md w-full text-center animate-fadeIn">
-        
-        {/* Animated Mail Sending Icon */}
-        <div className="flex justify-center mb-4">
-          <svg
-            className="animate-bounce h-14 w-14 text-blue-400"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            role="status"
-            aria-label="Sending verification link"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
-        </div>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
+            
+            {/* Background Effects */}
+            <div className="absolute inset-0">
+                <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+            </div>
 
-        <h1 className="text-2xl font-semibold mb-2">
-          Sending Verification Link...
-        </h1>
-        <p className="text-gray-400">
-          Hold tight! We’re delivering a secure link to your email.
-        </p>
-        <p className="text-blue-400 mt-2 text-sm">
-          Please check your inbox (and spam folder).
-        </p>
-      </div>
-    </div>
-    
+            <div className="backdrop-blur-xl bg-gray-800/30 border border-gray-700/50 p-12 rounded-2xl max-w-md w-full text-center shadow-2xl relative z-10">
+                
+                {/* Animated Icon */}
+                <div className="flex justify-center mb-6">
+                    <div className="relative">
+                        <div className="absolute inset-0 bg-blue-500/30 rounded-full blur-xl animate-pulse"></div>
+                        <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-full">
+                            <Mail className="h-12 w-12 text-white animate-bounce" />
+                        </div>
+                    </div>
+                </div>
+
+                <h1 className="text-3xl font-bold mb-3 text-white">
+                    Sending Verification Link
+                </h1>
+                <p className="text-gray-400 mb-2 text-lg">
+                    Hold tight! We're delivering a secure link to your email.
+                </p>
+                <p className="text-blue-400 text-sm flex items-center justify-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Check your inbox (and spam folder)
+                </p>
+
+                {/* Loading Dots */}
+                <div className="flex justify-center gap-2 mt-6">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                </div>
+            </div>
+        </div>
         )
     }
 
     return (
-        <div className="w-[100vw] h-[100vh] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex justify-center items-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex justify-center items-center p-4 relative overflow-hidden">
 
-             <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+            {/* Animated Background Blobs */}
+            <div className="absolute inset-0">
+                <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
             </div>
 
-            <div className=" w-[95%] sm:w-[55%] md:w-[45%] lg:w-[30%]  h-[80%] sm:h-[85%] md:h-[85%] lg:h-[85%] xl:h-[85%] 2xl:h-[75%] backdrop-blur-xl border border-gray-700/50 rounded-2xl flex flex-col p-3 gap-2 justify-center shadow-2xl bg-trans">
-                <header className="text-white text-3xl font-bold text-center py-2 font-mono "> <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">DevMark</span> </header>
-                <div className="main  flex flex-col font-mono items-center gap-3">
-                    <div className="flex flex-col text-white justify-center items w-[95%] gap-2">
-                        <label htmlFor="username" className="text-left">Username</label>
-                       <div className="w-full bg-transparent border-[0.2px] border-[#3c4553] flex items-center px-3 rounded-xl">
-                        <User className="text-gray-500"/>
-                         <input
-                            className=" mx-auto  bg-transparent w-full text-white p-3 rounded-lg outline-none"
-                            type="text"
-                            placeholder="Username"
-                            value={user.username}
-                            onChange={onChangeHandler}
-                            name="username"
-                        />
-                       </div>
+            {/* Main Card */}
+            <div className="w-full max-w-md relative z-10">
+                
+                {/* Logo Section */}
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center gap-3 mb-4">
+                        <div className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] p-3 rounded-xl shadow-lg">
+                            <Code className="text-white w-8 h-8" />
+                        </div>
+                        <h1 className="text-4xl font-bold bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">
+                            DevMark
+                        </h1>
                     </div>
-                    <div className="flex flex-col text-white justify-center items w-[95%] gap-2">
-                        <label htmlFor="fullName" className="text-left">Full Name</label>
-                       <div className="w-full bg-transparent border-[0.2px] border-[#3c4553] flex items-center px-3 rounded-xl">
-                        <User className="text-gray-500"/>
-                         <input
-                            className=" mx-auto  bg-transparent w-full text-white p-3 rounded-lg outline-none"
-                            type="text"
-                            placeholder="Full Name"
-                            value={user.fullName}
-                            onChange={onChangeHandler}
-                            name="fullName"
-                        />
-                       </div>
-                    </div>
-
-                    <div className="flex flex-col text-white justify-center items w-[95%] gap-2">
-                        <label htmlFor="email" className="text-left">Email</label>
-                       <div className="w-full bg-transparent border-[0.2px] border-[#3c4553] flex items-center px-3 rounded-xl">
-                        <Mail className="text-gray-500"/>
-                         <input
-                            className=" mx-auto  bg-transparent w-full text-white p-3 rounded-lg outline-none"
-                            type="email"
-                            placeholder="Email"
-                            value={user.email}
-                            onChange={onChangeHandler}
-                            name="email"
-                        />
-                       </div>
-                    </div>
-
-                 
-
-                    <div className="flex flex-col text-white justify-center items w-[95%] gap-2">
-                        <label htmlFor="password" className="text-left">Password</label>
-                       <div className="w-full bg-transparent border-[0.2px] border-[#3c4553] flex items-center px-3 rounded-xl">
-                        <Lock className="text-gray-500"/>
-                         <input
-                            className=" mx-auto  bg-transparent w-full text-white p-3 rounded-lg outline-none"
-                            type="password"
-                            placeholder="Password"
-                            value={user.password}
-                            onChange={onChangeHandler}
-                            name="password"
-                        />
-                    </div>
-                    </div>
-
-                    <div className="flex flex-col text-white justify-center items w-[95%] gap-2">
-                        <label htmlFor="confirm-password" className="text-left">Confirm Password</label>
-                       <div className="w-full bg-transparent border-[0.2px] border-[#3c4553] flex items-center px-3 rounded-xl">
-                        <Lock className="text-gray-500"/>
-                         <input
-                            className=" mx-auto  bg-transparent w-full text-white p-3 rounded-lg outline-none"
-                            type="password"
-                            placeholder="Confirm Password"
-                            value={user.password} 
-                            onChange={onChangeHandler}
-                            name="confirm-password"
-                        />
-                    </div>
-                    </div>
-
-                    <button className="w-[90%] sm:w-[70%] bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white text-lg font-bold p-2 rounded-lg m-2 hover:bg-gradient-to-l"
-                        onClick={onSubmitHandler} disabled={loading}>
-                        {loading ? "Creating Account..." : "Create Account"}
-                    </button>
-
-                    <p className="text-white font-mono">Already have an account ? <Link to="/login" className="text-[#04d8ff] cursor-pointer">Login</Link></p>
-                    <p className="text-md text-red-500 animate-pulse">{error && error}</p>
+                    <h2 className="text-2xl font-bold text-white mb-2">Create Your Account</h2>
+                    <p className="text-gray-400">Join the developer community today</p>
                 </div>
+
+                {/* Form Card */}
+                <div className="backdrop-blur-xl bg-gray-800/40 border border-gray-700/50 rounded-2xl p-8 shadow-2xl">
+                    
+                    <div className="space-y-5">
+                        
+                        {/* Username Field */}
+                        <div className="space-y-2">
+                            <label htmlFor="username" className="text-sm font-medium text-gray-300 block">
+                                Username
+                            </label>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <User className="text-gray-500 group-focus-within:text-blue-400 transition-colors w-5 h-5" />
+                                </div>
+                                <input
+                                    className="w-full bg-gray-900/50 border border-gray-700 focus:border-blue-500 text-white pl-12 pr-4 py-3 rounded-xl outline-none transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+                                    type="text"
+                                    placeholder="Enter your username"
+                                    value={user.username}
+                                    onChange={onChangeHandler}
+                                    name="username"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Full Name Field */}
+                        <div className="space-y-2">
+                            <label htmlFor="fullName" className="text-sm font-medium text-gray-300 block">
+                                Full Name
+                            </label>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <UserCheck className="text-gray-500 group-focus-within:text-blue-400 transition-colors w-5 h-5" />
+                                </div>
+                                <input
+                                    className="w-full bg-gray-900/50 border border-gray-700 focus:border-blue-500 text-white pl-12 pr-4 py-3 rounded-xl outline-none transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+                                    type="text"
+                                    placeholder="Enter your full name"
+                                    value={user.fullName}
+                                    onChange={onChangeHandler}
+                                    name="fullName"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Email Field */}
+                        <div className="space-y-2">
+                            <label htmlFor="email" className="text-sm font-medium text-gray-300 block">
+                                Email Address
+                            </label>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <Mail className="text-gray-500 group-focus-within:text-blue-400 transition-colors w-5 h-5" />
+                                </div>
+                                <input
+                                    className="w-full bg-gray-900/50 border border-gray-700 focus:border-blue-500 text-white pl-12 pr-4 py-3 rounded-xl outline-none transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    value={user.email}
+                                    onChange={onChangeHandler}
+                                    name="email"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Password Field */}
+                        <div className="space-y-2">
+                            <label htmlFor="password" className="text-sm font-medium text-gray-300 block">
+                                Password
+                            </label>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <Lock className="text-gray-500 group-focus-within:text-blue-400 transition-colors w-5 h-5" />
+                                </div>
+                                <input
+                                    className="w-full bg-gray-900/50 border border-gray-700 focus:border-blue-500 text-white pl-12 pr-12 py-3 rounded-xl outline-none transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Create a strong password"
+                                    value={user.password}
+                                    onChange={onChangeHandler}
+                                    name="password"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-blue-400 transition-colors"
+                                >
+                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Confirm Password Field */}
+                        <div className="space-y-2">
+                            <label htmlFor="confirm-password" className="text-sm font-medium text-gray-300 block">
+                                Confirm Password
+                            </label>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <Lock className="text-gray-500 group-focus-within:text-blue-400 transition-colors w-5 h-5" />
+                                </div>
+                                <input
+                                    className="w-full bg-gray-900/50 border border-gray-700 focus:border-blue-500 text-white pl-12 pr-12 py-3 rounded-xl outline-none transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    placeholder="Confirm your password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    name="confirm-password"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-blue-400 transition-colors"
+                                >
+                                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Error Message */}
+                        {error && (
+                            <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-3 flex items-center gap-2">
+                                <div className="w-1 h-8 bg-red-500 rounded-full"></div>
+                                <p className="text-red-400 text-sm">{error}</p>
+                            </div>
+                        )}
+
+                        {/* Submit Button */}
+                        <button
+                            onClick={onSubmitHandler}
+                            disabled={loading}
+                            className="w-full bg-gradient-to-r from-[#4777f4] to-[#9035ea] hover:from-[#5887ff] hover:to-[#a045fa] text-white font-semibold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                        >
+                            {loading ? (
+                                <>
+                                    <Loader className="w-5 h-5 animate-spin" />
+                                    Creating Account...
+                                </>
+                            ) : (
+                                <>
+                                    Create Account
+                                    <ArrowRight className="w-5 h-5" />
+                                </>
+                            )}
+                        </button>
+
+                        {/* Sign In Link */}
+                        <div className="text-center pt-4 border-t border-gray-700/50">
+                            <p className="text-gray-400">
+                                Already have an account?{' '}
+                                <Link
+                                    to="/login"
+                                    className="text-blue-400 hover:text-blue-300 font-semibold transition-colors"
+                                >
+                                    Sign In
+                                </Link>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <p className="text-center text-gray-500 text-sm mt-6">
+                    By signing up, you agree to our Terms of Service and Privacy Policy
+                </p>
             </div>
         </div>
     )

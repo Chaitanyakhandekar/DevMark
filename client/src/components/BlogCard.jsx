@@ -60,7 +60,30 @@ function BlogCard({
 
     const handleFollow = async () => {
         console.log(owner._id);
-        try {
+        
+        if(followStatus[owner._id]){
+            try {
+            const res = await axios.post(
+                `${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/followers/unfollow/${owner._id}`,
+                {},
+                {
+                    withCredentials: true
+                }
+            );
+
+            console.log(res.data);
+
+            setFollowStatus(prev => ({
+                ...prev,
+                [owner._id]: false
+            }));
+            setIsFollowed(false);
+        } catch (error) {
+            console.log("HandleFollow :: Error :: ", error.message);
+        }
+        }
+        else{
+            try {
             const res = await axios.post(
                 `${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/followers/follow/${owner._id}`,
                 {},
@@ -78,6 +101,7 @@ function BlogCard({
             setIsFollowed(true);
         } catch (error) {
             console.log("HandleFollow :: Error :: ", error.message);
+        }
         }
     };
 
@@ -270,7 +294,7 @@ function BlogCard({
 
                     {!isOwner && (
                         <button
-                            disabled={followStatus[owner._id]}
+                            // disabled={followStatus[owner._id]}
                             onClick={handleFollow}
                             className={`text-sm font-medium cursor-pointer px-4 py-1.5 rounded-md transition-all duration-200 ${followStatus[owner._id]
                                 ? "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-default"

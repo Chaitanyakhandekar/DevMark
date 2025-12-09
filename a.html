@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevMark - Full-Stack Developer Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #a8edea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tech-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #fff;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #a8edea, #fed6e3);
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .architecture {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .arch-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #a8edea;
+        }
+
+        .arch-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #a8edea;
+        }
+
+        .arch-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .arch-box li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .arch-box li::before {
+            content: '▹';
+            color: #fed6e3;
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(168, 237, 234, 0.2), rgba(254, 214, 227, 0.2));
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            margin-top: 30px;
+        }
+
+        .highlight-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .code-snippet {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            border-left: 4px solid #a8edea;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #a8edea;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+            }
+
+            .architecture {
+                grid-template-columns: 1fr;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 DevMark</h1>
+            <p class="tagline">A Full-Stack Social Platform for Developers</p>
+            <div class="tech-stack">
+                <span class="tech-badge">React + Vite</span>
+                <span class="tech-badge">Express.js</span>
+                <span class="tech-badge">MongoDB</span>
+                <span class="tech-badge">Cloudinary</span>
+                <span class="tech-badge">JWT Auth</span>
+                <span class="tech-badge">REST API</span>
+            </div>
+        </header>
+
+        <div class="section">
+            <h2>📊 Project Overview</h2>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">API Endpoints</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Database Models</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Built From Scratch</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">30+</div>
+                    <div class="stat-label">React Components</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✨ Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Complete Authentication</h3>
+                    <p>JWT-based auth with signup, login, email verification, OTP flows, and password recovery</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👤</div>
+                    <h3>User Profiles</h3>
+                    <p>Customizable profiles with avatar uploads via Cloudinary, skills, social links, and public/private views</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Blog System</h3>
+                    <p>Full CRUD for blog posts with image support, draft management, and rich text editing</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📰</div>
+                    <h3>Dynamic Feed</h3>
+                    <p>Infinite scroll feed with pagination, trending tags, and suggested developers</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Bookmarks & Saves</h3>
+                    <p>Save and organize favorite posts for later reading</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Social Interactions</h3>
+                    <p>Follow/unfollow users, like posts, comment threads, and engage with the community</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🏗️ Architecture</h2>
+            <div class="architecture">
+                <div class="arch-box">
+                    <h3>Frontend (React + Vite)</h3>
+                    <ul>
+                        <li>React Router for navigation</li>
+                        <li>Context API for auth state</li>
+                        <li>Protected route guards</li>
+                        <li>Modular API wrappers</li>
+                        <li>Reusable UI components</li>
+                        <li>Responsive design</li>
+                        <li>File upload with preview</li>
+                    </ul>
+                </div>
+                <div class="arch-box">
+                    <h3>Backend (Express + MongoDB)</h3>
+                    <ul>
+                        <li>RESTful API design</li>
+                        <li>Mongoose ODM models</li>
+                        <li>JWT middleware protection</li>
+                        <li>Multer file uploads</li>
+                        <li>Cloudinary integration</li>
+                        <li>Email service (Brevo)</li>
+                        <li>OTP generation & validation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🔒 Authentication Flow</h3>
+                <p>Implemented a complete auth system with protected routes, server-side session verification, and context-based state management:</p>
+                <div class="code-snippet">
+// ProtectedRoute checks auth state before rendering<br>
+// Context API manages global isLoggedIn state<br>
+// Server validates JWT on every protected request<br>
+// AuthLoader provides smooth transition UX
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🛠️ Technical Highlights</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>State Management</h3>
+                    <p>Implemented custom AuthContext with React Context API for global authentication state across the application</p>
+                </div>
+                <div class="feature-card">
+                    <h3>File Handling</h3>
+                    <p>Integrated Cloudinary for avatar uploads with Multer middleware for handling multipart form data</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Security</h3>
+                    <p>JWT token generation, refresh tokens, password hashing, email verification, and OTP-based flows</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Data Modeling</h3>
+                    <p>Designed normalized MongoDB schemas for users, blogs, drafts, comments, likes, follows, and saves</p>
+                </div>
+                <div class="feature-card">
+                    <h3>API Architecture</h3>
+                    <p>Clean separation of routes, controllers, models, and services following MVC pattern</p>
+                </div>
+                <div class="feature-card">
+                    <h3>User Experience</h3>
+                    <p>Loading states, error handling, infinite scroll, mobile navigation, and responsive layouts</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📁 Project Structure</h2>
+            <div class="highlight-box">
+                <h3>Client (Frontend)</h3>
+                <div class="code-snippet">
+client/<br>
+├── src/<br>
+│   ├── pages/      # Route pages (auth, profile, feed, blogs)<br>
+│   ├── components/ # Reusable UI components<br>
+│   ├── api/        # API wrapper functions<br>
+│   ├── context/    # React Context (auth state)<br>
+│   └── App.jsx     # Main routing<br>
+                </div>
+            </div>
+            <div class="highlight-box" style="margin-top: 20px;">
+                <h3>Server (Backend)</h3>
+                <div class="code-snippet">
+server/<br>
+├── src/<br>
+│   ├── controllers/  # Business logic<br>
+│   ├── models/       # Mongoose schemas<br>
+│   ├── routes/       # API endpoints<br>
+│   ├── services/     # Utilities (email, tokens, cloud)<br>
+│   └── middlewares/  # Auth, multer, validation<br>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Key Learnings</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Full-Stack Integration</h3>
+                    <p>Connecting React frontend with Express backend through RESTful APIs</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Authentication Systems</h3>
+                    <p>Implementing secure JWT-based auth with refresh tokens and email verification</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Database Design</h3>
+                    <p>Modeling complex relationships in MongoDB with Mongoose ODM</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Cloud Services</h3>
+                    <p>Integrating third-party services like Cloudinary and email providers</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Built with passion by a dedicated developer 🚀</p>
+            <p>React • Express • MongoDB • Node.js</p>
+        </footer>
+    </div>
+</body>
+</html>
