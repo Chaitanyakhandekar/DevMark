@@ -304,6 +304,10 @@ const getAllBlogs = asyncHandler(async (req, res) => {
 const getPublicUserBlogs = asyncHandler(async (req, res) => {
 
    const userId = new mongoose.Types.ObjectId(req.params.id)
+   const currentUser = new mongoose.Types.ObjectId(req.user._id)
+
+   console.log("UserId:",userId);
+   console.log("CurrentUser:",currentUser);
 
   if(!userId || !mongoose.Types.ObjectId.isValid(userId)){
     throw new ApiError(400,"Valid UserId Required.")
@@ -357,13 +361,13 @@ const getPublicUserBlogs = asyncHandler(async (req, res) => {
     {
       $lookup: {
         from: "follows",
-        let: { ownerId: "$owner._id" },
+        let: { ownerId: "$owner._id" , currentUserId : currentUser },
         pipeline: [
           {
             $match: {
               $expr: {
                 $and: [
-                  { $eq: ["$followedBy", userId] },
+                  { $eq: ["$followedBy", "$$currentUserId"] },
                   { $eq: ["$followTo", "$$ownerId"] },
                 ],
               },
@@ -399,6 +403,7 @@ const getPublicUserBlogs = asyncHandler(async (req, res) => {
         totalComments: 1,
         status: 1,
         createdAt: 1,
+        isFollowedDocs:1
       },
     },
   ]);

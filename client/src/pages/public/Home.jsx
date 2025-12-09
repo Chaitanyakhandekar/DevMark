@@ -62,6 +62,15 @@ const Home = () => {
     }
   }
 
+  const scrollToSection = (id) => {
+  const section = document.getElementById(id);
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth" });
+  }
+  setMobileSidebar(false); // closes mobile menu after clicking
+};
+
+
   return (
    <div className="h-[100vh] w-min-screen bg-white relative pt-10">
 
@@ -91,9 +100,11 @@ const Home = () => {
         </div>
 
         <div className="hidden sm:hidden md:block text-gray-600 dark:text-white md:flex gap-4 text-lg sm:text-lg">
-          <Link to="#">Features</Link>
-          <Link to="#">Community</Link>
-          <Link to="#">About</Link>
+          <p onClick={() => scrollToSection("features")} className="cursor-pointer">Features</p>
+<p onClick={() => scrollToSection("how-it-works")} className="cursor-pointer">Working</p>
+<p onClick={() => scrollToSection("community")} className="cursor-pointer">Community</p>
+<p onClick={() => scrollToSection("about")} className="cursor-pointer">About</p>
+
         </div>
 
        <div className="flex text-white justify-around items-center gap-5 md:gap-10">
@@ -151,7 +162,7 @@ const Home = () => {
           </div>
     </div>
 
-    <div className=" dark:bg-[#1f2937] py-20">
+    <div id="features" className=" dark:bg-[#1f2937] py-20">
 
           <div className="text-white flex flex-col items-center gap-5 px-3">
               <p className='dark:text-white text-black text-4xl md:text-6xl font-bold text-center max-w-[400px] md:max-w-[600px]'>Everything You Need to <span className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-transparent bg-clip-text">Publish</span></p>
@@ -175,7 +186,7 @@ const Home = () => {
 
     </div>
 
-    <div className="dark:bg-[#111827] w-full pt-20 pb-10">
+    <div id="how-it-works" className="dark:bg-[#111827] w-full pt-20 pb-10">
           <div className="flex flex-col items-center gap-5 px-2">
             <p className='dark:text-white text-black text-center text-4xl lg:text-5xl font-bold'>How It <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Works</span></p>
             <p className='text-black dark:text-white text-center text-md lg:text-xl'>Get started in three easy steps</p>
@@ -207,7 +218,7 @@ const Home = () => {
           </div>
     </div>
 
-    <div className='dark:bg-gradient-to-r from-[#212e41] to-[#1f2938] pt-10 md:pt-20 pb-10 flex flex-col items-center gap-10'>
+    <div id="community" className='dark:bg-gradient-to-r from-[#212e41] to-[#1f2938] pt-10 md:pt-20 pb-10 flex flex-col items-center gap-10'>
             <div className='flex flex-col items-center gap-5 xl:max-w-[800px] px-3'>
                 <p className='text-gray-800 dark:text-white font-bold text-4xl lg:text-5xl text-center'>Ready to Join the <span className='bg-gradient-to-r from-[#3d80f6] to-[#9235eb] text-transparent bg-clip-text'>Developer Community?</span></p>
                 <p className='text-gray-700 dark:text-gray-300 text-center text-xl max-w-[85%]'>Start writing, publishing, and connecting with developers who share your passion for technology.</p>
@@ -236,7 +247,7 @@ const Home = () => {
             </div>
     </div>
 
-    <div className="w-full h-auto dark:bg-[#111826] pb-10 pt-10 border-[0.3px] border-t-gray-600 border-b-0 border-l-0 border-r-0 flex-col gap-10 flex justify-center items-center">
+    <div id="about" className="w-full h-auto dark:bg-[#111826] pb-10 pt-10 border-[0.3px] border-t-gray-600 border-b-0 border-l-0 border-r-0 flex-col gap-10 flex justify-center items-center">
 
              <div className="l-1 h-full w-full text-gray-800 dark:text-gray-300 flex flex-col lg:flex-row justify-between lg:justify-center items-start pl-5 text-sm lg:text-lg lg:items-start gap-5 lg:gap-[10%] text-lg">
               <div className="l2 flex flex-col justify-center items-start gap-5 pb-5 lg:pb-0">
