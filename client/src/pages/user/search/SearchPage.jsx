@@ -215,6 +215,17 @@ const SearchPage = () => {
     console.log("Follow Status = ", followStatus);
   };
 
+  const loadFollowStatusUsers = (users)=>{
+    users.forEach((user)=>{
+      setFollowStatus((prev)=>{
+        return {
+          ...prev,
+          [user._id]: user.isFollowed,
+        }
+      })
+    })
+  }
+
 
   const fetchAllBlogs = async () => {
     try {
@@ -234,6 +245,7 @@ const SearchPage = () => {
       })
 
       loadFollowStatus(res?.data?.data?.blogs);
+      loadFollowStatusUsers(res?.data?.data?.users);
 
       }
       else{

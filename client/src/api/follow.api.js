@@ -30,6 +30,31 @@ class FollowApi {
         }
     }
 
+    async unfollowUser(id){
+        try {
+            const response = await axios.post(
+                `${this.baseUrl}/unfollow/${id}`,
+                {},
+                {
+                   withCredentials:true
+                }
+            )
+
+            console.log("Follow Api Response 2 :: ",response.data)
+
+            return {
+                success:true,
+                data:response.data
+            }
+        } catch (error) {
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
+        }
+    }
+
 
     async getFollowStatus(id){
         try {

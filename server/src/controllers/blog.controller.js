@@ -303,7 +303,7 @@ const getAllBlogs = asyncHandler(async (req, res) => {
 
 const getPublicUserBlogs = asyncHandler(async (req, res) => {
 
-   const userId = req.params.id
+   const userId = new mongoose.Types.ObjectId(req.params.id)
 
   if(!userId || !mongoose.Types.ObjectId.isValid(userId)){
     throw new ApiError(400,"Valid UserId Required.")
@@ -509,7 +509,7 @@ const getUserDrafts = asyncHandler(async (req, res) => {
 const SearchBlogsAndUsers = asyncHandler(async (req, res) => {
 
   const searchQuery = req.query.searchQuery
-  const userId = req.user._id
+  const userId = new mongoose.Types.ObjectId(req.user._id)
 
   if (!searchQuery || (searchQuery && searchQuery.trim() === "")) {
     throw new ApiError(400, "Search Query Is Required for Search.")

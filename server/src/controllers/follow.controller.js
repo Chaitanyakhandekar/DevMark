@@ -62,7 +62,53 @@ const followUser = asyncHandler(async(req,res)=>{
 })
 
 
-const unfollowUser = asyncHandler(async(req,res)=>{})
+const unfollowUser = asyncHandler(async(req,res)=>{
+    const {id} = req.params
+
+    if(!id || !mongoose.Types.ObjectId.isValid(id)){
+        throw new ApiError(400,"Valid User Id Is Required.")
+    }
+
+    const unfollow = await Follow.findOneAndDelete({
+        followTo:id,
+        followedBy:req.user._id
+    })
+
+    if(!unfollow){
+        throw new ApiError(400,"You Are Not Following This User.")
+    }
+
+    const decrementedFollower = await User.findByIdAndUpdate(
+        id,
+        {
+            $inc:{totalFollowers:-1}
+        },
+        {
+            new:true
+        }
+    )
+
+    const decrementFollowing = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $inc:{totalFollowing:-1}
+        },
+        {
+            new:true
+        }
+    )
+
+    if(!(decrementedFollower && decrementFollowing)){
+        throw new ApiError(500,"Server Error In Unfollow Request.")
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200,"Unfollowed Successfully.")
+        )
+})
+
 
 const getFollowStatus = asyncHandler(async (req,res)=>{
     const {id} = req.params

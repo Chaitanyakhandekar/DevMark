@@ -12,5 +12,6 @@ const router = Router();
 
 router.route("/follow/:id").post(userAuth,followUser)
 router.route("/is-followed/:id").get(userAuth,getFollowStatus)
+router.route("/unfollow/:id").post(userAuth,unfollowUser)
 
 export default router;
