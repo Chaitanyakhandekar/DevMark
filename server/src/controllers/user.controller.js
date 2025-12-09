@@ -599,10 +599,10 @@ const getPublicUserProfile = asyncHandler(async (req, res) => {
               $expr: {
                 $and: [
                   {
-                    $eq: ["$followedBy", new mongoose.Types.ObjectId(userId)]
+                    $eq: ["$followedBy", new mongoose.Types.ObjectId(req.user._id)]
                   },
                   {
-                    $eq: ["$followTo", new mongoose.Types.ObjectId(req.user._id)]
+                    $eq: ["$followTo", new mongoose.Types.ObjectId(userId)]
                   }
                 ]
               }
