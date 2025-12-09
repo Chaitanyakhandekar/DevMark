@@ -127,8 +127,16 @@ function PublicProfilePage() {
                 setIsFollowing(true);
                 setProfileData(prev => ({
                     ...prev,
-                    totalFollowers: prev.isFollowed ? prev.totalFollowers - 1 : prev.totalFollowers + 1
+                    totalFollowers: prev.isFollowed ? prev.totalFollowers - 1 : prev.totalFollowers + 1,
+                    isFollowed: false
                 }));
+
+                setFollowStatus((prev)=>{
+                    return {
+                        ...prev,
+                        [userId]: false
+                    }
+                })
             }
         } catch (error) {
             console.error('Error toggling follow:', error);
@@ -137,18 +145,26 @@ function PublicProfilePage() {
         }
         }
 
-         if(profileData.isFollowed){
+         if(!profileData.isFollowed){
             try {
             setFollowLoading(true);
             // Replace with your actual follow/unfollow API call
-            const res = await followApi.unfollowUser(userId)
+            const res = await followApi.followUser(userId)
             
             if (res.data.success) {
                 setIsFollowing(true);
                 setProfileData(prev => ({
                     ...prev,
-                    totalFollowers: prev.isFollowed ? prev.totalFollowers - 1 : prev.totalFollowers + 1
+                    totalFollowers: prev.isFollowed ? prev.totalFollowers - 1 : prev.totalFollowers + 1,
+                    isFollowed: true
                 }));
+
+                setFollowStatus((prev)=>{
+                    return {
+                        ...prev,
+                        [userId] : true
+                    }
+                })
             }
         } catch (error) {
             console.error('Error toggling follow:', error);
@@ -338,7 +354,7 @@ function PublicProfilePage() {
                                     <SpinLoader />
                                 ) : (
                                     <>
-                                        {isFollowing===true ? (
+                                        {profileData.isFollowed===true ? (
                                             <>
                                                 <UserMinus size={20} />
                                                 Unfollow
