@@ -28,7 +28,9 @@ import {
     Loader,
     Sparkles,
     TrendingUp,
-    CheckCircle2
+    CheckCircle2,
+    Trash2,
+    ZoomIn
 } from 'lucide-react';
 import MDEditor from "@uiw/react-md-editor"
 import rehypeHighlights from "rehype-highlight"
@@ -42,6 +44,7 @@ function CreateBlogPage() {
     const [loading, setLoading] = useState(false)
     const [userAvatar, setUserAvatar] = useState("https://res.cloudinary.com/dzgtlxfhv/image/upload/v1759152185/dfwvfrdrczaf96nfnar8.png")
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [imagePreviewModal, setImagePreviewModal] = useState(null)
 
     const [blogData, setBlogData] = useState({
         content: "",
@@ -140,6 +143,13 @@ function CreateBlogPage() {
         } finally {
             setLoading(false)
         }
+    }
+
+    const removeImage = (indexToRemove) => {
+        setBlogData(prev => ({
+            ...prev,
+            images: prev.images.filter((_, index) => index !== indexToRemove)
+        }))
     }
 
     useEffect(() => {
@@ -299,21 +309,7 @@ function CreateBlogPage() {
                         );
                     })}
                 </nav>
-
-                {/* Sidebar Footer */}
-                {/* <div className="absolute bottom-0 w-full p-4">
-                    <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-lg p-3">
-                        <div className="flex items-center gap-2 text-blue-400 mb-1">
-                            <Sparkles size={14} />
-                            <p className="text-xs font-semibold">Pro Tip</p>
-                        </div>
-                        <p className="text-xs text-gray-300">Use markdown for rich formatting!</p>
-                    </div>
-                </div> */}
             </aside>
-
-            {/* Mobile Sidebar Overlay */}
-
 
             {/* Main Content */}
             <div className="md:ml-64 min-h-screen">
@@ -322,18 +318,9 @@ function CreateBlogPage() {
                     <div className='h-16 px-4 md:px-8 flex justify-between items-center'>
                         {/* Left Section */}
                         <div className="flex items-center gap-4">
-                            {/* <button 
-                                onClick={() => setSidebarOpen(true)}
-                                className="md:hidden text-white hover:bg-gray-700 p-2 rounded-lg transition-colors"
-                            >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
-                            </button> */}
-
                             <div className="hidden md:flex items-center gap-2 text-gray-400 bg-gray-800/50 px-3 py-2 rounded-lg">
-                                <Clock size={16} />
-                                <p className="text-sm">{blogData.words} words · {blogData.readingTime} min read</p>
+                                {/* <Clock size={16} />
+                                <p className="text-sm">{blogData.words} words · {blogData.readingTime} min read</p> */}
                             </div>
                         </div>
 
@@ -434,138 +421,210 @@ function CreateBlogPage() {
 
                     {/* Sidebar Settings */}
                     <aside className="w-full lg:w-80 space-y-4">
-                        {/* Publish Settings Card */}
+                        {/* Category Card */}
                         <div className="bg-[#1f2936] border border-gray-700/50 rounded-xl p-5 shadow-lg">
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="p-2 bg-blue-500/20 rounded-lg">
-                                    <Settings size={18} className="text-blue-400" />
+                                    <Tag size={18} className="text-blue-400" />
                                 </div>
-                                <h2 className="text-white font-bold">Publish Settings</h2>
+                                <h2 className="text-white font-bold">Category</h2>
                             </div>
 
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="text-sm font-medium text-gray-300 flex items-center gap-2 mb-2">
-                                        <Globe size={14} />
-                                        Status
-                                    </label>
-                                    <select
-                                        value={blogData.status}
-                                        onChange={(e) => setBlogData({ ...blogData, status: e.target.value })}
-                                        className='w-full bg-gray-800/50 border border-gray-600 text-white outline-none p-3 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all'
-                                    >
-                                        <option value="draft">📝 Draft</option>
-                                        <option value="published">🌍 Published</option>
-                                        <option value="private">🔒 Private</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="text-sm font-medium text-gray-300 flex items-center gap-2 mb-2">
-                                        <Tag size={14} />
-                                        Category
-                                    </label>
-                                    <select
-                                        value={blogData.category}
-                                        onChange={(e) => setBlogData({ ...blogData, category: e.target.value })}
-                                        className='w-full bg-gray-800/50 border border-gray-600 text-white outline-none p-3 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all'
-                                    >
-                                        {categories.map((category, index) => (
-                                            <option key={index} value={category}>{category}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                            <div>
+                                <label className="text-sm font-medium text-gray-300 mb-2 block">Select blog category</label>
+                                <select
+                                    value={blogData.category}
+                                    onChange={(e) => setBlogData({ ...blogData, category: e.target.value })}
+                                    className='w-full bg-gray-800/50 border border-gray-600 text-white outline-none p-3 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all'
+                                >
+                                    {categories.map((category, index) => (
+                                        <option key={index} value={category}>{category}</option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
 
-                        {/* Tags & Images Card */}
+                        {/* Image Upload & Preview Card */}
+                        <div className="bg-[#1f2936] border border-gray-700/50 rounded-xl p-5 shadow-lg">
+                            <div className="flex items-center gap-2 mb-4">
+                                <div className="p-2 bg-purple-500/20 rounded-lg">
+                                    <Image size={18} className="text-purple-400" />
+                                </div>
+                                <h2 className="text-white font-bold">Media Gallery</h2>
+                            </div>
+
+                            <div className="space-y-4">
+                                {/* Upload Button */}
+                                <div className="relative">
+                                    <input
+                                        type="file"
+                                        id="image-upload"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={(e) => {
+                                            setBlogData((prev) => ({
+                                                ...prev,
+                                                images: [...prev.images, ...Array.from(e.target.files)]
+                                            }))
+                                        }}
+                                        className="hidden"
+                                    />
+                                    <label
+                                        htmlFor="image-upload"
+                                        className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium rounded-lg cursor-pointer transition-all duration-200 shadow-lg hover:shadow-xl"
+                                    >
+                                        <Plus size={18} />
+                                        <span>Upload Images</span>
+                                    </label>
+                                </div>
+
+                                {/* Image Count Badge */}
+                                {blogData.images.length > 0 && (
+                                    <div className="flex items-center justify-between bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-lg px-4 py-2">
+                                        <div className="flex items-center gap-2 text-purple-400">
+                                            <CheckCircle2 size={16} />
+                                            <span className="text-sm font-medium">{blogData.images.length} image{blogData.images.length > 1 ? 's' : ''} selected</span>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Image Preview Grid */}
+                                {blogData.images.length > 0 && (
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="text-sm font-medium text-gray-300">Preview</h3>
+                                            <span className="text-xs text-gray-500">Click to enlarge</span>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto pr-1 custom-scrollbar">
+                                            {blogData.images.map((image, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="group relative aspect-square rounded-lg overflow-hidden border-2 border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20"
+                                                >
+                                                    <img
+                                                        src={URL.createObjectURL(image)}
+                                                        alt={`Preview ${index + 1}`}
+                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                                    />
+                                                    
+                                                    {/* Overlay with actions */}
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                        <div className="absolute bottom-0 left-0 right-0 p-2 flex items-center justify-between">
+                                                            <span className="text-xs text-white/90 font-medium truncate flex-1 mr-2">
+                                                                {image.name}
+                                                            </span>
+                                                            
+                                                            <div className="flex gap-1">
+                                                                <button
+                                                                    onClick={() => setImagePreviewModal(URL.createObjectURL(image))}
+                                                                    className="p-1.5 bg-blue-600/90 hover:bg-blue-600 text-white rounded-md transition-colors"
+                                                                    title="View full size"
+                                                                >
+                                                                    <ZoomIn size={14} />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => removeImage(index)}
+                                                                    className="p-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded-md transition-colors"
+                                                                    title="Remove image"
+                                                                >
+                                                                    <Trash2 size={14} />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        {/* File size badge */}
+                                                        <div className="absolute top-2 right-2">
+                                                            <span className="text-xs bg-black/70 text-white px-2 py-1 rounded-md backdrop-blur-sm">
+                                                                {(image.size / 1024 / 1024).toFixed(2)} MB
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Empty State */}
+                                {blogData.images.length === 0 && (
+                                    <div className="border-2 border-dashed border-gray-700 rounded-lg p-8 text-center">
+                                        <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-800/50 rounded-full mb-3">
+                                            <Image size={28} className="text-gray-500" />
+                                        </div>
+                                        <p className="text-sm text-gray-400 mb-1">No images uploaded yet</p>
+                                        <p className="text-xs text-gray-500">Click upload to add images</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Tags Card */}
                         <div className="bg-[#1f2936] border border-gray-700/50 rounded-xl p-5 shadow-lg">
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="p-2 bg-green-500/20 rounded-lg">
                                     <Tag size={18} className="text-green-400" />
                                 </div>
-                                <h2 className="text-white font-bold">Tags & Media</h2>
+                                <h2 className="text-white font-bold">Tags</h2>
                             </div>
 
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="text-sm font-medium text-gray-300 mb-2 block">Tags</label>
-                                    <textarea
-                                        className='w-full bg-gray-800/50 text-white border border-gray-600 outline-none p-3 rounded-lg resize-none focus:ring-2 focus:ring-green-500 transition-all'
-                                        placeholder='#react #javascript #webdev'
-                                        name="tags"
-                                        value={blogData.tags}
-                                        onChange={handleBlogDataChange}
-                                        rows={3}
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-sm font-medium text-gray-300 flex items-center gap-2 mb-2">
-                                        <Image size={14} />
-                                        Upload Images
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            multiple
-                                            onChange={(e) => {
-                                                setBlogData((prev) => ({
-                                                    ...prev,
-                                                    images: [...prev.images, ...Array.from(e.target.files)]
-                                                }))
-                                            }}
-                                            className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:cursor-pointer transition-all"
-                                        />
-                                    </div>
-                                    {blogData.images.length > 0 && (
-                                        <div className="mt-2 flex items-center gap-2 text-xs text-green-400 bg-green-500/10 px-3 py-2 rounded-lg">
-                                            <CheckCircle2 size={14} />
-                                            {blogData.images.length} image(s) selected
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Statistics Card */}
-                        <div className="bg-[#1f2936] border border-gray-700/50 rounded-xl p-5 shadow-lg">
-                            <div className="flex items-center gap-2 mb-4">
-                                <div className="p-2 bg-purple-500/20 rounded-lg">
-                                    <FileText size={18} className="text-purple-400" />
-                                </div>
-                                <h2 className="text-white font-bold">Statistics</h2>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 p-3 rounded-lg">
-                                    <p className='text-xs text-gray-400 mb-1'>Words</p>
-                                    <p className='text-xl font-bold text-white'>{blogData.words}</p>
-                                </div>
-
-                                <div className="bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 p-3 rounded-lg">
-                                    <p className='text-xs text-gray-400 mb-1'>Characters</p>
-                                    <p className='text-xl font-bold text-white'>{blogData.characters}</p>
-                                </div>
-
-                                <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 p-3 rounded-lg">
-                                    <p className='text-xs text-gray-400 mb-1'>Read Time</p>
-                                    <p className='text-xl font-bold text-white'>{blogData.readingTime} min</p>
-                                </div>
-
-                                <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 p-3 rounded-lg">
-                                    <p className='text-xs text-gray-400 mb-1'>Title</p>
-                                    <p className='text-xl font-bold text-white'>{blogData.title.length}</p>
-                                </div>
+                            <div>
+                                <label className="text-sm font-medium text-gray-300 mb-2 block">Add relevant tags</label>
+                                <textarea
+                                    className='w-full bg-gray-800/50 text-white border border-gray-600 outline-none p-3 rounded-lg resize-none focus:ring-2 focus:ring-green-500 transition-all'
+                                    placeholder='#react #javascript #webdev'
+                                    name="tags"
+                                    value={blogData.tags}
+                                    onChange={handleBlogDataChange}
+                                    rows={3}
+                                />
                             </div>
                         </div>
                     </aside>
                 </div>
             </div>
 
+            {/* Image Preview Modal */}
+            {imagePreviewModal && (
+                <div 
+                    className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+                    onClick={() => setImagePreviewModal(null)}
+                >
+                    <div className="relative max-w-5xl max-h-[90vh] w-full">
+                        <button
+                            onClick={() => setImagePreviewModal(null)}
+                            className="absolute -top-12 right-0 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                        >
+                            <X size={24} />
+                        </button>
+                        <img
+                            src={imagePreviewModal}
+                            alt="Full size preview"
+                            className="w-full h-full object-contain rounded-lg shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    </div>
+                </div>
+            )}
+
             <MobileNavBottom avatarUrl={userAvatar} />
 
+            <style jsx>{`
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: rgba(31, 41, 55, 0.5);
+                    border-radius: 3px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background: rgba(139, 92, 246, 0.5);
+                    border-radius: 3px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background: rgba(139, 92, 246, 0.7);
+                }
+            `}</style>
         </div>
     )
 }
