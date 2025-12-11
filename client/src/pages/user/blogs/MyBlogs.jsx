@@ -199,6 +199,7 @@ function MyBlogs() {
                     key={blog._id}
                     title={blog.title}
                     imgUrl={blog.images?.length ? blog.images[0].url : ""}
+                    images={blog.images}
                     description={blog.content}
                     likes={blog.totalLikes}
                     comments={blog.totalComments}
