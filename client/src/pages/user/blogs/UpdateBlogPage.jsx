@@ -38,6 +38,7 @@ import Swal from 'sweetalert2'
 import { blogApi } from '../../../api/blog.api';
 import { useParams } from 'react-router-dom';
 import FeedSidebar from '../../../components/FeedSidebar';
+import MobileNavBottom from '../../../components/MobileNavBottom';
 
 function UpdateBlogPage() {
     const [tags, setTags] = useState([])
@@ -47,6 +48,7 @@ function UpdateBlogPage() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [blogId, setBlogId] = useState(useParams().id)
     const [imagePreviewModal, setImagePreviewModal] = useState(null)
+    const [newImages, setNewImages] = useState([])
 
     const [blogData, setBlogData] = useState({
         content: "Hey there! Start writing your blog content here...",
@@ -110,8 +112,9 @@ function UpdateBlogPage() {
             formData.append("status", blogData.status);
             tagsArray.forEach(tag => formData.append("tags[]", tag));
             imgs.forEach(img => formData.append("images", img));
+            newImages.forEach(img => formData.append("images", img))
 
-            const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/update/${blogId}`, formData, {
+            const res = await axios.patch(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/${blogId}`, formData, {
                 withCredentials: true,
                 headers: {
                     "Content-Type": "multipart/form-data"
@@ -235,7 +238,9 @@ function UpdateBlogPage() {
     return (
         <div className="min-w-screen min-h-screen dark:bg-[#0f1419] relative">
             {/* Enhanced Sidebar */}
-            <FeedSidebar activePage='update' />
+           <div className="w-full hidden md:block">
+             <FeedSidebar activePage='update' />
+           </div>
 
             {/* Main Content */}
             <div className="md:ml-64 min-h-screen">
@@ -335,7 +340,7 @@ function UpdateBlogPage() {
                     </div>
 
                     {/* Sidebar Settings */}
-                    <aside className="hidden md:block w-full lg:w-80 space-y-4">
+                    <aside className=" w-full lg:w-80 space-y-4">
                         {/* Category Card */}
                         <div className="bg-[#1f2936] border border-gray-700/50 rounded-xl p-5 shadow-lg">
                             <div className="flex items-center gap-2 mb-4">
@@ -381,7 +386,9 @@ function UpdateBlogPage() {
                                          const files = e.target.files;
                                          if(!files || files?.length === 0) return;
 
-                                         const newImages = Array.from(files).map((file)=>({
+                                         setNewImages([...newImages,...Array.from(files)]);
+
+                                         const newImages1 = Array.from(files).map((file)=>({
                                             file,
                                             url : URL.createObjectURL(file),
                                             name : file.name,
@@ -392,7 +399,7 @@ function UpdateBlogPage() {
                                             if (e.target.files && e.target.files.length > 0) {
                                                 setBlogData((prev) => ({
                                                     ...prev,
-                                                    images: [...prev.images, ...newImages],
+                                                    images: [...prev.images, ...newImages1],
                                                 }));
                                                 // Reset the input so the same file can be selected again if needed
                                                 e.target.value = '';
@@ -561,6 +568,8 @@ function UpdateBlogPage() {
                     background: rgba(139, 92, 246, 0.7);
                 }
             `}</style>
+
+            <MobileNavBottom userAvatar={userAvatar} activePage='update' />
         </div>
     )
 }
