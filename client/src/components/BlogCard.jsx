@@ -10,7 +10,10 @@ import {
     MoreHorizontal,
     Edit,
     Edit2,
-    Trash2
+    Trash2,
+    ArrowBigRight,
+    ChevronLeft,
+    ChevronRight
 } from 'lucide-react';
 import { useEffect } from 'react';
 import axios from 'axios'
@@ -31,6 +34,7 @@ function BlogCard({
     title,
     description,
     imgUrl,
+    images = [],
     tags = ["#react", "#javascript", "#webdev"],
     likes = 0,
     comments = 0,
@@ -55,6 +59,9 @@ function BlogCard({
     const [isSaved, setIsSaved] = useState(isSavedBlog)
     const [isOwnerOnlyMenuOpen, setIsOwnerOnlyMenuOpen] = useState(false)
     const [isDeleted, setIsDeleted] = useState(false)
+    const [currentImageIndex , setCurrentImageIndex] = useState(0);
+    const [hideRightArrow,setHideRightArrow] = useState(images.length>1 ? true : false)
+    const [hideLeftArrow,setHideLeftArrow] = useState(false)
     const navigate = useNavigate();
 
 
@@ -241,7 +248,24 @@ function BlogCard({
     }
 
 
-
+    const handleImageIndexChangeRight = () =>{
+        if(currentImageIndex < images.length -1){
+            setCurrentImageIndex((prev)=>prev+1)
+            setHideRightArrow(false)
+        }
+        else{
+            setHideRightArrow(true)
+        }
+    }
+    const handleImageIndexChangeLeft = () =>{
+        if( currentImageIndex > 0){
+            setCurrentImageIndex((prev)=>prev-1)
+            setHideRightArrow(false)
+        }
+        else{
+            setHideLeftArrow(true)
+        }
+    }
 
 
     const shouldShowReadMore = description && description.length > 150;
@@ -255,9 +279,26 @@ function BlogCard({
                 <div className="w-full flex justify-center overflow-hidden rounded-md">
                     <img
                         className='w-full h-[280px] object-cover transition-transform duration-300 group-hover:scale-105 p-2 rounded-md'
-                        src={imgUrl || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=400&fit=crop"}
+                        src={images[currentImageIndex].url || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=400&fit=crop"}
                         alt={title}
                     />
+                </div>
+
+                <div
+                 className="absolute bottom-20 right-2 flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                 onClick={handleImageIndexChangeRight}
+                 >
+                    <ChevronRight size={32} className={`${currentImageIndex === images.length - 1 ? "hidden" : ""} text-white bg-black/60 rounded-full p-1 m-3  cursor-pointer`} />
+                </div>
+                <div className="absolute bottom-20 left-2 flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                 onClick={handleImageIndexChangeLeft}>
+                    <ChevronLeft size={32} className={`${currentImageIndex === 0 ? "hidden" : ""} text-white bg-black/60 rounded-full p-1 m-3  cursor-pointer`} />
+                </div>
+
+                <div className={`${images.length===1 ? "hidden" : ""} absolute right-3 top-3`}>
+                    <div className="px-3 py-1.5 bg-black/60 backdrop-blur-sm rounded-lg text-white text-sm font-medium flex items-center gap-1">
+                       {currentImageIndex + 1} / {images.length}
+                    </div>
                 </div>
                 {/* <div className="px-3 py-1.5 bg-black/60 backdrop-blur-sm absolute top-4 right-4 rounded-lg text-white text-sm font-medium">
                     8 min read

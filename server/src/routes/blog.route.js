@@ -27,7 +27,7 @@ router.route("/user/drafts").get(userAuth,getUserDrafts)
 router.route("/search/").get(userAuth,SearchBlogsAndUsers)
 router.route("/user/:id").get(userAuth,getPublicUserBlogs)
 router.route("/:id").delete(userAuth,blogOwner,deleteBlog)
-router.route("/:id").patch(userAuth,blogOwner,updateBlog)
+router.route("/:id").patch(upload.array("images",3), userAuth,blogOwner,updateBlog)
 router.route("/:id").get(userAuth,getBlog)
 
 export default router;

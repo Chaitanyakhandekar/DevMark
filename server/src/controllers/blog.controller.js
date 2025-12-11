@@ -115,6 +115,25 @@ const updateBlog = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Atleast One Field Is Required For Update Blog.")
   }
 
+  const images = req.files;
+
+  if(images && images.length > 0){
+
+    const imgs = await Promise.all(
+      images.map(async(image)=>{
+        const res = await uploadFileOnCloudinary(image.path)
+        return {
+          url:res.secure_url,
+          public_id:res.public_id
+        }
+      })
+    )
+
+    console.log("Uploaded Images:",imgs)
+
+    updateData.images = [...req.blog.images, ...imgs]
+  }
+
   if (title) {
     if (title.trim() === "") {
       throw new ApiError(400, "Title Cannot Be Empty.")
@@ -145,6 +164,7 @@ const updateBlog = asyncHandler(async (req, res) => {
 
   if (tags && tags.length) {
     updateData = { ...updateData, tags }
+    
   }
 
   const updatedBlog = await Blog.findByIdAndUpdate(
@@ -491,8 +511,6 @@ const getUserBlogs = asyncHandler(async (req, res) => {
     )
 
 })
-
-
 
 
 const getUserDrafts = asyncHandler(async (req, res) => {
