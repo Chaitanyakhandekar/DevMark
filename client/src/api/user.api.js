@@ -17,12 +17,17 @@ class UserApi {
             };
         } catch (error) {
             console.log("Signup User :: Error :: ", error.message)
-            return error
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
         }
     }
 
     async loginUser(user) {
         try {
+            console.log("User API Login User :: ",user)
             const res = await axios
                 .post(`${this.baseUrl}/users/login
                 `,
@@ -32,14 +37,18 @@ class UserApi {
                     }
                 )
 
-            console.log("data = ", res.data)
+            console.log("data Login = ", res.data)
             return {
                 success: true,
                 data: res.data
             }
         } catch (error) {
             console.log("Login User :: Error :: ", error.message)
-            return error
+            return {
+                success:false,
+                message:error.message,
+                error:error
+            }
         }
     }
 

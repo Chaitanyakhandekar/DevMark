@@ -13,6 +13,8 @@ export default function LoginPage({nextPage="/user/feed"}) {
   const [user,setUser] = React.useState({ email: "", password: "" });
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [isVerified, setIsVerified] = React.useState(true);
+
   const authData = useContext(authContext)
 
   const handleChange = (e)=>{
@@ -38,10 +40,45 @@ export default function LoginPage({nextPage="/user/feed"}) {
     console.log("Logging in with:", user);
 
     const res = await userApi.loginUser(user)
-    console.log(res.data);
+    console.log("After Login Request = ",res);
+    console.log("After Login Request Failed = ",res.message);
     setLoading(false);
 
-    if(res.data.message){
+    if(res.data.data && res.data.data.isVerified === false){
+
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Email Not Verified',
+        text: 'Please verify your email to login.',
+        confirmButtonText: 'Resend Verification Email'
+      }).then( async (result) => {
+        if (result.isConfirmed) {
+          // Resend verification email
+          const res = await axios.post(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/email/resend-verification`, { email: user.email });
+          console.log("Resend Verification Response :: ", res.data.success);
+
+          if(res.data.success){
+          localStorage.setItem("emailForVerification" , user.email);
+             await Swal.fire({
+              icon: 'success',
+              title: 'Verification Email Sent',
+              text: 'Please check your email to verify your account.',
+            });
+
+            navigate("/verify-confirm");
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Failed to resend verification email. Please try again later.',
+            });
+          }
+        }
+      });
+
+    }
+
+   else if(res.data.success){
       authData.setIsLoggedIn(true);
     //  await Swal.fire({
     //     icon: 'success',
