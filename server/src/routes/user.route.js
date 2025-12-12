@@ -15,7 +15,8 @@ import {
      updateUserAvatar,
      getPublicUserProfile,
      sendOTP,
-     resetPassword
+     resetPassword,
+     resendEmailVerification
 
  } from '../controllers/user.controller.js';
  import { sendVerificationToken } from '../services/sendVerificationToken.js';
@@ -39,5 +40,6 @@ router.route("/profile").patch(userAuth,updateUserProfile)
 router.route("/email/verify/:token").get(verifyUser)
 router.route("/email/is-verify/:email").get(isVerifiedUser)
 router.route("/is-logged-in").get(userAuth,isLoggedInUser)
+router.route("/email/resend-verification").post(resendEmailVerification)
 
 export default router;

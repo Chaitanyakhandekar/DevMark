@@ -75,14 +75,28 @@ const loginUser = asyncHandler(async (req, res) => {
       )
   }
 
+  if(user.isVerified === false){
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(403, {isVerified: user.isVerified}, "Email is not verified! Please verify your email to login.")
+      )
+  }
+
   const isCorrect = await user.isCorrectPassword(password)
 
   if (!isCorrect) {
-    throw new ApiError(400, "Invalid Credentials")
+    return res.status(400).json(
+      new ApiResponse(400,[], "Invalid Credentials")
+    )
+    //
+   
   }
 
   if (!user.isVerified) {
-    throw new ApiError(403, "Email is not verified!")
+    return res.status(403).json(
+      new ApiResponse(403, {isVerified: user.isVerified}, "Email is not verified! Please verify your email to login.")
+    )
   }
 
 
@@ -199,6 +213,25 @@ const sendOTP = asyncHandler(async (req,res)=>{
 
   
   })
+
+const resendEmailVerification = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (!email || email.trim() === "") {
+    throw new ApiError(400, "Email is required to resend verification email")
+  }
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiError(404, "User Not Found")
+  }
+
+  req.newUser = user;
+
+   const response =  await sendVerificationToken( req, res);
+
+})
+
+
 
 const verifyUser = asyncHandler(async (req, res) => {
   const { token } = req.params;
@@ -822,5 +855,6 @@ export {
   updateUserAvatar,
   getPublicUserProfile,
   sendOTP,
-  resetPassword
+  resetPassword,
+  resendEmailVerification
 }
