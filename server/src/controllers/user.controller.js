@@ -34,6 +34,14 @@ const registerUser = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, "User with this email already exists.")
   }
 
+  const usernameExists = await User.findOne({
+    username: username.trim().toLowerCase()
+  })
+
+  if(usernameExists){
+    throw new ApiError(400, `Username '${username}' is already taken. Please choose a different username.`)
+  }
+
   const newUser = await User.create({
     username,
     fullName,
@@ -69,9 +77,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!user) {
     return res
-      .status(400)
+      .status(200)
       .json(
-        new ApiResponse(400, "Acoount not found!")
+        new ApiResponse(400, [], "Acoount not found!",false)
       )
   }
 
@@ -86,8 +94,8 @@ const loginUser = asyncHandler(async (req, res) => {
   const isCorrect = await user.isCorrectPassword(password)
 
   if (!isCorrect) {
-    return res.status(400).json(
-      new ApiResponse(400,[], "Invalid Credentials")
+    return res.status(200).json(
+      new ApiResponse(400,[], "Invalid Credentials",false)
     )
     //
    
