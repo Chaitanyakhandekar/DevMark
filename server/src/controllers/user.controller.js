@@ -34,6 +34,14 @@ const registerUser = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, "User with this email already exists.")
   }
 
+  const usernameExists = await User.findOne({
+    username: username.trim().toLowerCase()
+  })
+
+  if(usernameExists){
+    throw new ApiError(400, `Username '${username}' is already taken. Please choose a different username.`)
+  }
+
   const newUser = await User.create({
     username,
     fullName,

@@ -170,7 +170,10 @@ export default function LoginPage({nextPage="/user/feed"}) {
           </button>
 
           {errorMessage && (
-            <p className="text-red-500 text-center mt-4">{errorMessage}</p>
+            <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-3 flex items-center gap-2">
+                                <div className="w-1 h-8 bg-red-500 rounded-full"></div>
+                                <p className="text-red-400 text-sm">{errorMessage}</p>
+                            </div>
           )}
         </form>
         <p className="text-center text-gray-400 mt-6">
