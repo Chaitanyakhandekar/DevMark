@@ -69,9 +69,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!user) {
     return res
-      .status(400)
+      .status(200)
       .json(
-        new ApiResponse(400, "Acoount not found!")
+        new ApiResponse(400, [], "Acoount not found!",false)
       )
   }
 
@@ -86,8 +86,8 @@ const loginUser = asyncHandler(async (req, res) => {
   const isCorrect = await user.isCorrectPassword(password)
 
   if (!isCorrect) {
-    return res.status(400).json(
-      new ApiResponse(400,[], "Invalid Credentials")
+    return res.status(200).json(
+      new ApiResponse(400,[], "Invalid Credentials",false)
     )
     //
    

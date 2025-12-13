@@ -14,6 +14,7 @@ export default function LoginPage({nextPage="/user/feed"}) {
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [isVerified, setIsVerified] = React.useState(true);
+  const [errorMessage, setErrorMessage] = React.useState(null);
 
   const authData = useContext(authContext)
 
@@ -96,11 +97,21 @@ export default function LoginPage({nextPage="/user/feed"}) {
       // console.log("wswwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww  ;; ",res.data.isLoggedIn )
       // navigate(nextPage);
     }else{
-      Swal.fire({
-        icon: 'error',
-        title: 'Login Failed',
-        text: res.data.message || 'Something went wrong!',
-      });
+        if(res?.data?.data?.message ){
+          setErrorMessage(res.data.data.message);
+        }
+        else if (res?.data?.message ){
+          setErrorMessage(res.data.message);
+        }
+        else{
+          setErrorMessage("Login failed. Please try again.");
+            await Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: errorMessage,
+        });
+        }
+      
     }
   }
 
@@ -150,13 +161,17 @@ export default function LoginPage({nextPage="/user/feed"}) {
           </div>
           <button
             type="submit"
-            disabled={user.email === "" || user.password === "" || loading}
+            disabled={user.email.trim() === "" || user.password.trim() === "" || loading}
             className={`w-full py-2 rounded-lg bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-semibold hover:opacity-90 transition flex justify-center items-center disabled:opacity-70 disabled:cursor-not-allowed`}
             onClick={handleLogin}
           >
             {loading ? 
             <div className="text-blue-600 w-6 h-6 border-2 border-t-gray-600 border-r-gray-600 border-gray-800  animate-spin rounded-3xl"></div> : "Login"}
           </button>
+
+          {errorMessage && (
+            <p className="text-red-500 text-center mt-4">{errorMessage}</p>
+          )}
         </form>
         <p className="text-center text-gray-400 mt-6">
           Don't have an account? {" "}
