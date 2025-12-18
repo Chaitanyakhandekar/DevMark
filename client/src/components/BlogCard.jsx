@@ -320,7 +320,9 @@ function BlogCard({
 
                         <div className='flex flex-col'>
                             <div className="flex items-center gap-1.5 font-semibold text-sm">
-                                <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">
+                                <span
+                                onClick={()=>{navigate(`/user/profile/${owner._id}`)}}
+                                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">
                                     {owner.username}
                                 </span>
                                 <svg className="w-4 h-4 text-white bg-blue-600 rounded-full flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
