@@ -3,6 +3,7 @@ import Input from "../../components/Input";
 import axios from "axios"
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from "react-router-dom";
+import AuthLoader from "../../components/AuthLoader";
 import { 
   Eye, 
   EyeOff, 
