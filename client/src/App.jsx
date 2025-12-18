@@ -56,6 +56,7 @@ function App() {
       <Route path="/user/blogs/update/:id" element={<ProtectedRoute><UpdateBlogPage/></ProtectedRoute>} />
       <Route path="/user/drafts/edit/:id" element={<ProtectedRoute><EditDraft/></ProtectedRoute>} />
       <Route path="/user/search/:id" element={<ProtectedRoute><PublicProfilePage/></ProtectedRoute>} />
+      <Route path="/user/profile/:id" element={<ProtectedRoute><PublicProfilePage/></ProtectedRoute>} />
 
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
