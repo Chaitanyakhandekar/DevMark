@@ -91,7 +91,34 @@ function CreateBlogPage() {
     }
 
     const publishBlog = async () => {
+
+        if(blogData.images.length === 0){
+            Swal.fire({
+                icon: 'error',
+                title: 'No Images Uploaded',
+                text: 'Please upload at least one image for your blog post.',
+                background: '#1f2936',
+                color: '#c9d1d9'
+            });
+            return;
+        }
+
+        if(blogData.images.length > 5){
+            Swal.fire({
+                icon: 'error',
+                title: 'Too Many Images',
+                text: 'You can upload a maximum of 5 images per blog post.',
+                background: '#1f2936',
+                color: '#c9d1d9'
+            });
+            return;
+        }
+
+
+
         setLoading(true)
+
+
         try {
             const tagsArray = blogData.tags
                 ? blogData.tags.split("#").map(tag => tag.trim()).filter(Boolean)
@@ -347,8 +374,8 @@ function CreateBlogPage() {
 
                             <button
                                 onClick={publishBlog}
-                                disabled={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length || loading}
-                                title={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || !blogData.images.length ? "Title, content and image required" : "Publish Blog"}
+                                disabled={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 || loading}
+                                title={blogData.content.trim().length === 0 || blogData.title.trim().length === 0 ||  "Publish Blog"}
                                 className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg px-4 py-2 transition-all duration-200 shadow-lg hover:shadow-xl"
                             >
                                 {loading ? (
