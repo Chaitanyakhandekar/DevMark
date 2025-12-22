@@ -15,7 +15,12 @@ function ProtectedRoute({children}) {
   const checkAuth = async ()=>{
       setLoading(true)
       console.log("Context API AuthConetxt = ",data)
-        const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/is-logged-in`,
+      
+      if(data.isLoggedIn){
+        setLoading(false)
+        return;
+      }
+      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/users/is-logged-in`,
       {
         withCredentials:true,
         headers:{
@@ -23,6 +28,7 @@ function ProtectedRoute({children}) {
         }
       }
     )
+
     console.log(res.data)
     setLoading(false)
 
@@ -32,6 +38,8 @@ function ProtectedRoute({children}) {
     else{
       data.setIsLoggedIn(false)
     }
+
+    return;
 
     }
 

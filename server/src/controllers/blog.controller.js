@@ -360,7 +360,7 @@ const getPublicUserBlogs = asyncHandler(async (req, res) => {
           {
             $addFields:{
               isOwner:{
-                $eq:["$_id", userId]
+                $eq:[currentUser, userId]
               }
             }
           },

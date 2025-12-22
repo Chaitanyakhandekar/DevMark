@@ -45,6 +45,7 @@ export default function LoginPage({nextPage="/user/feed"}) {
     console.log("After Login Request Failed = ",res.message);
     setLoading(false);
 
+
     if(res.data.data && res.data.data.isVerified === false){
 
       await Swal.fire({
@@ -80,6 +81,7 @@ export default function LoginPage({nextPage="/user/feed"}) {
     }
 
    else if(res.data.success){
+    console.log("Login Successful! Setting auth context... ",res.data.success);
       authData.setIsLoggedIn(true);
     //  await Swal.fire({
     //     icon: 'success',
@@ -91,10 +93,9 @@ export default function LoginPage({nextPage="/user/feed"}) {
     //   Swal.close();
       // localStorage.setItem("isLoggedInUser","yesLoggedIn")
     //  await isLoggedInUser();
-      const logged = await isLoggedInUser();
-      if(logged) navigate(nextPage);
-      else navigate(nextPage); // fallback
-      // console.log("wswwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww  ;; ",res.data.isLoggedIn )
+      // const logged = await isLoggedInUser();
+      navigate(nextPage);
+      // console.log("wswwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww  ;; ",res.data.isLoggedIn )
       // navigate(nextPage);
     }else{
         if(res?.data?.data?.message ){
