@@ -165,11 +165,24 @@ function BlogCard({
 
     const handleBlogLikeToggle = async () => {
         console.log("blog Id = ", id)
+        let isLikedC = !isLiked
         setIsLiked(!isLiked)
+        if (isLikedC) {
+            setTotalLikes((prev) => prev + 1)
+        }
+        else{
+            setTotalLikes((prev) => prev - 1)
+        }
         const res = await likeApi.toggleBlogLike(id)
         if (!res.success) {
             console.log("Like Toggle Failed.")
             setIsLiked(!isLiked)
+            if(isLikedC){
+                setTotalLikes((prev) => prev - 1)
+            }
+            else{
+                setTotalLikes((prev) => prev + 1)
+            }
         }
     }
 
@@ -239,7 +252,10 @@ function BlogCard({
     useEffect(() => {
         isLikedToBlog()
         isSavedToBlog()
+        setTotalLikes(likes)
     }, [])
+
+  
 
     const handleUniversal = () => {
         if (isOwnerOnlyMenuOpen) {
@@ -337,12 +353,13 @@ function BlogCard({
 
                     {!isOwner && (
                         <button
-                            // disabled={followStatus[owner._id]}
+                            disabled={followStatus[owner._id]}
+                            title={followStatus[owner._id] ? "Unfollow From Profile" : "Follow this user"}
                             onClick={handleFollow}
                             className={`text-sm font-medium cursor-pointer px-4 py-1.5 rounded-md transition-all duration-200 ${followStatus[owner._id]
                                 ? "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-default"
                                 : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow"
-                                }`}
+                                } disabled:cursor-not-allowed`}
                         >
                             {followStatus[owner._id] ? "Following" : "Follow"}
                         </button>
@@ -390,7 +407,7 @@ function BlogCard({
                                 size={18}
                                 className={` ${isLiked ? 'fill-red-500 text-red-500' : ''}`}
                             />
-                            <span className="text-sm font-medium">{likes}</span>
+                            <span className="text-sm font-medium">{totalLikes}</span>
                         </button>
                         <button
                             onClick={() => {
