@@ -66,6 +66,15 @@ const createBlog = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Blog Creation Failed")
   }
 
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $inc: {
+        totalBlogs: 1
+      }
+    }
+  )
+
   return res
     .status(201)
     .json(

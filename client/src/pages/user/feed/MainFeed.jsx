@@ -64,6 +64,7 @@ function MainFeed() {
   const [loading,setLoading] = useState(false)
   const [userAvatar,setUserAvatar] = useState("")
   const [followStatus,setFollowStatus] = useState({})
+  const [hasNextPage,setHasNextPage] = useState(true)
   const navigate = useNavigate();
 
 
@@ -114,6 +115,7 @@ function MainFeed() {
       console.log("blogs : ",res.data.data.blogs)
   
       setAllBlogs(res.data.data.blogs)
+      setHasNextPage(res.data.data.hasNextPage)
       
       loadFollowStatus(res.data.data.blogs)
 
@@ -266,16 +268,20 @@ function MainFeed() {
                </div>
             ))}
 
-            <button
+           {
+            hasNextPage && !loading && (
+               <button
             onClick={()=>{
               setLimit((prev)=>prev+prev)
             }}
             className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">{loading ? "Loading..." : "Load More Posts"}</button>
+            )
+           }
           </div>
 
         </section>
 
-
+           
         {/* Section 3 Right Sidebar */}
         <section className="hidden sm:hidden lg:block w-[18%] max-w-[350px] border-1 border-blue-700 text-black dark:text-white lg:flex lg:flex-col lg:gap-5 lg:py-3 sticky top-20">
 

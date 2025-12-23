@@ -21,7 +21,7 @@ function FeedSidebar({
 
   return (
     <aside className={`
-      fixed top-0 left-0 h-screen w-64 z-50 
+      fixed top-0 left-0 h-screen w-64 z-100 
       bg-gradient-to-b from-[#1f2936] to-[#161d28]
       border-r border-gray-700/50
       transform transition-transform duration-300 ease-in-out

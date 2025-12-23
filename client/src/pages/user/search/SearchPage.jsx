@@ -39,151 +39,6 @@ const SearchPage = () => {
   const [userAvatar, setUserAvatar] = useState("")
 
 
-  const mockBlogs = [
-    {
-      id: 1,
-      title: 'Understanding React Server Components in Next.js 14',
-      content: 'A comprehensive guide to React Server Components and how they revolutionize data fetching in modern web applications. Learn about streaming, suspense, and progressive rendering.',
-      image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop',
-      likes: 234,
-      comments: 45,
-      views: '12.5k',
-      tags: ['React', 'Next.js', 'JavaScript'],
-      author: {
-        name: 'Sarah Chen',
-        avatar: 'SC',
-        role: 'Senior Frontend Developer'
-      },
-      createdAt: '2 days ago'
-    },
-    {
-      id: 2,
-      title: 'Building Scalable APIs with Node.js and Express',
-      content: 'Learn best practices for creating robust and scalable RESTful APIs using Node.js, Express, and MongoDB. Includes authentication, validation, and error handling patterns.',
-      image: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=400&fit=crop',
-      likes: 189,
-      comments: 32,
-      views: '8.3k',
-      tags: ['Node.js', 'API', 'Backend'],
-      author: {
-        name: 'Mike Johnson',
-        avatar: 'MJ',
-        role: 'Backend Engineer'
-      },
-      createdAt: '5 days ago'
-    },
-    {
-      id: 3,
-      title: 'Mastering TypeScript: Advanced Types and Patterns',
-      content: 'Dive deep into TypeScript advanced features including mapped types, conditional types, and utility types. Build type-safe applications with confidence.',
-      image: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&h=400&fit=crop',
-      likes: 312,
-      comments: 67,
-      views: '18.9k',
-      tags: ['TypeScript', 'JavaScript', 'Programming'],
-      author: {
-        name: 'Emma Wilson',
-        avatar: 'EW',
-        role: 'Full Stack Developer'
-      },
-      createdAt: '1 week ago'
-    },
-    {
-      id: 4,
-      title: 'Docker Containers: From Basics to Production',
-      content: 'Complete guide to containerization with Docker. Learn how to build, deploy, and orchestrate containers in production environments.',
-      image: 'https://images.unsplash.com/photo-1605745341112-85968b19335b?w=800&h=400&fit=crop',
-      likes: 276,
-      comments: 54,
-      views: '15.2k',
-      tags: ['Docker', 'DevOps', 'Containers'],
-      author: {
-        name: 'David Park',
-        avatar: 'DP',
-        role: 'DevOps Engineer'
-      },
-      createdAt: '3 days ago'
-    }
-  ];
-
-  const mockUsers = [
-    {
-      id: 1,
-      name: 'Sarah Chen',
-      avatar: 'SC',
-      role: 'Senior Frontend Developer',
-      bio: 'React enthusiast | Open source contributor | Building modern web apps',
-      followers: '15.2k',
-      blogs: 42
-    },
-    {
-      id: 2,
-      name: 'Mike Johnson',
-      avatar: 'MJ',
-      role: 'Backend Engineer',
-      bio: 'Node.js expert | API architect | Scaling systems at scale',
-      followers: '12.8k',
-      blogs: 38
-    },
-    {
-      id: 3,
-      name: 'Emma Wilson',
-      avatar: 'EW',
-      role: 'Full Stack Developer',
-      bio: 'TypeScript advocate | Teaching web development | Love clean code',
-      followers: '20.5k',
-      blogs: 56
-    },
-    {
-      id: 4,
-      name: 'David Park',
-      avatar: 'DP',
-      role: 'DevOps Engineer',
-      bio: 'Cloud infrastructure | Kubernetes | CI/CD automation enthusiast',
-      followers: '18.3k',
-      blogs: 47
-    }
-  ];
-
-  const sortOptions = [
-    { value: 'relevance', label: 'Most Relevant' },
-    { value: 'latest', label: 'Latest' },
-    { value: 'popular', label: 'Most Popular' }
-  ];
-
-  const handleTheme = () => {
-    setIsDark(!isDark);
-  };
-
-  const performSearch = () => {
-    if (!searchQuery.trim()) {
-      setSearchResults({ blogs: [], users: [] });
-      return;
-    }
-
-    setLoading(true);
-
-    setTimeout(() => {
-      const query = searchQuery.toLowerCase();
-
-      const filteredBlogs = mockBlogs.filter(blog =>
-        blog.title.toLowerCase().includes(query) ||
-        blog.content.toLowerCase().includes(query) ||
-        blog.tags.some(tag => tag.toLowerCase().includes(query)) ||
-        blog.author.name.toLowerCase().includes(query)
-      );
-
-      const filteredUsers = mockUsers.filter(user =>
-        user.name.toLowerCase().includes(query) ||
-        user.role.toLowerCase().includes(query) ||
-        user.bio.toLowerCase().includes(query)
-      );
-
-      setSearchResults({ blogs: filteredBlogs, users: filteredUsers });
-      setLoading(false);
-    }, 600);
-  };
-
   const clearSearch = () => {
     setSearchQuery('');
     setSearchResults({ blogs: [], users: [] });
@@ -194,12 +49,6 @@ const SearchPage = () => {
     total += searchResults?.blogs?.length || 0;
     total += searchResults?.users?.length || 0;
     return total;
-  };
-
-  const getFilteredResults = () => {
-    if (activeTab === 'blogs') return searchResults.blogs;
-    if (activeTab === 'users') return searchResults.users;
-    return [...searchResults.blogs, ...searchResults.users];
   };
 
   const loadFollowStatus = (blogs) => {
@@ -228,15 +77,16 @@ const SearchPage = () => {
 
 
   const fetchAllBlogs = async () => {
+    setLoading(true);
     try {
-
-      const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/search?searchQuery=${searchQuery}`, {
+    
+       const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/search?searchQuery=${searchQuery}`, {
         withCredentials: true
       }
       )
 
-      console.log("Result for Search =========== ", res?.data?.data?.users)
-      console.log("Result for Search =========== ", res?.data?.data?.blogs)
+      console.log("Result for Search (USERS) ", res?.data?.data?.users)
+      console.log("Result for Search (BLOGS) ", res?.data?.data?.blogs)
 
       if(res?.data?.data?.blogs && res?.data?.data?.blogs?.length > 0 || res?.data?.data?.users && res?.data?.data?.users?.length > 0){
         setSearchResults({
@@ -251,6 +101,9 @@ const SearchPage = () => {
       else{
         setSearchResults({ blogs: [], users: [] })
       }
+
+      setLoading(false);
+      
     } catch (error) {
       console.log("Error While Fetching Results. :: ",error)
     }
@@ -266,9 +119,23 @@ const SearchPage = () => {
   
 
   useEffect(() => {
-    fetchAllBlogs()
     fetchUserAvatar()
 
+  }, [])
+
+
+   useEffect(() => {
+   
+    const delayBounce = setTimeout(()=>{
+
+       if(searchQuery && searchQuery.trim() !== ""){
+        fetchAllBlogs();
+    }
+
+    },700)
+
+    return () => clearTimeout(delayBounce)
+   
   }, [searchQuery])
 
   return (
