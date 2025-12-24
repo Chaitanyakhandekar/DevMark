@@ -199,11 +199,11 @@ const SearchPage = () => {
         <FeedSidebar activePage="search" />
           </div>
 
-        <div className="max-w-6xl mx-1 px-0 py-6">
+        <div className="max-w-6xl mx-1 px-0 py-6 w-full">
           {searchQuery && (
           <>
             {/* Tabs and Sort */}
-            <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 mb-4`}>
+            <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 mb-4 w-full`}>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center gap-2">
                   <button
@@ -253,7 +253,7 @@ const SearchPage = () => {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
               </div>
             ) : getTotalResults() > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-4 w-full">
                 {/* Users Results */}
                 {(activeTab === 'all' || activeTab === 'users') && searchResults?.users?.length > 0 && (
                   <>
@@ -265,7 +265,7 @@ const SearchPage = () => {
                     {searchResults?.users?.map((user) => (
                       <div
                         key={user._id}
-                        className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 hover:shadow-xl transition-shadow cursor-pointer`}
+                        className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} w-full border rounded-lg p-4 hover:shadow-xl transition-shadow cursor-pointer`}
                       >
                         <ProfileCard
                           user={user}
@@ -334,7 +334,8 @@ const SearchPage = () => {
 
         {/* Empty State */}
         {!searchQuery && (
-          <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border-2 w-[90vw] md:w-[550px] lg:w-[800px]  rounded-lg p-16 text-center`}>
+          <div className="w-full flex justify-center items-center mt-20">
+              <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border-2 w-[90vw] md:w-[550px] lg:w-[800px]  rounded-lg p-16 text-center`}>
             <Search size={64} className={`mx-auto ${isDark ? 'text-gray-600' : 'text-gray-400'} mb-4`} />
             <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
               Start searching
@@ -342,6 +343,8 @@ const SearchPage = () => {
             <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-lg`}>
               Search for blogs, users, and topics across DevMark
             </p>
+          </div>
+
           </div>
         )}
         </div>
