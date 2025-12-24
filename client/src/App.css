@@ -85,3 +85,14 @@ html {
     height: 4px;
   }
 }
+
+html, body {
+  overflow-x: hidden;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #9035ea #0f111a;
+}
+

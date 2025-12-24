@@ -351,7 +351,7 @@ function ProfilePage() {
     const isProfileIncomplete = !profileData.bio || !profileData.location || skills.length === 0;
 
     return (
-        <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-0'>
+        <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-16'>
 
             <div className="text-white hidden md:block mt-4 ml-2">
                 <FeedSidebar activePage="profile" />
@@ -969,7 +969,7 @@ function ProfilePage() {
                 )}
             </section>
 
-            <MobileNavBottom avatarUrl={profileData.avatar} />
+            <MobileNavBottom avatarUrl={profileData.avatar} fixed />
 
         </div>
     );

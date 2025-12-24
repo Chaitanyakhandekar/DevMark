@@ -25,7 +25,7 @@ import axios from 'axios';
 import ProfileCard from '../../../components/ProfileCard';
 import FeedSidebar from '../../../components/FeedSidebar';
 
-const SearchPage = () => {
+const SearchTagsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [isDark, setIsDark] = useState(true);
@@ -139,7 +139,7 @@ const SearchPage = () => {
   }, [searchQuery])
 
   return (
-    <div className={`min-h-screen pb-16 ${isDark ? 'bg-[#111826]' : 'bg-[#f4f2ee]'}`}>
+    <div className={`min-h-screen ${isDark ? 'bg-[#111826]' : 'bg-[#f4f2ee]'}`}>
       {/* Navigation */}
       <nav className="w-full h-16 bg-[#1f2936] flex items-center justify-center gap-10 px-4 sticky top-0 z-50 shadow-lg">
         <div className="hidden md:block h-full md:flex justify-center items-center gap-2">
@@ -352,4 +352,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default SearchTagsPage;

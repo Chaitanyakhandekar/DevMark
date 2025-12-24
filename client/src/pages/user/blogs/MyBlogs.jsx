@@ -230,7 +230,7 @@ function MyBlogs() {
       </main>
 
       {/* Mobile Bottom Navigation */}
-      <MobileNavBottom avatarUrl={userAvatar} />
+      <MobileNavBottom avatarUrl={userAvatar} fixed={true} />
 
     </div>
   )

@@ -594,7 +594,7 @@ function EditDraft() {
                 </div>
             </div>
 
-            <MobileNavBottom avatarUrl={userAvatar} />
+            <MobileNavBottom avatarUrl={userAvatar} fixed={true} />
 
         </div>
     )

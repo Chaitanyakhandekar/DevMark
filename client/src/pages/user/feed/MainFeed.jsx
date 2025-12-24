@@ -156,7 +156,7 @@ function MainFeed() {
   },[limit])
 
   return (
-    <div className="main-feed w-screen min-w-screen bg-[#f4f2ee] dark:bg-[#111826]">
+    <div className="main-feed w-screen min-w-screen min-h-screen bg-[#f4f2ee] dark:bg-[#111826] mb-15">
 
 
 
@@ -173,7 +173,7 @@ function MainFeed() {
         </section>
 
         {/* Section 2 Feed */}
-        <section className='md:w-[20%] max-w-[900px] min-w-[250px] border-1 border-red-700 flex-1 flex flex-col gap-3 md:px-5 py-3 '>
+        <section className='md:w-[20%] max-w-[900px] min-w-[250px]  border-1 border-red-700 flex-1 flex flex-col gap-3 md:px-5 py-3 pb-20'>
 
        
 
@@ -221,7 +221,7 @@ function MainFeed() {
       </main>
 
       {/* Mobile Bottom Navigation */}
-      <MobileNavBottom avatarUrl={userAvatar} />
+      <MobileNavBottom avatarUrl={userAvatar} fixed={true} />
 
     </div>
   )
