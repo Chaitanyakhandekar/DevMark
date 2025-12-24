@@ -80,10 +80,12 @@ const SearchTagsPage = () => {
     setLoading(true);
     try {
     
-       const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/search?searchQuery=${searchQuery}`, {
+       const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/search-tags`,
+         {
         withCredentials: true
-      }
-      )
+       },
+       { searchQuery }
+      );
 
       console.log("Result for Search (USERS) ", res?.data?.data?.users)
       console.log("Result for Search (BLOGS) ", res?.data?.data?.blogs)
@@ -139,7 +141,7 @@ const SearchTagsPage = () => {
   }, [searchQuery])
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-[#111826]' : 'bg-[#f4f2ee]'}`}>
+    <div className={`min-h-screen pb-16 ${isDark ? 'bg-[#111826]' : 'bg-[#f4f2ee]'}`}>
       {/* Navigation */}
       <nav className="w-full h-16 bg-[#1f2936] flex items-center justify-center gap-10 px-4 sticky top-0 z-50 shadow-lg">
         <div className="hidden md:block h-full md:flex justify-center items-center gap-2">
@@ -199,11 +201,11 @@ const SearchTagsPage = () => {
         <FeedSidebar activePage="search" />
           </div>
 
-        <div className="max-w-6xl mx-1 px-0 py-6">
+        <div className="max-w-6xl mx-1 px-0 py-6 w-full">
           {searchQuery && (
           <>
             {/* Tabs and Sort */}
-            <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 mb-4`}>
+            <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 mb-4 w-full`}>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center gap-2">
                   <button
@@ -253,7 +255,7 @@ const SearchTagsPage = () => {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
               </div>
             ) : getTotalResults() > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-4 w-full">
                 {/* Users Results */}
                 {(activeTab === 'all' || activeTab === 'users') && searchResults?.users?.length > 0 && (
                   <>
@@ -265,7 +267,7 @@ const SearchTagsPage = () => {
                     {searchResults?.users?.map((user) => (
                       <div
                         key={user._id}
-                        className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-4 hover:shadow-xl transition-shadow cursor-pointer`}
+                        className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} w-full border rounded-lg p-4 hover:shadow-xl transition-shadow cursor-pointer`}
                       >
                         <ProfileCard
                           user={user}
@@ -334,7 +336,8 @@ const SearchTagsPage = () => {
 
         {/* Empty State */}
         {!searchQuery && (
-          <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border-2 w-[90vw] md:w-[550px] lg:w-[800px]  rounded-lg p-16 text-center`}>
+          <div className="w-full flex justify-center items-center mt-20">
+              <div className={`${isDark ? 'bg-[#1f2936] border-gray-700' : 'bg-white border-gray-200'} border-2 w-[90vw] md:w-[550px] lg:w-[800px]  rounded-lg p-16 text-center`}>
             <Search size={64} className={`mx-auto ${isDark ? 'text-gray-600' : 'text-gray-400'} mb-4`} />
             <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
               Start searching
@@ -342,6 +345,8 @@ const SearchTagsPage = () => {
             <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-lg`}>
               Search for blogs, users, and topics across DevMark
             </p>
+          </div>
+
           </div>
         )}
         </div>

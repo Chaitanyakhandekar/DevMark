@@ -543,17 +543,22 @@ const SearchBlogsAndUsers = asyncHandler(async (req, res) => {
   const searchQuery = req.query.searchQuery
   const userId = new mongoose.Types.ObjectId(req.user._id)
 
+  console.log("Search Query:", searchQuery);
+
   if (!searchQuery || (searchQuery && searchQuery.trim() === "")) {
     throw new ApiError(400, "Search Query Is Required for Search.")
   }
 
-  if (searchQuery.includes("$") || searchQuery.includes("{") || searchQuery.includes("}")) {
+  if (searchQuery.includes("$") || searchQuery.includes("{") || searchQuery.includes("}") || searchQuery.includes("<") || searchQuery.includes(">") || searchQuery.includes("(") || searchQuery.includes(")") || searchQuery.includes("|") || searchQuery.includes("^") || searchQuery.includes("%") || searchQuery.includes("@") || searchQuery.includes("!") || searchQuery.includes("~") || searchQuery.includes("`") || searchQuery.includes("\"") || searchQuery.includes("'") || searchQuery.includes("\\") || searchQuery.includes("/")) {
     throw new ApiError(400, "Invalid Search Query.")
   }
 
-  // if (searchQuery.trim().includes("#")){
-  //   let newSearchQuery = searchQuery.trim().split("#")
-  // }
+  if (searchQuery.includes("#")){
+    console.log("Tag Search Query Detected.");
+    let newSearchQuery = searchQuery.trim().split("#").filter(tag=>tag.trim()!=="")
+    console.log("Search Query:", newSearchQuery);
+  }
+
 
   const userResults = await User.aggregate([
     {
@@ -859,6 +864,134 @@ const SearchBlogsAndUsers = asyncHandler(async (req, res) => {
 })
 
 
+const searchBlogsForTags = asyncHandler(async (req, res) => {
+
+  const searchQuery = req.body.searchQuery
+  const userId = new mongoose.Types.ObjectId(req.user._id)
+
+  console.log("Search Query:", searchQuery);
+
+  if (!searchQuery || (searchQuery && searchQuery.trim() === "")) {
+    throw new ApiError(400, "Search Query Is Required for Search.")
+  }
+
+  if (searchQuery.includes("$") || searchQuery.includes("{") || searchQuery.includes("}") || searchQuery.includes("<") || searchQuery.includes(">") || searchQuery.includes("(") || searchQuery.includes(")") || searchQuery.includes("|") || searchQuery.includes("^") || searchQuery.includes("%") || searchQuery.includes("@") || searchQuery.includes("!") || searchQuery.includes("~") || searchQuery.includes("`") || searchQuery.includes("\"") || searchQuery.includes("'") || searchQuery.includes("\\") || searchQuery.includes("/")) {
+    throw new ApiError(400, "Invalid Search Query.")
+  }
+
+  let newSearchQuery = []
+
+  if (searchQuery.trim().includes("#")){
+     newSearchQuery = searchQuery.trim().split("#").map(tag=>tag.trim()!=="" && tag.trim() || null).filter(tag=>tag!==null)
+    console.log("Search Query:", newSearchQuery);
+  }
+
+  if(!newSearchQuery.length){
+    throw new ApiError(400, "Invalid Tag Search Query.")
+  }
+
+  const blogs = await Blog.aggregate([
+    {
+      $match: {
+        tags:{
+          $in : newSearchQuery
+        },
+        status: "published"
+      },
+    },
+    { $sort: { createdAt: -1 } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $addFields: {
+              isOwner: {
+                $eq: ["$_id", new mongoose.Types.ObjectId(userId)]
+              }
+            }
+          },
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+              totalFollowers: 1,
+              position: 1,
+              isOwner: 1
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$owner" },
+
+    //👇 Add lookup to check follow status
+    {
+      $lookup: {
+        from: "follows",
+        let: { ownerId: "$owner._id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$followedBy", userId] },
+                  { $eq: ["$followTo", "$$ownerId"] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "isFollowedDocs",
+      },
+    },
+
+    // 👇 Convert the result into a boolean
+    {
+      $addFields: {
+        "owner.isFollowed": {
+          $cond: {
+            if: { $gt: [{ $size: "$isFollowedDocs" }, 0] },
+            then: true,
+            else: false,
+          }
+        }
+      }
+    },
+    {
+      $project: {
+        title: 1,
+        content: 1,
+        category: 1,
+        owner: 1,
+        tags: 1,
+        images: 1,
+        totalLikes: 1,
+        totalComments: 1,
+        views: 1,
+        status: 1,
+        createdAt: 1,
+      },
+    },
+  ]);
+
+  if(!blogs.length){
+    throw new ApirError(404,"No Result For Query.")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, {
+        blogs: blogs.length ? blogs : []
+      }, "Query Result Fetched Successfully.")
+    )
+
+})
 
 export {
   createBlog,
@@ -869,6 +1002,6 @@ export {
   getUserBlogs,
   getUserDrafts,
   SearchBlogsAndUsers,
-  getPublicUserBlogs
+  getPublicUserBlogs,
+  searchBlogsForTags
 };
-
