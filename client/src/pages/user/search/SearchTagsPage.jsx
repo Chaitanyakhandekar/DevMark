@@ -24,6 +24,7 @@ import BlogCard from '../../../components/BlogCard';
 import axios from 'axios';
 import ProfileCard from '../../../components/ProfileCard';
 import FeedSidebar from '../../../components/FeedSidebar';
+import { useParams } from 'react-router-dom';
 
 const SearchTagsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,6 +38,9 @@ const SearchTagsPage = () => {
   const searchInputRef = useRef(null);
   const [followStatus, setFollowStatus] = useState({});
   const [userAvatar, setUserAvatar] = useState("")
+  const tags = useParams().tags
+
+ 
 
 
   const clearSearch = () => {
@@ -76,7 +80,7 @@ const SearchTagsPage = () => {
   }
 
 
-  const fetchAllBlogs = async () => {
+  const fetchAllBlogs = async (search) => {
     setLoading(true);
     try {
     
@@ -120,25 +124,26 @@ const SearchTagsPage = () => {
   }
   
 
-  useEffect(() => {
-    fetchUserAvatar()
-
-  }, [])
-
-
-   useEffect(() => {
-   
-    const delayBounce = setTimeout(()=>{
-
-       if(searchQuery && searchQuery.trim() !== ""){
-        fetchAllBlogs();
+   useEffect(()=>{
+    if(tags && tags.trim() !== ""){
+      let tagsArray = tags.trim().split("+").map(tag=>tag.trim() !== "" ? tag.trim() : null).filter(tag=>tag!==null);
+      setSearchQuery(tagsArray.join("#"))
     }
+    fetchUserAvatar()
+  },[])
 
-    },700)
+  useEffect(()=>{
+      const debouncingTimer = setTimeout(()=>{
+        if(searchQuery && searchQuery.trim() !== ""){
 
-    return () => clearTimeout(delayBounce)
-   
-  }, [searchQuery])
+          let tagsArray = searchQuery.trim().split(" " || "+" || "#").map(tag=>tag.trim() !== "" ? tag.trim() : null).filter(tag=>tag!==null);
+         let search = tagsArray.join("#");
+          fetchAllBlogs(search);
+        }
+      },700)
+
+      return ()=> clearTimeout(debouncingTimer)
+  },[searchQuery])
 
   return (
     <div className={`min-h-screen pb-16 ${isDark ? 'bg-[#111826]' : 'bg-[#f4f2ee]'}`}>
