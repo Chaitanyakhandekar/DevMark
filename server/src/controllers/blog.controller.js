@@ -126,19 +126,19 @@ const updateBlog = asyncHandler(async (req, res) => {
 
   const images = req.files;
 
-  if(images && images.length > 0){
+  if (images && images.length > 0) {
 
     const imgs = await Promise.all(
-      images.map(async(image)=>{
+      images.map(async (image) => {
         const res = await uploadFileOnCloudinary(image.path)
         return {
-          url:res.secure_url,
-          public_id:res.public_id
+          url: res.secure_url,
+          public_id: res.public_id
         }
       })
     )
 
-    console.log("Uploaded Images:",imgs)
+    console.log("Uploaded Images:", imgs)
 
     updateData.images = [...req.blog.images, ...imgs]
   }
@@ -173,7 +173,7 @@ const updateBlog = asyncHandler(async (req, res) => {
 
   if (tags && tags.length) {
     updateData = { ...updateData, tags }
-    
+
   }
 
   const updatedBlog = await Blog.findByIdAndUpdate(
@@ -223,7 +223,7 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.user._id);
 
   const totalBlogs = await Blog.countDocuments({
-    status:"published"
+    status: "published"
   });
 
   const blogs = await Blog.aggregate([
@@ -241,9 +241,9 @@ const getAllBlogs = asyncHandler(async (req, res) => {
         as: "owner",
         pipeline: [
           {
-            $addFields:{
-              isOwner:{
-                $eq:["$_id", userId]
+            $addFields: {
+              isOwner: {
+                $eq: ["$_id", userId]
               }
             }
           },
@@ -310,7 +310,7 @@ const getAllBlogs = asyncHandler(async (req, res) => {
     },
   ]);
 
- 
+
   if (!blogs.length) {
     throw new ApiError(404, "No blogs found");
   }
@@ -332,14 +332,14 @@ const getAllBlogs = asyncHandler(async (req, res) => {
 
 const getPublicUserBlogs = asyncHandler(async (req, res) => {
 
-   const userId = new mongoose.Types.ObjectId(req.params.id)
-   const currentUser = new mongoose.Types.ObjectId(req.user._id)
+  const userId = new mongoose.Types.ObjectId(req.params.id)
+  const currentUser = new mongoose.Types.ObjectId(req.user._id)
 
-   console.log("UserId:",userId);
-   console.log("CurrentUser:",currentUser);
+  console.log("UserId:", userId);
+  console.log("CurrentUser:", currentUser);
 
-  if(!userId || !mongoose.Types.ObjectId.isValid(userId)){
-    throw new ApiError(400,"Valid UserId Required.")
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    throw new ApiError(400, "Valid UserId Required.")
   }
 
   const page = Number(req.query.page) || 1;
@@ -349,12 +349,12 @@ const getPublicUserBlogs = asyncHandler(async (req, res) => {
   // const userId = new mongoose.Types.ObjectId(req.user._id);
 
   const totalBlogs = await Blog.countDocuments({
-    status:"published"
+    status: "published"
   });
 
   const blogs = await Blog.aggregate([
     {
-      $match: {owner:new mongoose.Types.ObjectId(userId)},
+      $match: { owner: new mongoose.Types.ObjectId(userId) },
     },
     { $sort: { createdAt: -1 } },
     { $skip: skip },
@@ -367,9 +367,9 @@ const getPublicUserBlogs = asyncHandler(async (req, res) => {
         as: "owner",
         pipeline: [
           {
-            $addFields:{
-              isOwner:{
-                $eq:[currentUser, userId]
+            $addFields: {
+              isOwner: {
+                $eq: [currentUser, userId]
               }
             }
           },
@@ -390,7 +390,7 @@ const getPublicUserBlogs = asyncHandler(async (req, res) => {
     {
       $lookup: {
         from: "follows",
-        let: { ownerId: "$owner._id" , currentUserId : currentUser },
+        let: { ownerId: "$owner._id", currentUserId: currentUser },
         pipeline: [
           {
             $match: {
@@ -432,12 +432,12 @@ const getPublicUserBlogs = asyncHandler(async (req, res) => {
         totalComments: 1,
         status: 1,
         createdAt: 1,
-        isFollowedDocs:1
+        isFollowedDocs: 1
       },
     },
   ]);
 
- 
+
   if (!blogs.length) {
     throw new ApiError(404, "No blogs found");
   }
@@ -482,8 +482,8 @@ const getUserBlogs = asyncHandler(async (req, res) => {
         as: "owner",
         pipeline: [
           {
-            $addFields:{
-              isOwner:true
+            $addFields: {
+              isOwner: true
             }
           },
           {
@@ -491,7 +491,7 @@ const getUserBlogs = asyncHandler(async (req, res) => {
               username: 1,
               avatar: 1,
               totalFollowers: 1,
-              isOwner:1
+              isOwner: 1
             }
           }
         ]
@@ -547,351 +547,313 @@ const SearchBlogsAndUsers = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Search Query Is Required for Search.")
   }
 
-  if(searchQuery.includes("$") || searchQuery.includes("{") || searchQuery.includes("}")){
+  if (searchQuery.includes("$") || searchQuery.includes("{") || searchQuery.includes("}")) {
     throw new ApiError(400, "Invalid Search Query.")
   }
 
-  if (searchQuery.trim().includes("#")){
-    let newSearchQuery = searchQuery.trim().split("#")
-  }
+  // if (searchQuery.trim().includes("#")){
+  //   let newSearchQuery = searchQuery.trim().split("#")
+  // }
 
   const userResults = await User.aggregate([
     {
-      $match:{
+      $match: {
         $or: [
-        {
-          username: { $regex: searchQuery, $options: "i" }
-        },
-        {
-          fullName: { $regex: searchQuery, $options: "i" }
-        },
-        {
-          bio: { $regex: searchQuery, $options: "i" }
-        }
-      ]
+          {
+            username: { $regex: searchQuery, $options: "i" }
+          },
+          {
+            fullName: { $regex: searchQuery, $options: "i" }
+          },
+          {
+            bio: { $regex: searchQuery, $options: "i" }
+          }
+        ]
       }
     },
     {
-      $lookup:{
-        from:"follows",
-        let:{channel:"$_id"},
-        pipeline:[
+      $lookup: {
+        from: "follows",
+        let: { channel: "$_id" },
+        pipeline: [
           {
-            $match:{
-              $expr:{
-                $and:[
+            $match: {
+              $expr: {
+                $and: [
                   {
-                    $eq:["$followedBy",userId]
+                    $eq: ["$followedBy", userId]
                   },
                   {
-                    $eq:["$followTo","$$channel"]
+                    $eq: ["$followTo", "$$channel"]
                   }
                 ]
               }
             }
           }
         ],
-        as:"followDocs"
+        as: "followDocs"
       }
     },
 
     {
-      $addFields:{
-        "isFollowed":{
-          $cond:{
-            if : { $gt : [{$size: "$followDocs"},0]},
-            then : true,
-            else : false
+      $addFields: {
+        "isFollowed": {
+          $cond: {
+            if: { $gt: [{ $size: "$followDocs" }, 0] },
+            then: true,
+            else: false
           }
         }
       }
     },
 
     {
-      $project:{
-        username:1,
-        fullName:1,
-        avatar:1,
-        bio:1,
-        position:1,
-        totalFollowers:1,
-        totalBlogs:1,
-        isFollowed:1
+      $project: {
+        username: 1,
+        fullName: 1,
+        avatar: 1,
+        bio: 1,
+        position: 1,
+        totalFollowers: 1,
+        totalBlogs: 1,
+        isFollowed: 1
       }
     }
 
   ])
 
 
-  console.log("User Results:",userResults)
+  let ids = userResults.map(user => user._id)
 
-  let result = []
-  let ids = [
 
+  let blogsCondition = [
+    { title: { $regex: searchQuery, $options: "i" } },
+    { category: { $regex: searchQuery, $options: "i" } },
+    { content: { $regex: searchQuery, $options: "i" } },
   ]
-  let fields = {
-    username: 0,
-    fullName: 0,
-    bio: 0
+
+  if(ids.length){
+    blogsCondition.push( { owner: { $in: ids } },)
   }
 
-  userResults.forEach((user) => {
-    if (user.username.toLowerCase().includes(searchQuery.toLowerCase())) {
-      result.push({
-        query: searchQuery,
-        field: "username"
-      })
-      fields.username += 1;
-    }
+  // if (userResults.length) {
 
-    if (user.fullName.toLowerCase().includes(searchQuery.toLowerCase())) {
-      result.push({
-        query: searchQuery,
-        field: "fullName"
-      })
-      fields.fullName += 1;
-    }
-
-    if (user.bio.toLowerCase().includes(searchQuery.toLowerCase())) {
-      result.push({
-        query: searchQuery,
-        field: "bio"
-      })
-      fields.bio += 1;
-    }
-
-    ids.push(
-      {
-        _id: new mongoose.Types.ObjectId(user._id)
-      }
-    )
-
-  })
-
-  const maxAppear = fields.username >= fields.fullName && fields.username >= fields.bio ? "username" : fields.fullName >= fields.username && fields.fullName >= fields.bio ? "fullName" : "bio"
-
-
-
-  if (userResults.length) {
-
-    const blogs = await Blog.aggregate([
-      {
-        $match: {
-          owner: {
-            $in: ids.map(i => i._id)
+  const blogs = await Blog.aggregate([
+    {
+      $match: {
+        $or: blogsCondition,
+        status: "published"
+      },
+    },
+    { $sort: { createdAt: -1 } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $addFields: {
+              isOwner: {
+                $eq: ["$_id", new mongoose.Types.ObjectId(userId)]
+              }
+            }
           },
-          status: "published"
-        },
-      },
-      { $sort: { createdAt: -1 } },
-      {
-        $lookup: {
-          from: "users",
-          localField: "owner",
-          foreignField: "_id",
-          as: "owner",
-          pipeline: [
-            {
-              $addFields:{
-                isOwner:{
-                  $eq:["$_id",new mongoose.Types.ObjectId(userId)]
-                }
-              }
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+              totalFollowers: 1,
+              position: 1,
+              isOwner: 1
             },
-            {
-              $project: {
-                username: 1,
-                fullName:1,
-                avatar: 1,
-                totalFollowers: 1,
-                position:1,
-                isOwner:1
+          },
+        ],
+      },
+    },
+    { $unwind: "$owner" },
+
+    //👇 Add lookup to check follow status
+    {
+      $lookup: {
+        from: "follows",
+        let: { ownerId: "$owner._id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$followedBy", userId] },
+                  { $eq: ["$followTo", "$$ownerId"] },
+                ],
               },
             },
-          ],
-        },
+          },
+        ],
+        as: "isFollowedDocs",
       },
-      { $unwind: "$owner" },
+    },
 
-      //👇 Add lookup to check follow status
-      {
-        $lookup: {
-          from: "follows",
-          let: { ownerId: "$owner._id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$followedBy", userId] },
-                    { $eq: ["$followTo", "$$ownerId"] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: "isFollowedDocs",
-        },
-      },
-
-      // 👇 Convert the result into a boolean
-      {
-        $addFields: {
-          "owner.isFollowed": {
-            $cond: {
-              if: { $gt: [{ $size: "$isFollowedDocs" }, 0] },
-              then: true,
-              else: false,
-            }
+    // 👇 Convert the result into a boolean
+    {
+      $addFields: {
+        "owner.isFollowed": {
+          $cond: {
+            if: { $gt: [{ $size: "$isFollowedDocs" }, 0] },
+            then: true,
+            else: false,
           }
-        }
-      },
-      {
-        $project: {
-          title: 1,
-          content: 1,
-          category: 1,
-          owner: 1,
-          tags: 1,
-          images: 1,
-          totalLikes: 1,
-          totalComments: 1,
-          views:1,
-          status: 1,
-          createdAt: 1,
-        },
-      },
-    ]);
-
-   
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(200, {
-          users:userResults,
-          blogs : blogs.length ? blogs : []
-        }, "Query Result Fetched Successfully.")
-      )
-  }
-
-  if (!userResults.length) {
-    const blogs = await Blog.aggregate([
-      {
-        $match: {
-
-          $and: [
-            {
-              $or: [
-                {
-                  title: { $regex: searchQuery, $options: "i" }
-                },
-                {
-                  category: { $regex: searchQuery, $options: "i" }
-                },
-                {
-                  content: { $regex: searchQuery, $options: "i" }
-                }
-              ],
-            },
-
-            { status: "published" }
-          ]
-        }
-      },
-
-      {
-        $lookup:{
-          from:"users",
-          localField:"owner",
-          foreignField:"_id",
-          as:"owner",
-          pipeline:[
-            {
-              $project:{
-                 username: 1,
-                avatar: 1,
-                totalFollowers: 1,
-                position:1
-              }
-            }
-          ]
-        }
-      },
-
-      { $unwind : "$owner" },
-
-      {
-        $lookup:{
-          from:"follows",
-          let:{ownerId:"$owner._id"},
-          pipeline:[
-            {
-              $match:{
-                $expr:{
-                  $and:[
-                    {
-                      $eq:["$followedBy",userId]
-                    },
-                    {
-                      $eq:["$followTo","$$ownerId"]
-                    }
-                  ]
-                }
-              }
-            },
-          ],
-            as:"followDocs"
-        }
-      },
-
-      {
-        $addFields:{
-          "owner.isFollowed":{
-            $cond:{
-              if: {$gt : [{$size : "$followDocs"},0]},
-              then : true,
-              else:false
-            }
-          }
-        }
-      },
-
-      {
-        $project:{
-            title: 1,
-          content: 1,
-          category: 1,
-          owner: 1,
-          tags: 1,
-          images: 1,
-          totalLikes: 1,
-          totalComments: 1,
-          status: 1,
-          createdAt: 1,
         }
       }
-    ])
+    },
+    {
+      $project: {
+        title: 1,
+        content: 1,
+        category: 1,
+        owner: 1,
+        tags: 1,
+        images: 1,
+        totalLikes: 1,
+        totalComments: 1,
+        views: 1,
+        status: 1,
+        createdAt: 1,
+      },
+    },
+  ]);
 
-    if(!blogs.length){
-      throw new ApiError(404,"No Result For Query.")
-    }
 
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(200,{
-          users:null,
-          blogs
-        },
-        "Query Result Fetched Successfully."
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, {
+        users: userResults,
+        blogs: blogs.length ? blogs : []
+      }, "Query Result Fetched Successfully.")
     )
-      )
-  }
+  // }
+
+  // if (!userResults.length) {
+  //   const blogs = await Blog.aggregate([
+  //     {
+  //       $match: {
+
+  //         $and: [
+  //           {
+  //             $or: [
+  //               {
+  //                 title: { $regex: searchQuery, $options: "i" }
+  //               },
+  //               {
+  //                 category: { $regex: searchQuery, $options: "i" }
+  //               },
+  //               {
+  //                 content: { $regex: searchQuery, $options: "i" }
+  //               }
+  //             ],
+  //           },
+
+  //           { status: "published" }
+  //         ]
+  //       }
+  //     },
+
+  //     {
+  //       $lookup:{
+  //         from:"users",
+  //         localField:"owner",
+  //         foreignField:"_id",
+  //         as:"owner",
+  //         pipeline:[
+  //           {
+  //             $project:{
+  //                username: 1,
+  //               avatar: 1,
+  //               totalFollowers: 1,
+  //               position:1
+  //             }
+  //           }
+  //         ]
+  //       }
+  //     },
+
+  //     { $unwind : "$owner" },
+
+  //     {
+  //       $lookup:{
+  //         from:"follows",
+  //         let:{ownerId:"$owner._id"},
+  //         pipeline:[
+  //           {
+  //             $match:{
+  //               $expr:{
+  //                 $and:[
+  //                   {
+  //                     $eq:["$followedBy",userId]
+  //                   },
+  //                   {
+  //                     $eq:["$followTo","$$ownerId"]
+  //                   }
+  //                 ]
+  //               }
+  //             }
+  //           },
+  //         ],
+  //           as:"followDocs"
+  //       }
+  //     },
+
+  //     {
+  //       $addFields:{
+  //         "owner.isFollowed":{
+  //           $cond:{
+  //             if: {$gt : [{$size : "$followDocs"},0]},
+  //             then : true,
+  //             else:false
+  //           }
+  //         }
+  //       }
+  //     },
+
+  //     {
+  //       $project:{
+  //           title: 1,
+  //         content: 1,
+  //         category: 1,
+  //         owner: 1,
+  //         tags: 1,
+  //         images: 1,
+  //         totalLikes: 1,
+  //         totalComments: 1,
+  //         status: 1,
+  //         createdAt: 1,
+  //       }
+  //     }
+  //   ])
+
+  //   if(!blogs.length){
+  //     throw new ApiError(404,"No Result For Query.")
+  //   }
+
+  //   return res
+  //     .status(200)
+  //     .json(
+  //       new ApiResponse(200,{
+  //         users:null,
+  //         blogs
+  //       },
+  //       "Query Result Fetched Successfully."
+  //   )
+  //     )
+  // }
 
   return res
     .status(404)
     .json(
-      new ApiResponse(404,null,"No Result For Search Query.")
+      new ApiResponse(404, null, "No Result For Search Query.")
     )
 
 })
