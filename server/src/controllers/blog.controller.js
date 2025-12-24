@@ -547,6 +547,14 @@ const SearchBlogsAndUsers = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Search Query Is Required for Search.")
   }
 
+  if(searchQuery.includes("$") || searchQuery.includes("{") || searchQuery.includes("}")){
+    throw new ApiError(400, "Invalid Search Query.")
+  }
+
+  if (searchQuery.trim().includes("#")){
+    let newSearchQuery = searchQuery.trim().split("#")
+  }
+
   const userResults = await User.aggregate([
     {
       $match:{
@@ -613,6 +621,9 @@ const SearchBlogsAndUsers = asyncHandler(async (req, res) => {
     }
 
   ])
+
+
+  console.log("User Results:",userResults)
 
   let result = []
   let ids = [
@@ -752,16 +763,13 @@ const SearchBlogsAndUsers = asyncHandler(async (req, res) => {
       },
     ]);
 
-    if (!blogs.length) {
-      throw new ApiError(404, "No Results Match With Search Query")
-    }
-
+   
     return res
       .status(200)
       .json(
         new ApiResponse(200, {
           users:userResults,
-          blogs
+          blogs : blogs.length ? blogs : []
         }, "Query Result Fetched Successfully.")
       )
   }

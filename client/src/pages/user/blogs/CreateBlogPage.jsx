@@ -100,16 +100,7 @@ function CreateBlogPage() {
 
     const publishBlog = async () => {
 
-        if(blogData.images.length === 0){
-            Swal.fire({
-                icon: 'error',
-                title: 'No Images Uploaded',
-                text: 'Please upload at least one image for your blog post.',
-                background: '#1f2936',
-                color: '#c9d1d9'
-            });
-            return;
-        }
+     
 
         if(blogData.images.length > 5){
             Swal.fire({
@@ -378,6 +369,28 @@ function CreateBlogPage() {
               </nav>
         
               {/* Sidebar Footer - Pro Tip Card */}
+             <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+                     <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200/50 dark:border-blue-700/30 rounded-xl p-4 group hover:shadow-lg transition-all duration-300">
+                       {/* Animated Background */}
+                       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                       
+                       {/* Content */}
+                       <div className="relative">
+                         <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-2">
+                           <Sparkles size={16} className="animate-pulse" />
+                           <p className="text-xs font-bold uppercase tracking-wide">Pro Tip</p>
+                         </div>
+                         <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+                           Use markdown formatting to create rich, engaging blog posts with headers, lists, and code blocks!
+                         </p>
+                       </div>
+             
+                       {/* Decorative Elements */}
+                       <div className="absolute top-0 right-0 w-20 h-20 bg-blue-400/10 rounded-full blur-2xl"></div>
+                       <div className="absolute bottom-0 left-0 w-16 h-16 bg-purple-400/10 rounded-full blur-2xl"></div>
+                     </div>
+                   </div>
+             
               
               {/* Custom Scrollbar Styles */}
               <style>{`
