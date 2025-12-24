@@ -1,0 +1,98 @@
+/* Custom Scrollbar Styling - Add to your global CSS file (index.css or App.css) */
+
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4777f4 0%, #9035ea 100%);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #5887ff 0%, #a045fa 100%);
+  box-shadow: 0 0 10px rgba(71, 119, 244, 0.5);
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4777f4 0%, #9035ea 100%);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #5887ff 0%, #a045fa 100%);
+  box-shadow: 0 0 15px rgba(144, 53, 234, 0.6);
+}
+
+/* Light mode scrollbar */
+.light ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4777f4 0%, #9035ea 100%);
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #5887ff 0%, #a045fa 100%);
+  box-shadow: 0 0 10px rgba(71, 119, 244, 0.4);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4777f4 transparent;
+}
+
+.dark * {
+  scrollbar-color: #9035ea rgba(255, 255, 255, 0.05);
+}
+
+.light * {
+  scrollbar-color: #4777f4 rgba(0, 0, 0, 0.05);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Optional: Hide scrollbar for specific elements while keeping functionality */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Optional: Thinner scrollbar for mobile */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #9035ea #0f111a;
+}
+

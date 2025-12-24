@@ -222,7 +222,7 @@ function PublicProfilePage() {
     }
 
     return (
-        <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-0'>
+        <div className='w-screen h-auto bg-[#111825] z-100 flex flex-col pb-16'>
             <div className="text-white hidden md:block mt-4 ml-2">
                 <FeedSidebar activePage="profile" />
             </div>
@@ -464,7 +464,7 @@ function PublicProfilePage() {
                 )}
             </section>
 
-            <MobileNavBottom avatarUrl={currentUserAvatar} />
+            <MobileNavBottom avatarUrl={currentUserAvatar} fixed={true} />
         </div>
     );
 }

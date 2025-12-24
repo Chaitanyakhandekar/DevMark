@@ -162,7 +162,7 @@ function SavedBlogs() {
     }, [limit])
 
     return (
-        <div className="main-feed w-screen min-w-screen max-w-screen bg-[#f4f2ee] dark:bg-[#111826] box-border border-1">
+        <div className="main-feed w-screen min-w-screen max-w-screen min-h-screen bg-[#f4f2ee] dark:bg-[#111826] box-border border-1 pb-16">
 
 
             {/* Navbar */}
@@ -232,7 +232,7 @@ function SavedBlogs() {
             </main>
 
             {/* Mobile Bottom Navigation */}
-            <MobileNavBottom avatarUrl={userAvatar} />
+            <MobileNavBottom avatarUrl={userAvatar} fixed={true} />
 
         </div>
     )

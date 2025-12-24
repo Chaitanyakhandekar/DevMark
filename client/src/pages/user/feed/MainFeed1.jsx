@@ -172,7 +172,7 @@ function MainFeed() {
   };
 
   return (
-    <div className="main-feed w-screen min-h-screen bg-gradient-to-br from-[#0f172a] via-[#0f172a] to-[#1e293b]">
+    <div className="main-feed w-screen min-h-screen bg-gradient-to-br from-[#0f172a] via-[#0f172a] to-[#1e293b] pb-16">
       
       {/* Enhanced Navbar */}
       <nav className="hidden md:flex w-full h-16 bg-[#1e293b]/95 backdrop-blur-xl border-b border-slate-700/50 items-center justify-center gap-8 px-6 sticky top-0 z-50 shadow-2xl">

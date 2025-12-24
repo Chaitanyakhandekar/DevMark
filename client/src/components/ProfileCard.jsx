@@ -34,7 +34,7 @@ function ProfileCard({user,isDark,followStatus,setFollowStatus,isFollowed1=false
   return (
     <div
     onClick={()=>navigate(`/user/search/${user._id}`)}
-    className="flex items-start justify-between">
+    className="flex items-start justify-between w-full ]">
                           <div className="flex items-start gap-4">
                             <div className="w-16 h-16 rounded-full  flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
                               <img

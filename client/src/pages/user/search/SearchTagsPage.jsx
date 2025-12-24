@@ -24,8 +24,9 @@ import BlogCard from '../../../components/BlogCard';
 import axios from 'axios';
 import ProfileCard from '../../../components/ProfileCard';
 import FeedSidebar from '../../../components/FeedSidebar';
+import { useParams } from 'react-router-dom';
 
-const SearchPage = () => {
+const SearchTagsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [isDark, setIsDark] = useState(true);
@@ -37,6 +38,9 @@ const SearchPage = () => {
   const searchInputRef = useRef(null);
   const [followStatus, setFollowStatus] = useState({});
   const [userAvatar, setUserAvatar] = useState("")
+  const tags = useParams().tags
+
+ 
 
 
   const clearSearch = () => {
@@ -76,14 +80,16 @@ const SearchPage = () => {
   }
 
 
-  const fetchAllBlogs = async () => {
+  const fetchAllBlogs = async (search) => {
     setLoading(true);
     try {
-      console.log("Fetching Search Results for Query :: ", searchQuery);
-       const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/search?searchQuery=${searchQuery}`, {
+    
+       const res = await axios.get(`${import.meta.env.VITE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL_PROD : import.meta.env.VITE_BACKEND_URL_DEV}/blogs/search-tags`,
+         {
         withCredentials: true
-      }
-      )
+       },
+       { searchQuery }
+      );
 
       console.log("Result for Search (USERS) ", res?.data?.data?.users)
       console.log("Result for Search (BLOGS) ", res?.data?.data?.blogs)
@@ -118,25 +124,26 @@ const SearchPage = () => {
   }
   
 
-  useEffect(() => {
-    fetchUserAvatar()
-
-  }, [])
-
-
-   useEffect(() => {
-   
-    const delayBounce = setTimeout(()=>{
-
-       if(searchQuery && searchQuery.trim() !== ""){
-        fetchAllBlogs();
+   useEffect(()=>{
+    if(tags && tags.trim() !== ""){
+      let tagsArray = tags.trim().split("+").map(tag=>tag.trim() !== "" ? tag.trim() : null).filter(tag=>tag!==null);
+      setSearchQuery(tagsArray.join("#"))
     }
+    fetchUserAvatar()
+  },[])
 
-    },700)
+  useEffect(()=>{
+      const debouncingTimer = setTimeout(()=>{
+        if(searchQuery && searchQuery.trim() !== ""){
 
-    return () => clearTimeout(delayBounce)
-   
-  }, [searchQuery])
+          let tagsArray = searchQuery.trim().split(" " || "+" || "#").map(tag=>tag.trim() !== "" ? tag.trim() : null).filter(tag=>tag!==null);
+         let search = tagsArray.join("#");
+          fetchAllBlogs(search);
+        }
+      },700)
+
+      return ()=> clearTimeout(debouncingTimer)
+  },[searchQuery])
 
   return (
     <div className={`min-h-screen pb-16 ${isDark ? 'bg-[#111826]' : 'bg-[#f4f2ee]'}`}>
@@ -355,4 +362,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default SearchTagsPage;

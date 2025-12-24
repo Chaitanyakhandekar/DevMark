@@ -10,7 +10,8 @@ import
     getUserBlogs,
     getUserDrafts,
     SearchBlogsAndUsers,
-    getPublicUserBlogs
+    getPublicUserBlogs,
+    searchBlogsForTags
 
 }
  from "../controllers/blog.controller.js"
@@ -24,6 +25,7 @@ router.route("/create").post(upload.array("images",5), userAuth, createBlog)
 router.route("/all").get(userAuth,getAllBlogs)
 router.route("/user").get(userAuth,getUserBlogs)
 router.route("/user/drafts").get(userAuth,getUserDrafts)
+router.route("/search-tags").post(userAuth,searchBlogsForTags)
 router.route("/search/").get(userAuth,SearchBlogsAndUsers)
 router.route("/user/:id").get(userAuth,getPublicUserBlogs)
 router.route("/:id").delete(userAuth,blogOwner,deleteBlog)

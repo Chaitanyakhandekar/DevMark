@@ -27,6 +27,7 @@ import PublicProfilePage from './pages/user/profile/PublicProfilePage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import SearchTagsPage from './pages/user/search/SearchTagsPage'
 
 function App() {
 
@@ -51,6 +52,7 @@ function App() {
       <Route path="/user/profile-1/" element={<ProtectedRoute><ProfilePage1/></ProtectedRoute>} />
       <Route path="/user/profile/" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>} />
       <Route path="/user/search/" element={<ProtectedRoute><SearchPage/></ProtectedRoute>}/>
+      <Route path="/user/search/:tags" element={<ProtectedRoute><SearchTagsPage/></ProtectedRoute>}/>
       <Route path="/user/blogs" element={<ProtectedRoute><MyBlogs/></ProtectedRoute>}/>
       <Route path="/user/saved-blogs" element={<ProtectedRoute><SavedBlogs/></ProtectedRoute>} />
       <Route path="/user/blogs/update/:id" element={<ProtectedRoute><UpdateBlogPage/></ProtectedRoute>} />

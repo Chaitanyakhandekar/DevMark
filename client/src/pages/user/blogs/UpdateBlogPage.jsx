@@ -569,7 +569,7 @@ function UpdateBlogPage() {
                 }
             `}</style>
 
-            <MobileNavBottom userAvatar={userAvatar} activePage='update' />
+            <MobileNavBottom userAvatar={userAvatar} activePage='update' fixed={true} />
         </div>
     )
 }

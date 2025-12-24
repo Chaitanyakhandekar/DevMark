@@ -6,9 +6,10 @@ export const authContext = createContext(null)     // created Auth Context with 
 export const AuthProvider = ({children})=>{      // AuthProvider component to wrap around the app
 
     const [isLoggedIn,setIsLoggedIn] = React.useState(false)
+    const [searchQuery,setSearchQuery] = React.useState("")
 
     return (
-        <authContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
+        <authContext.Provider value={{isLoggedIn, setIsLoggedIn, searchQuery, setSearchQuery}}>
             {children}         
         </authContext.Provider>
     )

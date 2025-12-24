@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-function MobileNavBottom({avatarUrl, fixed=false}) {
+function MobileNavBottom({avatarUrl, fixed=false, bgColor="bg-[#1f2936]/70"}) {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ function MobileNavBottom({avatarUrl, fixed=false}) {
 
   return (
     <div
-     className={`md:hidden border-[0.1px] border-t-gray-700 border-r-0 border-l-0 border-b-0 w-full h-16 bg-[#1f2936]/70 backdrop-blur-md ${fixed ? "fixed bottom-0" : "sticky bottom-0 left-0"} z-50 flex items-center justify-around text-gray-400`}
+     className={`md:hidden border-[0.1px] border-t-gray-700 border-r-0 border-l-0 border-b-0 w-full h-16 ${bgColor} backdrop-blur-md ${fixed ? "fixed bottom-0" : "sticky bottom-0 left-0"} z-50 flex items-center justify-around text-gray-400`}
     
      >
         <Home
