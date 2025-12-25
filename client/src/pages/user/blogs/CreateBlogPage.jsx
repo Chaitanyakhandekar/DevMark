@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from "axios"
+import { useNavigate } from 'react-router-dom'
 import {
     Save,
     Eye,
@@ -233,9 +234,7 @@ function CreateBlogPage() {
     { id: "saved", icon: Bookmark, label: "Saved Blogs", route: "/user/saved-blogs" },
     { id: "profile", icon: User, label: "Profile", route: "/user/profile" }
   ];
-    const navigate = (route) => {
-        window.location.href = route;
-    };
+    const navigate = useNavigate();
 
     const handleDraft = async () => {
         setLoading(true)

@@ -231,8 +231,9 @@ function UpdateBlogPage() {
         { id: "profile", icon: "👤", label: "Profile", route: "/user/profile" }
     ];
 
+    const navigationFn = useNavigate();
     const navigate = (route) => {
-        window.location.href = route;
+        navigationFn(route);
     };
 
     return (

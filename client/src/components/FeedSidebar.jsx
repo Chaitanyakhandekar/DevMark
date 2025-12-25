@@ -44,6 +44,7 @@ function FeedSidebar({
             </div>
           </div>
           <button 
+            type="button"
             onClick={() => setSidebarOpen(false)}
             className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-600 dark:text-gray-400"
           >
@@ -61,8 +62,14 @@ function FeedSidebar({
             
             return (
               <button
+                type="button"
                 key={item.id}
-                onClick={() => navigate(item.route)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if(item.route){
+                    navigate(item.route);
+                  }
+                }}
                 className={`
                   ${activePage !== "update" && item.id === "update" ? "hidden" : ""}
                   group relative flex items-center gap-3 px-4 py-3 rounded-xl

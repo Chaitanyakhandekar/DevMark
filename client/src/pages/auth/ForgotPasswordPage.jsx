@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { userApi } from "../../api/user.api";
 
@@ -207,9 +207,9 @@ export default function ForgotPasswordPage() {
 
         <p className="text-center text-gray-400 mt-6">
           Remember your password?{" "}
-          <a href="/login" className="text-[#00D8FF] hover:underline">
+          <Link to="/login" className="text-[#00D8FF] hover:underline">
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>
