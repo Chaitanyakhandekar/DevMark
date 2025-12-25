@@ -47,6 +47,7 @@ import { useNavigate } from 'react-router-dom';
 import MobileNavBottom from '../../../components/MobileNavBottom';
 import axios from 'axios';
 import FeedSidebar from '../../../components/FeedSidebar';
+import ProLoader from '../../../components/ProLoader';
 
 function MyBlogs() {
 
@@ -61,6 +62,7 @@ function MyBlogs() {
   const [loading, setLoading] = useState(false)
   const [userAvatar, setUserAvatar] = useState("")
   const [followStatus, setFollowStatus] = useState({})
+  const [hasMore, setHasMore] = useState(false)
   const navigate = useNavigate();
 
   const categories = [
@@ -129,6 +131,7 @@ function MyBlogs() {
       console.log("blogs : ", res.data.data.blogs)
 
       setAllBlogs(res.data.data.blogs)
+      setHasMore(res.data.data.hasNextPage)
 
       loadFollowStatus(res.data.data.blogs)
 
@@ -214,11 +217,15 @@ function MyBlogs() {
                 </div>
               ))}
 
-            <button
+         {
+              hasMore && !loading && (
+                   <button
               onClick={() => {
                 setLimit((prev) => prev + prev)
               }}
               className="bg-gradient-to-r from-[#4777f4] to-[#9035ea] text-white font-bold p-3 rounded-md ">{loading ? "Loading..." : "Load More Posts"}</button>
+              )
+         }
           </div>
 
         </section>
@@ -231,6 +238,10 @@ function MyBlogs() {
 
       {/* Mobile Bottom Navigation */}
       <MobileNavBottom avatarUrl={userAvatar} fixed={true} />
+
+      {loading && (
+        <ProLoader/>
+      )}
 
     </div>
   )
