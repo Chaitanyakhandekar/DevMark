@@ -45,8 +45,7 @@ function ProtectedRoute({children}) {
 
  useEffect(()=>{
 
-    const timer = setTimeout(()=>{checkAuth()},2000)
-  return ()=> clearTimeout(timer)
+   checkAuth()
  },[])
 
  useEffect(()=>{

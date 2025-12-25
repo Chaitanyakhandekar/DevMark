@@ -1,5 +1,5 @@
 import React,{useContext} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2';
 import TestLoader from "../../test/TestLoader";
@@ -179,15 +179,15 @@ export default function LoginPage({nextPage="/user/feed"}) {
         </form>
         <p className="text-center text-gray-400 mt-6">
           Don't have an account? {" "}
-          <a href="/signup" className="text-[#00D8FF] hover:underline">
+          <Link to="/signup" className="text-[#00D8FF] hover:underline">
             Sign up
-          </a>
+          </Link>
         </p>
       
         <p className="text-center text-gray-400 mt-2">
-          <a href="/forgot-password" className="text-[#00D8FF] hover:underline">
+          <Link to="/forgot-password" className="text-[#00D8FF] hover:underline">
             Forgot Password?
-          </a>
+          </Link>
         </p>
         
       </div>
