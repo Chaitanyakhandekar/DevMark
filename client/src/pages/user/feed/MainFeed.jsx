@@ -48,6 +48,8 @@ import MobileNavBottom from '../../../components/MobileNavBottom';
 import axios from 'axios';
 import { saveApi } from '../../../api/save.api';
 import FeedSidebar from '../../../components/FeedSidebar';
+import AuthLoader from '../../../components/AuthLoader';
+import ProLoader from '../../../components/ProLoader';
 
 function MainFeed() {
 
@@ -64,7 +66,7 @@ function MainFeed() {
   const [loading,setLoading] = useState(false)
   const [userAvatar,setUserAvatar] = useState("")
   const [followStatus,setFollowStatus] = useState({})
-  const [hasNextPage,setHasNextPage] = useState(true)
+  const [hasNextPage,setHasNextPage] = useState(false)
   const navigate = useNavigate();
 
 
@@ -236,6 +238,12 @@ function MainFeed() {
 
       {/* Mobile Bottom Navigation */}
       <MobileNavBottom avatarUrl={userAvatar} fixed={true} />
+
+      {
+        loading && (
+         <ProLoader/>
+        )
+      }
 
     </div>
   )
