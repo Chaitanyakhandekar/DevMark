@@ -277,7 +277,7 @@ function BlogCard({
                     <div className="w-full aspect-video relative">
                         <img
                             className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
-                            src={images[currentImageIndex]?.url || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=400&fit=crop"}
+                            src={images[currentImageIndex]?.url}
                             alt={title}
                         />
                         {/* Gradient Overlay */}
@@ -325,7 +325,7 @@ function BlogCard({
                             >
                                 <img
                                     className='w-full h-full object-cover'
-                                    src={owner.avatar}
+                                    src={owner.avatar || "https://res.cloudinary.com/drftighpf/image/upload/v1751458090/f5ozv63h6ek3ujulc3gg.jpg"}
                                     alt={owner.username}
                                 />
                             </div>
