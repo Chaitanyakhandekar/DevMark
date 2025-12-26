@@ -37,6 +37,7 @@ import MobileNavBottom from '../../../components/MobileNavBottom';
 import { draftApi } from '../../../api/draft.api';
 import { useParams } from 'react-router-dom';
 import { blogApi } from '../../../api/blog.api';
+import { useNavigate } from 'react-router-dom';
 
 function EditDraft() {
     const [tags, setTags] = useState([])
@@ -373,8 +374,8 @@ function EditDraft() {
 
                             <button
                                 onClick={handleDraft}
-                                disabled={blogData.content?.trim().length === 0 && blogData.title?.trim().length === 0 && !blogData.images?.length}
-                                title={blogData.content?.trim().length === 0 && blogData.title?.trim().length === 0 && !blogData.images?.length ? "Cannot Save Empty Blog As A Draft." : "Save Blog as Draft"}
+                                disabled={blogData.content?.trim().length === 0 && blogData.title?.trim().length === 0 }
+                                title={blogData.content?.trim().length === 0 && blogData.title?.trim().length === 0 || "Save Blog as Draft"}
                                 className=' flex items-center gap-2 text-sm px-4 py-2 bg-gray-700/50 hover:bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200'
                             >
 
@@ -391,8 +392,8 @@ function EditDraft() {
 
                             <button
                                 onClick={publishBlog}
-                                disabled={blogData.content?.trim().length === 0 || blogData.title?.trim().length === 0 || !blogData.images?.length || loading}
-                                title={blogData.content?.trim().length === 0 || blogData.title?.trim().length === 0 || !blogData.images?.length ? "Title, content and image required" : "Publish Blog"}
+                                disabled={blogData.content?.trim().length === 0 || blogData.title?.trim().length === 0  || loading}
+                                title={blogData.content?.trim().length === 0 || blogData.title?.trim().length === 0 || "Publish Blog"}
                                 className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg px-4 py-2 transition-all duration-200 shadow-lg hover:shadow-xl"
                             >
                                 {loading ? (

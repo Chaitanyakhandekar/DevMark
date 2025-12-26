@@ -39,6 +39,7 @@ import { blogApi } from '../../../api/blog.api';
 import { useParams } from 'react-router-dom';
 import FeedSidebar from '../../../components/FeedSidebar';
 import MobileNavBottom from '../../../components/MobileNavBottom';
+import { useNavigate } from 'react-router-dom';
 
 function UpdateBlogPage() {
     const [tags, setTags] = useState([])
@@ -49,6 +50,7 @@ function UpdateBlogPage() {
     const [blogId, setBlogId] = useState(useParams().id)
     const [imagePreviewModal, setImagePreviewModal] = useState(null)
     const [newImages, setNewImages] = useState([])
+    
 
     const [blogData, setBlogData] = useState({
         content: "Hey there! Start writing your blog content here...",
@@ -239,7 +241,7 @@ function UpdateBlogPage() {
     return (
         <div className="min-w-screen min-h-screen dark:bg-[#0f1419] relative">
             {/* Enhanced Sidebar */}
-           <div className="w-full hidden md:block">
+           <div className="w-full hidden md:block fixed left-0 top-0">
              <FeedSidebar activePage='update' />
            </div>
 
@@ -249,7 +251,7 @@ function UpdateBlogPage() {
                 <nav className='sticky top-0 z-30 w-full bg-[#1f2936]/95 backdrop-blur-md border-b border-gray-700/50 shadow-lg'>
                     <div className='h-16 px-4 md:px-8 flex justify-between items-center'>
                         {/* Left Section */}
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center justify-center gap-4">
                             <div className="hidden md:flex items-center gap-2 text-gray-400 bg-gray-800/50 px-3 py-2 rounded-lg">
                                 {/* Placeholder for consistency */}
                             </div>
