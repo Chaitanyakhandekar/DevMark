@@ -239,14 +239,14 @@ function UpdateBlogPage() {
     };
 
     return (
-        <div className="min-w-screen min-h-screen dark:bg-[#0f1419] relative">
+        <div className="min-w-screen border-1 min-h-screen dark:bg-[#0f1419] relative">
             {/* Enhanced Sidebar */}
            <div className="w-full hidden md:block fixed left-0 top-0">
              <FeedSidebar activePage='update' />
            </div>
 
             {/* Main Content */}
-            <div className="md:ml-64 min-h-screen">
+            <div className="md:ml-64 min-h-screen border-1">
                 {/* Enhanced Navbar */}
                 <nav className='sticky top-0 z-30 w-full bg-[#1f2936]/95 backdrop-blur-md border-b border-gray-700/50 shadow-lg'>
                     <div className='h-16 px-4 md:px-8 flex justify-between items-center'>
@@ -288,7 +288,7 @@ function UpdateBlogPage() {
                 </nav>
 
                 {/* Content Area */}
-                <div className="flex flex-col lg:flex-row gap-6 p-4 md:p-6 lg:p-8">
+                <div className="flex flex-col lg:flex-row justify-center gap-6 p-4 md:p-6 lg:p-8 md:ml-10">
                     {/* Editor Section */}
                     <div className="flex-1 max-w-4xl mx-auto lg:mx-0 w-full">
                         <div className="space-y-4">
